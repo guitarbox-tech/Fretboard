@@ -70,6 +70,7 @@ body {
   
   select {
     color: #555;
+    background-color: white;
     font-size: 15px;
     margin-left: 40px;
     height: 36px;

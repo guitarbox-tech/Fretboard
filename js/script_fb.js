@@ -147,7 +147,7 @@ if (filaActual === filas.length - 1) {
 
     var texto = document.createElementNS("http://www.w3.org/2000/svg", "text");
     texto.setAttribute("x", "28");
-    texto.setAttribute("y", "15");
+    texto.setAttribute("y", "16");
     texto.setAttribute("text-anchor", "middle");
     texto.setAttribute("dominant-baseline", "middle");
     texto.setAttribute("font-size", "15");

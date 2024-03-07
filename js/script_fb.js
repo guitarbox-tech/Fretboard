@@ -85,10 +85,10 @@ if ((i === 12 || i === 24) && filas.length === 0) {
 if (filaActual === filas.length - 1) {
 
     var alturaCelda = nuevaCelda.clientHeight;
-    var porcentajeAltura = 100; // Reducir el porcentaje de altura en función del número de filas
+    var porcentajeAltura = 97; // Reducir el porcentaje de altura en función del número de filas
     var translateYPorcentaje = porcentajeAltura / 2; // Calcular la posición vertical
-    var translateYExtra = filaActual * (57 + filaActual); 
-    var translateYExtraUno = filaActual * 22.4;
+    var translateYExtra = filaActual * 54; 
+    var translateYExtraUno = filaActual * 22.2;
     var translateYExtraDos = filaActual * 83;
 
     var pseudoElemento = document.createElement("style");

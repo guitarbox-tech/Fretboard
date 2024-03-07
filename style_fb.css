@@ -1,0 +1,78 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #555;
+  }
+  
+  .config-button {
+    color: #3b3737;
+  }
+
+  table {
+    width: 80%;
+    margin: 1em auto;
+    border-collapse: collapse;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  td {
+    text-align: center;
+    height: 30px;
+    
+    min-width: 100px;
+  }
+      
+  .nota-circular {
+    height: 30px;
+    transform: translateY(50%);
+  }
+      
+  tr:first-child td {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  tr:first-child td:first-child {
+    border: none;
+  }
+
+  .button-container {
+    text-align: left;
+    margin-top: 2em;           
+  }
+
+  .num-cuerdas-style {
+    border: 1px solid #555;
+    border-radius: 40px;
+    height: 34px;
+    display: inline-block;
+    padding: 2px;
+  }
+
+  .button {
+    display: inline-block;
+    padding: 8px 18px;
+    background-color: #777;
+    color: #fff;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .button-num-cuerdas {
+    display: inline;
+    background-color: white;
+    color: #555;
+    cursor: pointer;
+    min-width: 55px;
+    font-size: 16px;
+  }
+  
+  select {
+    color: #555;
+    font-size: 15px;
+    margin-left: 40px;
+    height: 36px;
+  }

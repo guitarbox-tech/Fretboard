@@ -20,7 +20,7 @@ var filaActual = filas.length - 1;
 
 var numCeldasAgregar = numCeldasInicial
 
-            // Verificar si es la primera vez que se carga la página, si no lo es se ejecutará el siguiente condicional; si es TRUE entonnces pasa a ELSE
+            // Verificar si es la primera vez que se carga la página, si no lo es se ejecutará el siguiente condicional; si es TRUE entonces pasa a ELSE
 if (!primeraVez) {
     var numCeldasFilaAnterior = filas[filas.length - 1].cells.length;
     
@@ -87,7 +87,7 @@ if (filaActual === filas.length - 1) {
     var alturaCelda = nuevaCelda.clientHeight;
     var porcentajeAltura = 100; // Reducir el porcentaje de altura en función del número de filas
     var translateYPorcentaje = porcentajeAltura / 2; // Calcular la posición vertical
-    var translateYExtra = filaActual * 52.4;
+    var translateYExtra = filaActual * (57 + filaActual); 
     var translateYExtraUno = filaActual * 22.4;
     var translateYExtraDos = filaActual * 83;
 
@@ -159,8 +159,8 @@ if (filaActual === filas.length - 1) {
     svg.appendChild(circulo);
     svg.appendChild(texto);
 
-    var translateYIncrement = 5 + (filas.length + 1); // Esto puede variar dependiendo del diseño deseado
-    svg.style.transform = 'translateY(5%)';
+    var translateYIncrement = (filas.length + 1) * 0.5; // Esto puede variar dependiendo del diseño deseado
+    svg.style.transform = 'translateY(' + translateYIncrement + '%)';
 
     nuevaCelda.appendChild(svg);
 
@@ -283,8 +283,8 @@ for (var i = 0; i < filas.length; i++) {
     svg.setAttribute("width", "100");
     svg.setAttribute("height", "30");
     
-    var translateYIncrement = 0.5 + (filas.length + 1);
-    svg.style.transform = 'translateY(' + translateYIncrement + '%)'; 
+    var translateYIncrement = (filas.length + 1) * 0.5;
+    svg.style.transform = 'translateY(' + translateYIncrement + '%)';
 
     var nuevoCirculo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     nuevoCirculo.setAttribute("cx", "50");
@@ -421,7 +421,7 @@ botonConfiguracion.innerHTML = '<i class="fas fa-cog"></i>';
 botonConfiguracion.className = "config-button";
 nuevaFila.appendChild(botonConfiguracion);
 
-var translateYIncrement = 130 + (filas.length + 1);    
+var translateYIncrement = 115 + (filas.length + 1);    
 botonConfiguracion.style.transform = 'translateY(' + translateYIncrement + '%)';
 
 botonConfiguracion.onclick = function() {

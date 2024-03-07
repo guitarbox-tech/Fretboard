@@ -5,20 +5,18 @@ body {
   
   .config-button {
     color: #3b3737;
-  }
+    margin-left: 100%;  
+}
 
   table {
-    width: 80%;
-    margin: 1em auto;
+    min-width: 20%;
     border-collapse: collapse;
     font-family: 'Roboto', sans-serif;
   }
 
   td {
     text-align: center;
-    height: 30px;
     
-    min-width: 100px;
   }
       
   .nota-circular {

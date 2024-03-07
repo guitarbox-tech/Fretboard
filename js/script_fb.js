@@ -143,7 +143,8 @@ if (filaActual === filas.length - 1) {
     circulo.setAttribute("r", "13.5");
     circulo.setAttribute("stroke", "black");
     circulo.setAttribute("stroke-width", "1");
-    circulo.setAttribute("fill", "white");
+    circulo.classList.add('circulo-blanco');
+
 
     var texto = document.createElementNS("http://www.w3.org/2000/svg", "text");
     texto.setAttribute("x", "28");
@@ -292,7 +293,7 @@ for (var i = 0; i < filas.length; i++) {
     nuevoCirculo.setAttribute("r", "14");
     nuevoCirculo.setAttribute("stroke", "black");
     nuevoCirculo.setAttribute("stroke-width", "1");
-    nuevoCirculo.setAttribute("fill", "white");
+    nuevoCirculo.classList.add('circulo-blanco');
     nuevoCirculo.setAttribute('data-note', notas[indexNota]);
 
     var nuevoTexto = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -445,3 +446,22 @@ botonConfiguracion.onclick = function() {
 };
 }
 
+function cambiarEstiloCirculos() {
+    var circulos = document.querySelectorAll('circle'); // Seleccionar todos los círculos
+
+    // Iterar sobre cada círculo y cambiar su estilo
+    circulos.forEach(function(circulo) {
+        if (circulo.classList.contains('circulo-blanco')) {
+            circulo.classList.remove('circulo-blanco');
+            circulo.classList.add('circulo-azul');
+        } else if (circulo.classList.contains('circulo-azul')) {
+            circulo.classList.remove('circulo-azul');
+            circulo.classList.add('circulo-rojo');
+        } else if (circulo.classList.contains('circulo-rojo')) {
+            circulo.classList.remove('circulo-rojo');
+            circulo.classList.add('circulo-blanco');
+        }
+    });
+
+    console.log('La función cambiarEstiloCirculos() se ha ejecutado.');
+}

@@ -75,3 +75,15 @@ body {
     margin-left: 40px;
     height: 36px;
   }
+
+  .circulo-blanco {
+    fill: white;
+}
+
+.circulo-azul {
+  fill: blue;
+}
+
+.circulo-rojo {
+  fill: red;
+}

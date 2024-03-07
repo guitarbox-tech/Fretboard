@@ -85,9 +85,9 @@ if ((i === 12 || i === 24) && filas.length === 0) {
 if (filaActual === filas.length - 1) {
 
     var alturaCelda = nuevaCelda.clientHeight;
-    var porcentajeAltura = 97; // Reducir el porcentaje de altura en función del número de filas
+    var porcentajeAltura = 97.2; // Reducir el porcentaje de altura en función del número de filas
     var translateYPorcentaje = porcentajeAltura / 2; // Calcular la posición vertical
-    var translateYExtra = filaActual * 54; 
+    var translateYExtra = filaActual * 53.8; 
     var translateYExtraUno = filaActual * 22.2;
     var translateYExtraDos = filaActual * 83;
 
@@ -97,10 +97,10 @@ if (filaActual === filas.length - 1) {
             content: '';
             position: absolute;
             top: ${translateYPorcentaje}%;
-            left: 30.5%;
+            left: 16%;
             width: 40px;
             height: ${porcentajeAltura}%;
-            background-color: #b5b5b5;
+            background-color: #b2beb5;
             border-radius: 50%;
             z-index: -1;
             transform: translateY(${translateYExtra}%); /* Aplicar translateY */
@@ -109,10 +109,10 @@ if (filaActual === filas.length - 1) {
             content: '';
             position: absolute;
             top: ${translateYPorcentaje}%;
-            left: 30.5%;
+            left: 16%;
             width: 40px;
             height: ${porcentajeAltura}%;
-            background-color: #b5b5b5;
+            background-color: #b2beb5;
             border-radius: 50%;
             z-index: -1;
             transform: translateY(${translateYExtraUno}%); /* Aplicar translateY */
@@ -121,10 +121,10 @@ if (filaActual === filas.length - 1) {
             content: '';
             position: absolute;
             top: ${translateYPorcentaje}%;
-            left: 30.5%;
+            left: 16%;
             width: 40px;
             height: ${porcentajeAltura}%;
-            background-color: #b5b5b5;
+            background-color: #b2beb5;
             border-radius: 50%;
             z-index: -1;
             transform: translateY(${translateYExtraDos}%); /* Aplicar translateY */
@@ -134,11 +134,11 @@ if (filaActual === filas.length - 1) {
 
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "100");
+    svg.setAttribute("width", "56");
     svg.setAttribute("height", "30");
 
     var circulo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    circulo.setAttribute("cx", "50");
+    circulo.setAttribute("cx", "28");
     circulo.setAttribute("cy", "15");
     circulo.setAttribute("r", "13.5");
     circulo.setAttribute("stroke", "black");
@@ -146,7 +146,7 @@ if (filaActual === filas.length - 1) {
     circulo.setAttribute("fill", "white");
 
     var texto = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    texto.setAttribute("x", "50");
+    texto.setAttribute("x", "28");
     texto.setAttribute("y", "15");
     texto.setAttribute("text-anchor", "middle");
     texto.setAttribute("dominant-baseline", "middle");
@@ -280,14 +280,14 @@ for (var i = 0; i < filas.length; i++) {
     nuevaCelda.className = "nota-circular";
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "100");
+    svg.setAttribute("width", "56");
     svg.setAttribute("height", "30");
     
-    var translateYIncrement = (filas.length + 1) * 0.5;
+    var translateYIncrement = (filas.length + 1) * 0.6;
     svg.style.transform = 'translateY(' + translateYIncrement + '%)';
 
     var nuevoCirculo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    nuevoCirculo.setAttribute("cx", "50");
+    nuevoCirculo.setAttribute("cx", "28");
     nuevoCirculo.setAttribute("cy", "15");
     nuevoCirculo.setAttribute("r", "14");
     nuevoCirculo.setAttribute("stroke", "black");
@@ -296,7 +296,7 @@ for (var i = 0; i < filas.length; i++) {
     nuevoCirculo.setAttribute('data-note', notas[indexNota]);
 
     var nuevoTexto = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    nuevoTexto.setAttribute("x", "50");
+    nuevoTexto.setAttribute("x", "28");
     nuevoTexto.setAttribute("y", "15");
     nuevoTexto.setAttribute("text-anchor", "middle");
     nuevoTexto.setAttribute("dominant-baseline", "middle");

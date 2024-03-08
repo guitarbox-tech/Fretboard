@@ -446,7 +446,8 @@ botonConfiguracion.onclick = function() {
         }
     } else {
         alert("Nota musical no válida o no ingresada.");
-    }        
+    } 
+    ocultarSvg(selectNota.value);       
 };
 }
 

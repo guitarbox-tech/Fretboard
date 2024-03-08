@@ -9,7 +9,7 @@ body {
 }
 
   table {
-    min-width: 100%;
+    min-width: 20%;
     border-collapse: collapse;
     font-family: 'Roboto', sans-serif;
   }

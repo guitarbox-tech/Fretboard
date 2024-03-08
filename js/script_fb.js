@@ -142,7 +142,7 @@ if (filaActual === filas.length - 1) {
     circulo.setAttribute("cy", "15");
     circulo.setAttribute("r", "13.5");
     circulo.setAttribute("stroke", "black");
-    circulo.setAttribute("stroke-width", "1");
+    circulo.setAttribute("stroke-width", "0.8");
     circulo.classList.add('circulo-blanco');
 
 
@@ -154,7 +154,7 @@ if (filaActual === filas.length - 1) {
     texto.setAttribute("font-size", "15");
 
     var notaActual = notas[indexNota];
-    circulo.setAttribute('data-note', notaActual);
+    circulo.setAttribute('data-note', notaActual); 
     texto.textContent = notaActual;
 
     svg.appendChild(circulo);
@@ -205,6 +205,7 @@ indiceCambiado = false;
 actualizarVisibilidadBotones();
 mostrarNumFilas();
 estilizarPrimeraFila();
+ocultarSvg(selectNota.value);
 }
 
 function eliminarFila() {
@@ -238,7 +239,7 @@ if (tabla.rows.length === 0) {
     estilizarPrimeraFila();
 }
 }
-
+    ocultarSvg(selectNota.value);
 }
 
 function obtenerIndexNotaFila(fila) {
@@ -275,6 +276,9 @@ for (var i = 0; i < filas.length; i++) {
     var notaUltimaCeldaFila = circuloUltimaCelda.getAttribute('data-note') || textoUltimaCelda.textContent; // Obtener el valor del atributo data-note del círculo o el texto del SVG
 
     var indexNota = (notas.indexOf(notaUltimaCeldaFila) + 1) % notas.length;
+
+    ocultarSvg(selectNota.value);
+    console.log(ocultarSvg);
 
     // Crear una nueva celda y asignar la nota correspondiente
     var nuevaCelda = document.createElement("td");
@@ -464,4 +468,69 @@ function cambiarEstiloCirculos() {
     });
 
     console.log('La función cambiarEstiloCirculos() se ha ejecutado.');
+}
+
+// Obtener referencia al elemento select
+var selectNota = document.getElementById('selectNota');
+
+// Agregar evento change al select para llamar a ocultarSvg cuando cambie la nota seleccionada
+selectNota.addEventListener('change', function() {
+    ocultarSvg(selectNota.value);
+});
+
+function ocultarSvg(nombreNota) {
+    // Verificar si es la primera vez que se ejecuta la función
+    if (typeof ocultarSvg.contador === 'undefined') {
+        ocultarSvg.contador = 0;
+    }
+
+    // Si es la primera vez o las primeras 6 veces, establecer nombreNota como 'C'
+    if (ocultarSvg.contador < 6) {
+        nombreNota = 'C';
+    } else {
+        // Si es a través de una función que llama a ocultarSvg, usar la nota proporcionada
+        // Si es a través del prompt, se utiliza el valor ingresado por el usuario
+        // En este caso, se asume que la variable 'nombreNota' ya tiene la nota correcta
+        // proveniente del select o del prompt
+    }
+
+   
+    // Verificar si la nota ingresada por el usuario es válida
+    if (notas.includes(nombreNota)) {
+        // Definir los índices de los elementos que se ocultarán
+        var indiceNota = notas.indexOf(nombreNota);
+        var indicesOcultar = [
+            (indiceNota + 1) % 12,
+            (indiceNota + 3) % 12,
+            (indiceNota + 6) % 12,
+            (indiceNota + 8) % 12,
+            (indiceNota + 10) % 12
+        ];
+
+        // Obtener todos los círculos dentro de elementos SVG
+        var circulos = document.querySelectorAll('circle');
+
+        // Iterar sobre todos los círculos y aplicar la propiedad visibility según corresponda
+        circulos.forEach(function(circulo) {
+            // Obtener el valor del texto dentro del círculo SVG
+            var textoCirculo = circulo.parentElement.querySelector('text').textContent;
+
+            // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
+            if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
+                circulo.style.visibility = 'hidden'; // Ocultar el círculo
+                circulo.parentElement.querySelector('text').style.visibility = 'hidden'; // Ocultar el texto
+            } else {
+                circulo.style.visibility = 'visible'; // Mostrar el círculo
+                circulo.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
+            }
+        });
+
+        // Agregar un console.log para verificar si la función se está ejecutando
+        console.log('La función ocultarSvg() se ha ejecutado.');
+    } else {
+        console.log('Nota no válida.');
+    }
+
+    // Incrementar el contador después de cada ejecución
+    ocultarSvg.contador++;
 }

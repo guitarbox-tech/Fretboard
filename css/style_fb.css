@@ -82,9 +82,26 @@ body {
  
   svg {
     user-select: none;
-    cursor: default;
+    cursor: pointer;
     visibility: visible;
 }
+
+circle {
+  opacity: 100%;
+}
+
+circle text {
+  visibility: hidden;
+}
+
+.circulo-oculto {
+  opacity: 30%;
+}
+
+.circulo-oculto text {
+  visibility: hidden;
+}
+
 
   .circulo-blanco {
     fill: white;

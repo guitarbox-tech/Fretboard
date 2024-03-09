@@ -8,16 +8,11 @@ var indexNota = 0; // Índice para iterar sobre las notas
     var numCeldasInicial = 16;
 
 function agregarFila(indexNotaEliminar, celdasEliminar) {
-
-console.log("El valor de indiceCambiado es:", indiceCambiado);
-console.log("111111. indice de eliminarFila a agregarFila: " + indexNotaEliminar);
-console.log("La función agregarFila recibe celdasEliminar:", celdasEliminar);
-   var tabla = document.getElementById("miTabla");
+var tabla = document.getElementById("miTabla");
 var filas = tabla.getElementsByTagName('tr');
 var nuevaFila = document.createElement("tr");
 
 var filaActual = filas.length - 1;
-
 var numCeldasAgregar = numCeldasInicial
 
             // Verificar si es la primera vez que se carga la página, si no lo es se ejecutará el siguiente condicional; si es TRUE entonces pasa a ELSE
@@ -46,7 +41,6 @@ if (!primeraVez) {
         indexNota = indexNotaAnterior;
     } else {
         indexNota = (notas.indexOf(notaFilaAnterior) + 7) % notas.length;
-              console.log("2222222.indice de eliminarFila a agregarFila: " + indexNotaEliminar);
     }
     
 } else {
@@ -206,6 +200,7 @@ actualizarVisibilidadBotones();
 mostrarNumFilas();
 estilizarPrimeraFila();
 ocultarSvg(selectNota.value);
+clicSvg();
 }
 
 function eliminarFila() {
@@ -214,7 +209,6 @@ var numRows = tabla.rows.length;
 var celdasEliminar = tabla.rows[0].cells.length;
     
 if (numRows > 2) { // Verifica que haya más de una fila para eliminar
-    console.log("Índice de la nota a eliminar (penúltima fila):", indexNotaEliminar);
     var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
     tabla.deleteRow(-1); // Elimina la última fila
     tabla.deleteRow(-1); // Elimina la penúltima fila
@@ -222,10 +216,8 @@ if (numRows > 2) { // Verifica que haya más de una fila para eliminar
     agregarFila(indexNotaEliminar);
 } else if (numRows === 2) {
    var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
-    
-    console.log("Índice de la nota a eliminar (última fila):", indexNotaEliminar);
     tabla.deleteRow(-1); // Elimina la última fila
-        tabla.deleteRow(-1); // Elimina la penúltima fila
+    tabla.deleteRow(-1); // Elimina la penúltima fila
 
 // Agregar una nueva fila si no quedan filas después de eliminar las dos últimas
 if (tabla.rows.length === 0) {
@@ -278,7 +270,6 @@ for (var i = 0; i < filas.length; i++) {
     var indexNota = (notas.indexOf(notaUltimaCeldaFila) + 1) % notas.length;
 
     ocultarSvg(selectNota.value);
-    console.log(ocultarSvg);
 
     // Crear una nueva celda y asignar la nota correspondiente
     var nuevaCelda = document.createElement("td");
@@ -482,18 +473,12 @@ function ocultarSvg(nombreNota) {
     if (typeof ocultarSvg.contador === 'undefined') {
         ocultarSvg.contador = 0;
     }
-
     // Si es la primera vez o las primeras 6 veces, establecer nombreNota como 'C'
     if (ocultarSvg.contador < 6) {
         nombreNota = 'C';
     } else {
-        // Si es a través de una función que llama a ocultarSvg, usar la nota proporcionada
-        // Si es a través del prompt, se utiliza el valor ingresado por el usuario
-        // En este caso, se asume que la variable 'nombreNota' ya tiene la nota correcta
-        // proveniente del select o del prompt
     }
 
-   
     // Verificar si la nota ingresada por el usuario es válida
     if (notas.includes(nombreNota)) {
         // Definir los índices de los elementos que se ocultarán
@@ -523,13 +508,43 @@ function ocultarSvg(nombreNota) {
                 circulo.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
             }
         });
-
-        // Agregar un console.log para verificar si la función se está ejecutando
-        console.log('La función ocultarSvg() se ha ejecutado.');
     } else {
-        console.log('Nota no válida.');
     }
 
     // Incrementar el contador después de cada ejecución
     ocultarSvg.contador++;
+}
+
+function clicSvg() {
+    // Obtener la última fila de la tabla
+    var ultimaFila = document.querySelector('#miTabla tr:last-child');
+
+    // Obtener todas las celdas de la última fila
+    var celdas = ultimaFila.querySelectorAll('td');
+
+    // Obtener el número de celdas en la última fila
+    var numCeldas = celdas.length;
+
+    // Iterar sobre las celdas de la última fila
+    for (var i = 0; i < numCeldas; i++) {
+        // Agregar un event listener a cada celda
+        celdas[i].addEventListener('click', function() {
+            // Obtener el círculo SVG dentro de la celda clicada
+            var circulo = this.querySelector('svg circle');
+            var texto = this.querySelector('svg text');
+
+            // Obtener la opacidad computada del círculo
+            var estilo = window.getComputedStyle(circulo);
+            var opacidadActual = estilo.getPropertyValue('opacity');
+
+            // Cambiar la opacidad del círculo
+            if (opacidadActual === '1') {
+                circulo.style.opacity = '0.3';
+                texto.style.visibility = 'hidden';
+            } else {
+                circulo.style.opacity = '1';
+                texto.style.visibility = 'visible';
+            }
+        });
+    }
 }

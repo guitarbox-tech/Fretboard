@@ -42,14 +42,16 @@ body {
   .num-cuerdas-style {
     border: 1px solid #555;
     border-radius: 40px;
-    height: 34px;
+    height: 30.9px;
     display: inline-block;
     padding: 2px;
+    user-select: none;
+    cursor: default;
   }
 
   .button {
     display: inline-block;
-    padding: 8px 18px;
+    padding: 7.17px 18.3px;
     background-color: #777;
     color: #fff;
     border: none;
@@ -62,10 +64,12 @@ body {
   .button-num-cuerdas {
     display: inline;
     background-color: white;
+    border: none;
     color: #555;
     cursor: pointer;
     min-width: 55px;
     font-size: 16px;
+    cursor: default;
   }
   
   select {
@@ -77,13 +81,10 @@ body {
   }
  
   svg {
-    visibility: visible; /* Establecer la visibilidad como visible por defecto */
+    user-select: none;
+    cursor: default;
+    visibility: visible;
 }
-
-.svg-oculto {
-    visibility: hidden; /* Ocultar los elementos svg que tengan la clase svg-oculto */
-}
-
 
   .circulo-blanco {
     fill: white;

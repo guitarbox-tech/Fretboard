@@ -139,7 +139,7 @@ if (filaActual === filas.length - 1) {
 
     var circulo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     circulo.setAttribute("cx", "28");
-    circulo.setAttribute("cy", "15");
+    circulo.setAttribute("cy", "16");
     circulo.setAttribute("r", "13.5");
     circulo.setAttribute("stroke", "black");
     circulo.setAttribute("stroke-width", "0.8");
@@ -148,7 +148,7 @@ if (filaActual === filas.length - 1) {
 
     var texto = document.createElementNS("http://www.w3.org/2000/svg", "text");
     texto.setAttribute("x", "28");
-    texto.setAttribute("y", "16");
+    texto.setAttribute("y", "17");
     texto.setAttribute("text-anchor", "middle");
     texto.setAttribute("dominant-baseline", "middle");
     texto.setAttribute("font-size", "15");
@@ -293,7 +293,7 @@ for (var i = 0; i < filas.length; i++) {
 
     var nuevoCirculo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     nuevoCirculo.setAttribute("cx", "28");
-    nuevoCirculo.setAttribute("cy", "15");
+    nuevoCirculo.setAttribute("cy", "16");
     nuevoCirculo.setAttribute("r", "14");
     nuevoCirculo.setAttribute("stroke", "black");
     nuevoCirculo.setAttribute("stroke-width", "1");
@@ -302,7 +302,7 @@ for (var i = 0; i < filas.length; i++) {
 
     var nuevoTexto = document.createElementNS("http://www.w3.org/2000/svg", "text");
     nuevoTexto.setAttribute("x", "28");
-    nuevoTexto.setAttribute("y", "15");
+    nuevoTexto.setAttribute("y", "17");
     nuevoTexto.setAttribute("text-anchor", "middle");
     nuevoTexto.setAttribute("dominant-baseline", "middle");
     nuevoTexto.setAttribute("font-size", "15");
@@ -518,10 +518,10 @@ function ocultarSvg(nombreNota) {
 
             // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
             if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
-                circulo.style.visibility = 'hidden'; // Ocultar el círculo
+                circulo.style.opacity = '30%'; // Ocultar el círculo
                 circulo.parentElement.querySelector('text').style.visibility = 'hidden'; // Ocultar el texto
             } else {
-                circulo.style.visibility = 'visible'; // Mostrar el círculo
+                circulo.style.opacity = '100%'; // Mostrar el círculo
                 circulo.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
             }
         });

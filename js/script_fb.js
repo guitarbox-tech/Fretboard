@@ -467,8 +467,6 @@ function cambiarEstiloCirculos() {
             circulo.classList.add('circulo-blanco');
         }
     });
-
-    console.log('La función cambiarEstiloCirculos() se ha ejecutado.');
 }
 
 // Obtener referencia al elemento select

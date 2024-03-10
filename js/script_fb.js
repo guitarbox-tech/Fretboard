@@ -249,6 +249,8 @@ if (primeraCarga) {
 for (var i = 0; i < 6; i++) {
   agregarFila();
 }
+saveMemento();
+console.log('Contenido de mementos:', mementos);  
 primeraCarga = false;
 }
 };
@@ -510,9 +512,11 @@ function ocultarSvg(nombreNota) {
         });
     } else {
     }
-
     // Incrementar el contador después de cada ejecución
     ocultarSvg.contador++;
+    if (ocultarSvg.contador >= 7) {
+        saveMemento();
+    }
 }
 
 function clicSvg() {
@@ -545,6 +549,72 @@ function clicSvg() {
                 circulo.style.opacity = '1';
                 texto.style.visibility = 'visible';
             }
+            saveMemento();   
+            console.log('Contenido de mementos:', mementos);         
         });
     }
 }
+
+// Define un array para almacenar los mementos
+const mementos = [];
+
+// Función para almacenar el estado actual como un memento
+function saveMemento() {
+    var svgs = document.querySelectorAll('svg');
+    var selectNotaValue = document.getElementById('selectNota').value; // Obtener el valor del selectNota
+
+    var memento = [];
+    svgs.forEach(function(svg) {
+        var circle = svg.querySelector('circle');
+        var text = svg.querySelector('text');
+        if (circle && text) {
+            memento.push({ opacity: circle.style.opacity, visibility: text.style.visibility });
+        }
+    });
+
+    memento.push({ selectNota: selectNotaValue }); // Agregar el valor de selectNota al memento
+    mementos.push(memento);
+    console.log('se ha guardado memento');
+}
+
+
+// Función para deshacer cambios
+function undo() {
+    if (mementos.length > 0) {
+        if (mementos.length === 1) {
+            var singleMemento = mementos[0]; // Obtener el único memento
+            console.log('Índice del único memento:', 0); // Imprimir el índice del único memento
+            applyMemento(singleMemento); // Aplicar el único memento para deshacer los cambios
+            mementos.pop(); // Eliminar el único memento de la lista
+            saveMemento();
+        } else {
+            var penultimateMemento = mementos[mementos.length - 2]; // Obtener el penúltimo memento
+            console.log('Índice del penúltimo memento:', mementos.length - 2); // Imprimir el índice del penúltimo memento
+            applyMemento(penultimateMemento); // Aplicar el memento para deshacer los cambios
+            mementos.pop(); // Eliminar el último memento de la lista
+        }
+        console.log('Se ha deshecho el último cambio.');
+            } else {
+        console.log('No hay cambios anteriores para deshacer.');
+    }
+}
+
+
+
+// Función para aplicar un memento y deshacer los cambios
+function applyMemento(memento) {
+    var svgs = document.querySelectorAll('svg');
+    var selectNotaValue = memento[memento.length - 1].selectNota; // Obtener el valor de selectNota del último elemento del memento
+
+    svgs.forEach(function(svg, index) {
+        var circle = svg.querySelector('circle');
+        var text = svg.querySelector('text');
+        if (circle && text && memento[index]) {
+            circle.style.opacity = memento[index].opacity;
+            text.style.visibility = memento[index].visibility;
+        }
+    });
+
+    document.getElementById('selectNota').value = selectNotaValue; // Restaurar el valor de selectNota
+}
+

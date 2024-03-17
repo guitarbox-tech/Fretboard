@@ -61,6 +61,14 @@ if (!primeraVez) {
 
 // Llamamos a la función externa para agregar el botón de configuración
 agregarBotonConfiguracion(nuevaFila, filas);
+
+var estilosCirculos = [];
+for (var i = 0; i < filas.length; i++) {
+    var circulos = filas[i].querySelectorAll('circle');
+    circulos.forEach(function(circulo) {
+        estilosCirculos.push(circulo.classList.value);
+    });
+}
     
 // Se crean los SVG 
 for (var i = 0; i < numCeldasAgregar; i++) {
@@ -82,6 +90,10 @@ for (var i = 0; i < numCeldasAgregar; i++) {
     circulo.setAttribute("stroke-width", "0.8");
     circulo.classList.add('circulo-blanco');
 
+    // Si ya se han agregado al menos seis filas, aplicamos el mismo estilo que los círculos de las filas existentes
+    if (filas.length >= 6) {
+        circulo.classList.value = estilosCirculos[i % estilosCirculos.length];
+    }
 
     var texto = document.createElementNS("http://www.w3.org/2000/svg", "text");
     texto.setAttribute("x", "28");
@@ -105,6 +117,7 @@ for (var i = 0; i < numCeldasAgregar; i++) {
     nuevaFila.appendChild(nuevaCelda);
     indexNota = (indexNota + 1) % notas.length;
 }
+
 
 // Aplicar estilos grosor cuerdas según filas
 for (var i = 0; i < nuevaFila.cells.length; i++) {
@@ -137,7 +150,7 @@ for (var i = 0; i < nuevaFila.cells.length; i++) {
 
 tabla.appendChild(nuevaFila);
 primeraVez = false; 
-    unaFila = false;
+unaFila = false;
 indiceCambiado = false;
 actualizarVisibilidadBotones();
 mostrarNumFilas();
@@ -577,13 +590,19 @@ function guardarEstadoActual() {
     // Guardar la información de la función onclick de cada botón de configuración
     const configButtons = Array.from(tabla.querySelectorAll('.config-button'));
     const buttonClickHandlers = configButtons.map(button => button.onclick);
-
     currentState.buttonClickHandlers = buttonClickHandlers;
+
+    // Guardar el estado actual del estilo de los círculos SE PUEDE BORRAR
+    const circulos = document.querySelectorAll('circle');
+    const circulosEstilos = Array.from(circulos).map(circulo => circulo.classList.value);
+    currentState.circulosEstilos = circulosEstilos;
+    console.log('Estilos de los círculos guardados:', currentState.circulosEstilos);
 
     currentState.numFilasButton = document.getElementById('numFilasButton').innerText;
    
     return currentState;
 }
+
 
 
 // Interfaz base para los comandos

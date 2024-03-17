@@ -2,10 +2,10 @@ var primeraVez = true; // Para que la primera fila creada tome E como primera no
 var unaFila = true;
 var indiceCambiado = false; // Si el usuario cambió la afinación de alguna cuerda y luego eliminó filas, esa cuerda debe conservar la selección del usuario  
 
-    var notas = ['E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'C', 'C#', 'D', 'D#'];
+var notas = ['E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'C', 'C#', 'D', 'D#'];
 var indexNota = 0; // Índice para iterar sobre las notas
 
-    var numCeldasInicial = 16;
+var numCeldasInicial = 16;
 
 function agregarFila(indexNotaEliminar, celdasEliminar) {
 var tabla = document.getElementById("miTabla");
@@ -67,64 +67,7 @@ for (var i = 0; i < numCeldasAgregar; i++) {
     var nuevaCelda = document.createElement("td");
     nuevaCelda.className = "nota-circular";
 
-// Agregar un pseudo-elemento ::before con los estilos especificados
-if ((i === 3 || i === 5 || i === 7 || i === 9 || i === 15 || i === 17 || i === 19 || i === 21) && filas.length === 0) {
-    nuevaCelda.classList.add('borde-especial');
-}
-if ((i === 12 || i === 24) && filas.length === 0) {
-    nuevaCelda.classList.add('borde-especial-1');
-    nuevaCelda.classList.add('borde-especial-2');
-}
-// Calcular la posición vertical del pseudo-elemento en función del número de filas existentes
-if (filaActual === filas.length - 1) {
-
-    var alturaCelda = nuevaCelda.clientHeight;
-    var porcentajeAltura = 97.2; // Reducir el porcentaje de altura en función del número de filas
-    var translateYPorcentaje = porcentajeAltura / 2; // Calcular la posición vertical
-    var translateYExtra = filaActual * 53.8; 
-    var translateYExtraUno = filaActual * 22.2;
-    var translateYExtraDos = filaActual * 83;
-
-    var pseudoElemento = document.createElement("style");
-    pseudoElemento.innerHTML = `
-        .borde-especial::before {
-            content: '';
-            position: absolute;
-            top: ${translateYPorcentaje}%;
-            left: 16%;
-            width: 40px;
-            height: ${porcentajeAltura}%;
-            background-color: #b2beb5;
-            border-radius: 50%;
-            z-index: -1;
-            transform: translateY(${translateYExtra}%); /* Aplicar translateY */
-        }
-        .borde-especial-1::before {
-            content: '';
-            position: absolute;
-            top: ${translateYPorcentaje}%;
-            left: 16%;
-            width: 40px;
-            height: ${porcentajeAltura}%;
-            background-color: #b2beb5;
-            border-radius: 50%;
-            z-index: -1;
-            transform: translateY(${translateYExtraUno}%); /* Aplicar translateY */
-        }
-        .borde-especial-2::after {
-            content: '';
-            position: absolute;
-            top: ${translateYPorcentaje}%;
-            left: 16%;
-            width: 40px;
-            height: ${porcentajeAltura}%;
-            background-color: #b2beb5;
-            border-radius: 50%;
-            z-index: -1;
-            transform: translateY(${translateYExtraDos}%); /* Aplicar translateY */
-        }
-    `;
-    document.head.appendChild(pseudoElemento);}
+    crearBordeEspecial(nuevaCelda, i, filaActual, filas);
 
 
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -203,6 +146,68 @@ ocultarSvg(selectNota.value);
 clicSvg();
 }
 
+function crearBordeEspecial(nuevaCelda, i, filaActual, filas) {
+    if ((i === 3 || i === 5 || i === 7 || i === 9 || i === 15 || i === 17 || i === 19 || i === 21) && filas.length === 0) {
+        nuevaCelda.classList.add('borde-especial');
+    }
+    if ((i === 12 || i === 24) && filas.length === 0) {
+        nuevaCelda.classList.add('borde-especial-1');
+        nuevaCelda.classList.add('borde-especial-2');
+    }
+
+    // Calcular la posición vertical del pseudo-elemento en función del número de filas existentes
+    if (filaActual === filas.length - 1) {
+        var alturaCelda = nuevaCelda.clientHeight;
+        var porcentajeAltura = 97.2; // Reducir el porcentaje de altura en función del número de filas
+        var translateYPorcentaje = porcentajeAltura / 2; // Calcular la posición vertical
+        var translateYExtra = filaActual * 53.8; 
+        var translateYExtraUno = filaActual * 22.2;
+        var translateYExtraDos = filaActual * 83;
+
+        var pseudoElemento = document.createElement("style");
+        pseudoElemento.innerHTML = `
+            .borde-especial::before {
+                content: '';
+                position: absolute;
+                top: ${translateYPorcentaje}%;
+                left: 16%;
+                width: 40px;
+                height: ${porcentajeAltura}%;
+                background-color: #b2beb5;
+                border-radius: 50%;
+                z-index: -1;
+                transform: translateY(${translateYExtra}%); /* Aplicar translateY */
+            }
+            .borde-especial-1::before {
+                content: '';
+                position: absolute;
+                top: ${translateYPorcentaje}%;
+                left: 16%;
+                width: 40px;
+                height: ${porcentajeAltura}%;
+                background-color: #b2beb5;
+                border-radius: 50%;
+                z-index: -1;
+                transform: translateY(${translateYExtraUno}%); /* Aplicar translateY */
+            }
+            .borde-especial-2::after {
+                content: '';
+                position: absolute;
+                top: ${translateYPorcentaje}%;
+                left: 16%;
+                width: 40px;
+                height: ${porcentajeAltura}%;
+                background-color: #b2beb5;
+                border-radius: 50%;
+                z-index: -1;
+                transform: translateY(${translateYExtraDos}%); /* Aplicar translateY */
+            }
+        `;
+        document.head.appendChild(pseudoElemento);
+    }
+}
+
+
 function eliminarFila() {
 var tabla = document.getElementById("miTabla");
 var numRows = tabla.rows.length;
@@ -235,9 +240,9 @@ if (tabla.rows.length === 0) {
 }
 
 function obtenerIndexNotaFila(fila) {
-var primeraCelda = fila.cells[0];
-var svgEnPrimeraCelda = primeraCelda.querySelector('svg');
-var textoNota = svgEnPrimeraCelda.querySelector('text').textContent;
+    var primeraCelda = fila.cells[0];
+    var svgEnPrimeraCelda = primeraCelda.querySelector('svg');
+    var textoNota = svgEnPrimeraCelda.querySelector('text').textContent;
 return notas.indexOf(textoNota);
 }
 
@@ -412,35 +417,42 @@ if (numRows === 1) {
 }
 
 function agregarBotonConfiguracion(nuevaFila, filas) {
-var botonConfiguracion = document.createElement("button");
-botonConfiguracion.innerHTML = '<i class="fas fa-cog"></i>';
-botonConfiguracion.className = "config-button";
-nuevaFila.appendChild(botonConfiguracion);
+    var botonConfiguracion = document.createElement("button");
+    botonConfiguracion.innerHTML = '<i class="fas fa-cog"></i>';
+    botonConfiguracion.className = "config-button"; // Usamos una clase en lugar de un id
+    nuevaFila.appendChild(botonConfiguracion);
 
-var translateYIncrement = 115 + (filas.length + 1);    
-botonConfiguracion.style.transform = 'translateY(' + translateYIncrement + '%)';
+    var translateYIncrement = 115 + (filas.length + 1);    
+    botonConfiguracion.style.transform = 'translateY(' + translateYIncrement + '%)';
 
-botonConfiguracion.onclick = function() {
-    var nuevaNota = prompt("Afinación de la cuerda:");
-
-    if (nuevaNota !== null && notas.includes(nuevaNota.toUpperCase())) {
-        var celdas = nuevaFila.getElementsByTagName('td');
-        var indiceNotaIngresada = notas.indexOf(nuevaNota.toUpperCase());
-
-        for (var i = 0; i < celdas.length; i++) {
-            var circulo = celdas[i].querySelector('circle');
-            var texto = celdas[i].querySelector('text');
-            var notaActual = notas[(indiceNotaIngresada + i) % notas.length];
-            
-            circulo.setAttribute('data-note', notaActual);
-            texto.textContent = notaActual;
-        }
-    } else {
-        alert("Nota musical no válida o no ingresada.");
-    } 
-    ocultarSvg(selectNota.value);       
-};
+    botonConfiguracion.onclick = function() {
+        var nuevaNota = prompt("Afinación de la cuerda:");
+        asignarAfinacion(nuevaFila, nuevaNota);
+    };
 }
+
+    function asignarAfinacion(nuevaFila, nuevaNota) {
+        if (nuevaNota !== null && notas.includes(nuevaNota.toUpperCase())) {
+            
+            var celdas = nuevaFila.getElementsByTagName('td');
+            
+            var indiceNotaIngresada = notas.indexOf(nuevaNota.toUpperCase());
+
+            for (var i = 0; i < celdas.length; i++) {
+                var circulo = celdas[i].querySelector('circle');
+                var texto = celdas[i].querySelector('text');
+                var notaActual = notas[(indiceNotaIngresada + i) % notas.length];
+                
+                circulo.setAttribute('data-note', notaActual);
+                texto.textContent = notaActual;
+            }
+        } else {
+            alert("Nota musical no válida o no ingresada.");
+        } 
+        ocultarSvg(selectNota.value);   
+    }
+
+
 
 function cambiarEstiloCirculos() {
     var circulos = document.querySelectorAll('circle'); // Seleccionar todos los círculos
@@ -548,3 +560,271 @@ function clicSvg() {
         });
     }
 }
+
+
+// Estado inicial de la tabla al cargar la página ESTO BORRALO TB DE DELETEROW
+let initialState = {};
+
+function guardarEstadoActual() {
+    const currentState = {};
+
+    // Guardar el HTML de la tabla
+    const tabla = document.getElementById("miTabla");
+    const tablaConTbody = document.createElement('table');
+    tablaConTbody.innerHTML = '<tbody>' + tabla.innerHTML + '</tbody>';
+    currentState.tablaHTML = tablaConTbody.innerHTML;
+
+    // Guardar la información de la función onclick de cada botón de configuración
+    const configButtons = Array.from(tabla.querySelectorAll('.config-button'));
+    const buttonClickHandlers = configButtons.map(button => button.onclick);
+
+    currentState.buttonClickHandlers = buttonClickHandlers;
+
+    currentState.numFilasButton = document.getElementById('numFilasButton').innerText;
+   
+    return currentState;
+}
+
+
+// Interfaz base para los comandos
+class Command {
+    execute() {} // Método para ejecutar el comando
+    undo() {}    // Método para deshacer el comando
+}
+
+// Comando para agregar fila
+class AddRowCommand extends Command {
+    constructor(table) {
+        super();
+        this.table = table;
+        this.previousStates = []; // Array para almacenar los estados anteriores
+    }
+
+    execute() {
+        // Ejecutar la función para guardar el estado actual
+        const currentState = guardarEstadoActual(this.table);
+
+        // Agregar el estado actual al array de estados anteriores
+        this.previousStates.push(currentState);
+
+        // Agregar una fila a la tabla
+        agregarFila();
+
+        // Agregar este comando al historial de comandos
+        commandHistory.add(this);
+
+        // Imprimir la información utilizada en execute
+        console.log("Información utilizada en execute:", currentState);
+    }
+
+    undo() {
+        // Obtener el último estado anterior del array
+        const previousState = this.previousStates.pop();
+        
+        // Restaurar el estado anterior de la tabla
+        if (previousState) {
+            // Extraer los botones de configuración
+            const configButtons = Array.from(this.table.querySelectorAll('.config-button'));
+            
+            // Limpiar la tabla actual
+            this.table.innerHTML = '';
+            
+            // Guardar los botones de configuración y sus onclicks para restaurarlos más tarde
+            const savedButtons = [];
+            configButtons.forEach(button => {
+                const clonedButton = button.cloneNode(true); // Clonar el botón
+                clonedButton.setAttribute('translate', button.getAttribute('translate')); // Copiar el atributo 'translate'
+                savedButtons.push(clonedButton); // Agregar el botón clonado al array
+            });
+            
+            // Crear un elemento temporal para contener el HTML de la tabla con tbody
+            const tempTable = document.createElement('table');
+            tempTable.innerHTML = previousState.tablaHTML;
+            
+            // Obtener el tbody si existe
+            const tbody = tempTable.querySelector('tbody');
+    
+            // Si hay un tbody, mover sus hijos (los tr) a la tabla original
+            if (tbody) {
+                const tableRows = Array.from(tbody.children);
+                let buttonIndex = 0; // Inicializamos el índice del botón
+                tableRows.forEach(row => {
+                    const clonedRow = row.cloneNode(true); // Clonar la fila para evitar la eliminación del original
+                    
+                    // Obtener el botón correspondiente del array de botones guardados
+                    const button = savedButtons[buttonIndex];
+                    
+                    // Si hay un botón, agregarlo antes del primer td de la fila clonada
+                    if (button) {
+                        const firstCell = clonedRow.querySelector('td'); // Obtener la primera celda de la fila
+                        if (firstCell) {
+                            const clonedButton = button.cloneNode(true); // Clonar el botón
+                            clonedButton.setAttribute('translate', button.getAttribute('translate')); // Copiar el atributo 'translate'
+                    
+                            // Crear un nuevo onclick para el botón clonado
+                            clonedButton.onclick = function() {
+                                const nuevaNota = prompt("Afinación de la cuerda:");
+                                if (nuevaNota !== null) {
+                                    // Obtener la fila correspondiente al botón clicado
+                                    const row = this.closest('tr');
+                                    if (row) {
+                                        asignarAfinacion(row, nuevaNota);
+                                    }
+                                }
+                            };
+                    
+                            clonedRow.insertBefore(clonedButton, firstCell); // Insertar el botón antes de la primera celda
+                        }
+                    }
+                    
+                    
+                    var nuevaFila = clonedRow;
+                    this.table.appendChild(nuevaFila); // Agregar la fila clonada a la tabla original
+       
+
+                    // Incrementar el índice del botón para la siguiente fila
+                    buttonIndex++;
+
+                    clicSvg();
+                });
+            }
+
+            
+            // Restaurar el número de filas
+            document.getElementById('numFilasButton').innerText = previousState.numFilasButton;
+        
+            
+        }
+    }
+        
+}
+
+
+
+
+// Comando para eliminar fila
+class DeleteRowCommand extends Command {
+    constructor(table) {
+        super();
+        this.table = table;
+    }
+
+    execute() {
+        // Guardar el estado actual de la tabla antes de ejecutar el comando
+        guardarEstadoInicial();
+        this.previousState = initialState;
+        // Eliminar una fila de la tabla
+        eliminarFila();
+
+        commandHistory.add(this);
+    }
+
+    undo() {
+        // Restaurar el estado anterior de la tabla
+        if (this.previousState) {
+            // Restaurar el HTML de la tabla
+            this.table.innerHTML = this.previousState.tablaHTML;
+
+            const tabla = document.getElementById("miTabla");
+            this.previousState.numFilasTabla = tabla.rows.length;
+
+            // Restaurar el número de filas
+            document.getElementById('numFilasButton').innerText = this.previousState.numFilasButton;
+
+            // Restaurar el número de columnas seleccionado
+            document.getElementById('numeroColumnas').value = this.previousState.numColumnas;
+
+            // Restaurar la nota seleccionada
+            document.getElementById('selectNota').value = this.previousState.notaSeleccionada;
+
+            // Restaurar el estado del botón Cambiar Estilo
+            document.getElementById('botonEstilo').disabled = this.previousState.estadoBotonEstilo;
+        
+            const botonesConfiguracion = document.getElementsByClassName('config-button');
+            for (let i = 0; i < botonesConfiguracion.length; i++) {
+                botonesConfiguracion[i].innerHTML = this.previousState.botonesConfiguracion[i].innerHTML;
+                botonesConfiguracion[i].className = this.previousState.botonesConfiguracion[i].className;
+                botonesConfiguracion[i].style.transform = this.previousState.botonesConfiguracion[i].translateY;
+            }
+
+            const pseudoElementos = this.previousState.pseudoElementos;
+            pseudoElementos.forEach(pseudoElemento => {
+                const selector = pseudoElemento.selector;
+                const styles = pseudoElemento.beforeStyles;
+                const elemento = document.querySelector(selector);
+                if (elemento) {
+                    Object.keys(styles).forEach(style => {
+                        elemento.style[style] = styles[style];
+                    });
+                }   
+            });
+        }
+
+        // Imprimir la información utilizada en undo
+        console.log("Información utilizada en deleteRowCommand.undo:", this.previousState);
+    }
+}
+
+class CommandHistory {
+    constructor() {
+        this.undoStack = []; // Pila para los comandos deshechos
+        this.redoStack = []; // Pila para los comandos rehacer
+    }
+
+    // Agregar un comando a la pila de comandos deshechos
+    add(command) {
+        this.undoStack.push(command);
+        // Limpiar la pila de comandos rehacer
+        this.redoStack = [];
+        console.log('Comando agregado:', command);
+        console.log('Cantidad de comandos en la pila undo:', this.undoStack.length);
+        console.log('Cantidad de comandos en la pila redo:', this.redoStack.length);
+    }
+
+    // Deshacer el último comando
+    undo() {
+        if (this.undoStack.length > 0) {
+            const command = this.undoStack.pop();
+            command.undo(command);
+            // Mover el comando deshecho a la pila de comandos rehacer
+            this.redoStack.push(command);
+            console.log('Cantidad de comandos en la pila undo:', this.undoStack.length);
+            console.log('Cantidad de comandos en la pila redo:', this.redoStack.length);
+        }
+    }
+
+    // Rehacer el último comando deshecho
+    redo() {
+        if (this.redoStack.length > 0) {
+            const command = this.redoStack.pop();
+            command.execute();
+            // Mover el comando rehacer a la pila de comandos deshechos
+            this.undoStack.push(command);
+            console.log('Cantidad de comandos en la pila undo:', this.undoStack.length);
+            console.log('Cantidad de comandos en la pila redo:', this.redoStack.length);
+        }
+    }
+}
+
+// Crear una instancia de la historia de comandos
+const commandHistory = new CommandHistory();
+
+// Obtener referencias a los botones de undo y redo
+const undoButton = document.getElementById('undoButton');
+const redoButton = document.getElementById('redoButton');
+
+// Asociar eventos de clic a los botones de undo y redo
+undoButton.addEventListener('click', () => {
+    commandHistory.undo(); // Deshacer el último comando
+});
+
+redoButton.addEventListener('click', () => {
+    commandHistory.redo(); // Rehacer el último comando deshecho
+});
+
+// Crear una instancia de la tabla (o obtenerla de tu HTML)
+const miTabla = document.getElementById('miTabla');
+
+// Crear instancias de los comandos
+const addRowCommand = new AddRowCommand(miTabla);
+const deleteRowCommand = new DeleteRowCommand(miTabla);

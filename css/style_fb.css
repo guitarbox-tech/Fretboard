@@ -1,116 +1,116 @@
 body {
-    font-family: 'Roboto', sans-serif;
-    color: #555;
-  }
-  
-  .config-button {
-    color: #3b3737;
-    margin-left: 10%;  
+  font-family: 'Roboto', sans-serif;
+  color: #555;
 }
 
-  table {
-    min-width: 20%;
-    border-collapse: collapse;
-    font-family: 'Roboto', sans-serif;
-  }
+.config-button {
+  color: #3b3737;
+  margin-left: 10%;  
+}
 
-  td {
-    text-align: center;
+table {
+  min-width: 20%;
+  border-collapse: collapse;
+  font-family: 'Roboto', sans-serif;
+}
+
+td {
+  text-align: center;
+  
+}
     
-  }
-      
-  .nota-circular {
-    height: 30px;
-    transform: translateY(50%);
-  }
-      
-  tr:first-child td {
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
+.nota-circular {
+  height: 30px;
+  transform: translateY(50%);
+}
+    
+tr:first-child td {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
 
-  tr:first-child td:first-child {
-    border: none;
-  }
+tr:first-child td:first-child {
+  border: none;
+}
 
-  .button-container {
-    text-align: left;
-    margin-top: 2em;           
-  }
+.button-container {
+  text-align: left;
+  margin-top: 2em;           
+}
 
-  .num-cuerdas-style {
-    border: 1px solid #555;
-    border-radius: 40px;
-    height: 30.9px;
-    display: inline-block;
-    padding: 2px;
-    user-select: none;
-    cursor: default;
-  }
+.num-cuerdas-style {
+  border: 1px solid #555;
+  border-radius: 40px;
+  height: 30.9px;
+  display: inline-block;
+  padding: 2px;
+  user-select: none;
+  cursor: default;
+}
 
-  .button {
-    display: inline-block;
-    padding: 7.17px 18.3px;
-    background-color: #777;
-    color: #fff;
-    border: none;
-    border-radius: 40px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
-  .button-num-cuerdas {
-    display: inline;
-    background-color: white;
-    border: none;
-    color: #555;
-    cursor: pointer;
-    min-width: 55px;
-    font-size: 16px;
-    cursor: default;
-  }
-  
-  select {
-    color: #555;
-    background-color: white;
-    font-size: 14px;
-    margin-left: 40px;
-    height: 22px;
-  }
- 
-  svg {
-    user-select: none;
-    cursor: pointer;
-    visibility: visible;
+.button {
+  display: inline-block;
+  padding: 7.17px 18.3px;
+  background-color: #777;
+  color: #fff;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.button-num-cuerdas {
+  display: inline;
+  background-color: white;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  min-width: 55px;
+  font-size: 16px;
+  cursor: default;
+}
+
+select {
+  color: #555;
+  background-color: white;
+  font-size: 14px;
+  margin-left: 40px;
+  height: 22px;
+}
+
+svg {
+  user-select: none;
+  cursor: pointer;
+  visibility: visible;
 }
 
 circle {
-  opacity: 100%;
+opacity: 100%;
 }
 
 circle text {
-  visibility: hidden;
+visibility: hidden;
 }
 
 .circulo-oculto {
-  opacity: 30%;
+opacity: 30%;
 }
 
 .circulo-oculto text {
-  visibility: hidden;
+visibility: hidden;
 }
 
 
-  .circulo-blanco {
-    fill: white;
-  }
+.circulo-blanco {
+  fill: white;
+}
 
-  .circulo-azul {
-    fill: blue;
-  }
+.circulo-azul {
+  fill: blue;
+}
 
-  .circulo-rojo {
-    fill: red;
-  }
+.circulo-rojo {
+  fill: red;
+}

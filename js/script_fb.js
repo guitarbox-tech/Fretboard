@@ -155,7 +155,7 @@ indiceCambiado = false;
 actualizarVisibilidadBotones();
 mostrarNumFilas();
 estilizarPrimeraFila();
-ocultarSvg(selectNota.value);
+ocultarSvg(selectNota.value, 'agregarFila');
 clicSvg();
 }
 
@@ -493,47 +493,81 @@ selectNota.addEventListener('change', function() {
     ocultarSvg(selectNota.value);
 });
 
-function ocultarSvg(nombreNota) {
+function ocultarSvg(nombreNota, origen) {
     // Verificar si es la primera vez que se ejecuta la función
     if (typeof ocultarSvg.contador === 'undefined') {
         ocultarSvg.contador = 0;
     }
-    // Si es la primera vez o las primeras 6 veces, establecer nombreNota como 'C'
-    if (ocultarSvg.contador < 6) {
-        nombreNota = 'C';
-    } else {
-    }
 
-    // Verificar si la nota ingresada por el usuario es válida
-    if (notas.includes(nombreNota)) {
-        // Definir los índices de los elementos que se ocultarán
-        var indiceNota = notas.indexOf(nombreNota);
-        var indicesOcultar = [
-            (indiceNota + 1) % 12,
-            (indiceNota + 3) % 12,
-            (indiceNota + 6) % 12,
-            (indiceNota + 8) % 12,
-            (indiceNota + 10) % 12
-        ];
+    console.log("Origen:", origen); 
 
-        // Obtener todos los círculos dentro de elementos SVG
-        var circulos = document.querySelectorAll('circle');
+    // Si se llama desde agregarFila y el contador es mayor o igual a 6, aplicar el comportamiento específico
+    if (origen === 'agregarFila' && ocultarSvg.contador >= 6) {
+        console.log("La función ocultarSvg se ha llamado desde agregarFila después de 6 ejecuciones.");
+   
+        // Verificar si la nota ingresada por el usuario es válida
+        if (notas.includes(nombreNota)) {
+            console.log("La nota recibida es:", nombreNota);
+            // Definir los índices de los elementos que se ocultarán
+            var indiceNota = notas.indexOf(nombreNota);
+            var indicesOcultar = [
+                (indiceNota + 1) % 12,
+                (indiceNota + 3) % 12,
+                (indiceNota + 6) % 12,
+                (indiceNota + 8) % 12,
+                (indiceNota + 10) % 12
+            ];
+            
+            var ultimaFila = document.querySelector('#miTabla tr:last-of-type');
 
-        // Iterar sobre todos los círculos y aplicar la propiedad visibility según corresponda
-        circulos.forEach(function(circulo) {
-            // Obtener el valor del texto dentro del círculo SVG
-            var textoCirculo = circulo.parentElement.querySelector('text').textContent;
+            var nuevaFilaCirculos = ultimaFila.querySelectorAll('circle');
 
-            // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
-            if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
-                circulo.style.opacity = '30%'; // Ocultar el círculo
-                circulo.parentElement.querySelector('text').style.visibility = 'hidden'; // Ocultar el texto
-            } else {
-                circulo.style.opacity = '100%'; // Mostrar el círculo
-                circulo.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
-            }
-        });
-    } else {
+            // Iterar sobre los círculos de la nueva fila y aplicar la propiedad visibility según corresponda
+            nuevaFilaCirculos.forEach(function(circulo) {
+                // Obtener el valor del texto dentro del círculo SVG
+                var textoCirculo = circulo.parentElement.querySelector('text').textContent;
+
+                // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
+                if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
+                    circulo.style.opacity = '30%'; // Ocultar el círculo
+                    circulo.parentElement.querySelector('text').style.visibility = 'hidden'; // Ocultar el texto
+                } else {
+                    circulo.style.opacity = '100%'; // Mostrar el círculo
+                    circulo.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
+                }
+            });
+        }
+    } else { // Si se llama desde el select, aplicar el comportamiento original
+        // Verificar si la nota ingresada por el usuario es válida
+        if (notas.includes(nombreNota)) {
+            // Definir los índices de los elementos que se ocultarán
+            var indiceNota = notas.indexOf(nombreNota);
+            var indicesOcultar = [
+                (indiceNota + 1) % 12,
+                (indiceNota + 3) % 12,
+                (indiceNota + 6) % 12,
+                (indiceNota + 8) % 12,
+                (indiceNota + 10) % 12
+            ];
+
+            // Obtener todos los círculos dentro de elementos SVG
+            var circulos = document.querySelectorAll('circle');
+
+            // Iterar sobre todos los círculos y aplicar la propiedad visibility según corresponda
+            circulos.forEach(function(circulo) {
+                // Obtener el valor del texto dentro del círculo SVG
+                var textoCirculo = circulo.parentElement.querySelector('text').textContent;
+
+                // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
+                if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
+                    circulo.style.opacity = '30%'; // Ocultar el círculo
+                    circulo.parentElement.querySelector('text').style.visibility = 'hidden'; // Ocultar el texto
+                } else {
+                    circulo.style.opacity = '100%'; // Mostrar el círculo
+                    circulo.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
+                }
+            });
+        }
     }
 
     // Incrementar el contador después de cada ejecución
@@ -596,8 +630,7 @@ function guardarEstadoActual() {
     const circulos = document.querySelectorAll('circle');
     const circulosEstilos = Array.from(circulos).map(circulo => circulo.classList.value);
     currentState.circulosEstilos = circulosEstilos;
-    console.log('Estilos de los círculos guardados:', currentState.circulosEstilos);
-
+   
     currentState.numFilasButton = document.getElementById('numFilasButton').innerText;
    
     return currentState;
@@ -631,9 +664,6 @@ class AddRowCommand extends Command {
 
         // Agregar este comando al historial de comandos
         commandHistory.add(this);
-
-        // Imprimir la información utilizada en execute
-        console.log("Información utilizada en execute:", currentState);
     }
 
     undo() {
@@ -795,7 +825,6 @@ class CommandHistory {
         this.undoStack.push(command);
         // Limpiar la pila de comandos rehacer
         this.redoStack = [];
-        console.log('Comando agregado:', command);
         console.log('Cantidad de comandos en la pila undo:', this.undoStack.length);
         console.log('Cantidad de comandos en la pila redo:', this.redoStack.length);
     }

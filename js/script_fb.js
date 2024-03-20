@@ -288,7 +288,7 @@ function agregarColumna() {
 
         var indexNota = (notas.indexOf(notaUltimaCeldaFila) + 1) % notas.length;
 
-        ocultarSvg(selectNota.value);
+
 
         // Crear una nueva celda y asignar la nota correspondiente
         var nuevaCelda = document.createElement("td");
@@ -343,6 +343,8 @@ function agregarColumna() {
         nuevaCelda.style.borderRight = bordeDerechoUltimaCelda;       
     }
     clicSvg(true);
+    ocultarSvg(selectNota.value, 'agregarColumna');
+    
 }
 
 // Función para eliminar la última columna de la tabla
@@ -500,41 +502,8 @@ function ocultarSvg(nombreNota, origen) {
         ocultarSvg.contador = 0;
     }
 
-    // Si se llama desde agregarFila y el contador es mayor o igual a 6, aplicar el comportamiento específico
-    if (origen === 'agregarFila' && ocultarSvg.contador >= 6) {
-   
-        // Verificar si la nota ingresada por el usuario es válida
-        if (notas.includes(nombreNota)) {
-            // Definir los índices de los elementos que se ocultarán
-            var indiceNota = notas.indexOf(nombreNota);
-            var indicesOcultar = [
-                (indiceNota + 1) % 12,
-                (indiceNota + 3) % 12,
-                (indiceNota + 6) % 12,
-                (indiceNota + 8) % 12,
-                (indiceNota + 10) % 12
-            ];
-            
-            var ultimaFila = document.querySelector('#miTabla tr:last-of-type');
-
-            var nuevaFilaCirculos = ultimaFila.querySelectorAll('circle');
-
-            // Iterar sobre los círculos de la nueva fila y aplicar la propiedad visibility según corresponda
-            nuevaFilaCirculos.forEach(function(circulo) {
-                // Obtener el valor del texto dentro del círculo SVG
-                var textoCirculo = circulo.parentElement.querySelector('text').textContent;
-
-                // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
-                if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
-                    circulo.style.opacity = '30%'; // Ocultar el círculo
-                    circulo.parentElement.querySelector('text').style.visibility = 'hidden'; // Ocultar el texto
-                } else {
-                    circulo.style.opacity = '100%'; // Mostrar el círculo
-                    circulo.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
-                }
-            });
-        }
-    } else { // Si se llama desde el select, aplicar el comportamiento original
+    // Función para ocultar los círculos y textos según corresponda
+    function ocultarCirculosYTextos(elementos) {
         // Verificar si la nota ingresada por el usuario es válida
         if (notas.includes(nombreNota)) {
             // Definir los índices de los elementos que se ocultarán
@@ -547,29 +516,47 @@ function ocultarSvg(nombreNota, origen) {
                 (indiceNota + 10) % 12
             ];
 
-            // Obtener todos los círculos dentro de elementos SVG
-            var circulos = document.querySelectorAll('circle');
-
-            // Iterar sobre todos los círculos y aplicar la propiedad visibility según corresponda
-            circulos.forEach(function(circulo) {
+            // Iterar sobre los elementos y ocultar los círculos y textos según corresponda
+            elementos.forEach(function(elemento) {
                 // Obtener el valor del texto dentro del círculo SVG
-                var textoCirculo = circulo.parentElement.querySelector('text').textContent;
+                var textoCirculo = elemento.parentElement.querySelector('text').textContent;
 
                 // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
                 if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
-                    circulo.style.opacity = '30%'; // Ocultar el círculo
-                    circulo.parentElement.querySelector('text').style.visibility = 'hidden'; // Ocultar el texto
+                    elemento.style.opacity = '30%'; // Ocultar el círculo
+                    elemento.parentElement.querySelector('text').style.visibility = 'hidden'; // Ocultar el texto
                 } else {
-                    circulo.style.opacity = '100%'; // Mostrar el círculo
-                    circulo.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
+                    elemento.style.opacity = '100%'; // Mostrar el círculo
+                    elemento.parentElement.querySelector('text').style.visibility = 'visible'; // Mostrar el texto
                 }
             });
         }
     }
 
+    // Si se llama desde agregarColumna, ocultar los círculos y textos en la última columna
+    if (origen === 'agregarColumna') {
+        var ultimaColumna = document.querySelectorAll('#miTabla tr td:last-child circle');
+        ocultarCirculosYTextos(ultimaColumna);
+    }
+    // Si se llama desde agregarFila y el contador es mayor o igual a 6, aplicar el comportamiento específico
+    else if (origen === 'agregarFila' && ocultarSvg.contador >= 6) {
+        // Obtener la última fila de la tabla
+        var ultimaFila = document.querySelector('#miTabla tr:last-of-type');
+
+        var nuevaFilaCirculos = ultimaFila.querySelectorAll('circle');
+        ocultarCirculosYTextos(nuevaFilaCirculos);
+    }
+    // Si se llama desde el select, aplicar el comportamiento original
+    else {
+        // Obtener todos los círculos dentro de elementos SVG
+        var circulos = document.querySelectorAll('circle');
+        ocultarCirculosYTextos(circulos);
+    }
+
     // Incrementar el contador después de cada ejecución
     ocultarSvg.contador++;
 }
+
 function clicSvg(agregarDesdeColumna = false) {
     // Función para agregar event listeners a las celdas de la última columna
     function agregarEventListeners(ultimaColumna) {

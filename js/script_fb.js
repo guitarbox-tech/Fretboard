@@ -160,6 +160,7 @@ clicSvg();
 }
 
 function crearBordeEspecial(nuevaCelda, i, filaActual, filas) {
+
     if ((i === 3 || i === 5 || i === 7 || i === 9 || i === 15 || i === 17 || i === 19 || i === 21) && filas.length === 0) {
         nuevaCelda.classList.add('borde-especial');
     }
@@ -273,75 +274,75 @@ primeraCarga = false;
 
 // Función para agregar una nueva columna a la tabla
 function agregarColumna() {
-var tabla = document.getElementById("miTabla");
-var filas = tabla.getElementsByTagName('tr');
+    var tabla = document.getElementById("miTabla");
+    var filas = tabla.getElementsByTagName('tr');
 
-// Iterar sobre cada fila
-for (var i = 0; i < filas.length; i++) {
-    var celdasFila = filas[i].getElementsByTagName('td'); // Obtener todas las celdas de la fila
-    var ultimaCeldaFila = celdasFila[celdasFila.length - 1];
-    var svgUltimaCelda = ultimaCeldaFila.querySelector('svg'); // Buscar el elemento SVG dentro de la última celda
-    var circuloUltimaCelda = svgUltimaCelda.querySelector('circle'); // Buscar el círculo dentro del SVG
-    var textoUltimaCelda = svgUltimaCelda.querySelector('text'); // Buscar el texto dentro del SVG
-    var notaUltimaCeldaFila = circuloUltimaCelda.getAttribute('data-note') || textoUltimaCelda.textContent; // Obtener el valor del atributo data-note del círculo o el texto del SVG
+    // Iterar sobre cada fila
+    for (var i = 0; i < filas.length; i++) {
+        var celdasFila = filas[i].getElementsByTagName('td'); // Obtener todas las celdas de la fila
+        var ultimaCeldaFila = celdasFila[celdasFila.length - 1];
+        var svgUltimaCelda = ultimaCeldaFila.querySelector('svg'); // Buscar el elemento SVG dentro de la última celda
+        var circuloUltimaCelda = svgUltimaCelda.querySelector('circle'); // Buscar el círculo dentro del SVG
+        var textoUltimaCelda = svgUltimaCelda.querySelector('text'); // Buscar el texto dentro del SVG
+        var notaUltimaCeldaFila = circuloUltimaCelda.getAttribute('data-note') || textoUltimaCelda.textContent; // Obtener el valor del atributo data-note del círculo o el texto del SVG
 
-    var indexNota = (notas.indexOf(notaUltimaCeldaFila) + 1) % notas.length;
+        var indexNota = (notas.indexOf(notaUltimaCeldaFila) + 1) % notas.length;
 
-    ocultarSvg(selectNota.value);
+        ocultarSvg(selectNota.value);
 
-    // Crear una nueva celda y asignar la nota correspondiente
-    var nuevaCelda = document.createElement("td");
-    nuevaCelda.className = "nota-circular";
+        // Crear una nueva celda y asignar la nota correspondiente
+        var nuevaCelda = document.createElement("td");
+        nuevaCelda.className = "nota-circular";
 
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "56");
-    svg.setAttribute("height", "30");
-    
-    var translateYIncrement = (filas.length + 1) * 0.6;
-    svg.style.transform = 'translateY(' + translateYIncrement + '%)';
+        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("width", "56");
+        svg.setAttribute("height", "30");
 
-    var nuevoCirculo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    nuevoCirculo.setAttribute("cx", "28");
-    nuevoCirculo.setAttribute("cy", "16");
-    nuevoCirculo.setAttribute("r", "14");
-    nuevoCirculo.setAttribute("stroke", "black");
-    nuevoCirculo.setAttribute("stroke-width", "1");
-    nuevoCirculo.classList.add('circulo-blanco');
-    nuevoCirculo.setAttribute('data-note', notas[indexNota]);
+        var translateYIncrement = (filas.length + 1) * 0.6;
+        svg.style.transform = 'translateY(' + translateYIncrement + '%)';
 
-    var nuevoTexto = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    nuevoTexto.setAttribute("x", "28");
-    nuevoTexto.setAttribute("y", "17");
-    nuevoTexto.setAttribute("text-anchor", "middle");
-    nuevoTexto.setAttribute("dominant-baseline", "middle");
-    nuevoTexto.setAttribute("font-size", "15");
-    nuevoTexto.textContent = notas[indexNota];
+        var nuevoCirculo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        nuevoCirculo.setAttribute("cx", "28");
+        nuevoCirculo.setAttribute("cy", "16");
+        nuevoCirculo.setAttribute("r", "14");
+        nuevoCirculo.setAttribute("stroke", "black");
+        nuevoCirculo.setAttribute("stroke-width", "1");
+        nuevoCirculo.classList.add('circulo-blanco');
+        nuevoCirculo.setAttribute('data-note', notas[indexNota]);
 
-    svg.appendChild(nuevoCirculo);
-    svg.appendChild(nuevoTexto);
-    nuevaCelda.appendChild(svg);
+        var nuevoTexto = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        nuevoTexto.setAttribute("x", "28");
+        nuevoTexto.setAttribute("y", "17");
+        nuevoTexto.setAttribute("text-anchor", "middle");
+        nuevoTexto.setAttribute("dominant-baseline", "middle");
+        nuevoTexto.setAttribute("font-size", "15");
+        nuevoTexto.textContent = notas[indexNota];
 
-    filas[i].appendChild(nuevaCelda);
+        svg.appendChild(nuevoCirculo);
+        svg.appendChild(nuevoTexto);
+        nuevaCelda.appendChild(svg);
 
-    // Verificar si la nueva columna se encuentra en una posición especial y aplicar las clases y estilos necesarios
-    if ((celdasFila.length === 4 || celdasFila.length === 6 || celdasFila.length === 8 || celdasFila.length === 10 || celdasFila.length === 16 || celdasFila.length === 18 || celdasFila.length === 20 || celdasFila.length === 22) && i === 0) {
-        nuevaCelda.classList.add('borde-especial');
+        filas[i].appendChild(nuevaCelda);
+        
+        // Verificar si la nueva columna se encuentra en una posición especial y aplicar las clases y estilos necesarios
+        if ((celdasFila.length === 4 || celdasFila.length === 6 || celdasFila.length === 8 || celdasFila.length === 10 || celdasFila.length === 16 || celdasFila.length === 18 || celdasFila.length === 20 || celdasFila.length === 22) && i === 0) {
+            nuevaCelda.classList.add('borde-especial');
+        }
+        if ((celdasFila.length === 13 || celdasFila.length === 25) && i === 0) {
+            nuevaCelda.classList.add('borde-especial-1');
+            nuevaCelda.classList.add('borde-especial-2');
+        }
+
+        // Obtener el estilo de borde de la última celda de la fila
+        var bordeUltimaCelda = window.getComputedStyle(ultimaCeldaFila).borderBottom;
+        // Aplicar el mismo estilo de borde a la nueva celda
+        nuevaCelda.style.borderBottom = bordeUltimaCelda;
+
+        var bordeDerechoUltimaCelda = window.getComputedStyle(ultimaCeldaFila).borderRight;
+        // Aplicar el mismo estilo de borde derecho a la nueva celda
+        nuevaCelda.style.borderRight = bordeDerechoUltimaCelda;       
     }
-    if ((celdasFila.length === 13 || celdasFila.length === 25) && i === 0) {
-        nuevaCelda.classList.add('borde-especial-1');
-        nuevaCelda.classList.add('borde-especial-2');
-    }
-
-    // Obtener el estilo de borde de la última celda de la fila
-    var bordeUltimaCelda = window.getComputedStyle(ultimaCeldaFila).borderBottom;
-    // Aplicar el mismo estilo de borde a la nueva celda
-    nuevaCelda.style.borderBottom = bordeUltimaCelda;
-
-            var bordeDerechoUltimaCelda = window.getComputedStyle(ultimaCeldaFila).borderRight;
-// Aplicar el mismo estilo de borde derecho a la nueva celda
-nuevaCelda.style.borderRight = bordeDerechoUltimaCelda;
-
-}
+    clicSvg(true);
 }
 
 // Función para eliminar la última columna de la tabla
@@ -499,15 +500,11 @@ function ocultarSvg(nombreNota, origen) {
         ocultarSvg.contador = 0;
     }
 
-    console.log("Origen:", origen); 
-
     // Si se llama desde agregarFila y el contador es mayor o igual a 6, aplicar el comportamiento específico
     if (origen === 'agregarFila' && ocultarSvg.contador >= 6) {
-        console.log("La función ocultarSvg se ha llamado desde agregarFila después de 6 ejecuciones.");
    
         // Verificar si la nota ingresada por el usuario es válida
         if (notas.includes(nombreNota)) {
-            console.log("La nota recibida es:", nombreNota);
             // Definir los índices de los elementos que se ocultarán
             var indiceNota = notas.indexOf(nombreNota);
             var indicesOcultar = [
@@ -573,45 +570,82 @@ function ocultarSvg(nombreNota, origen) {
     // Incrementar el contador después de cada ejecución
     ocultarSvg.contador++;
 }
+function clicSvg(agregarDesdeColumna = false) {
+    // Función para agregar event listeners a las celdas de la última columna
+    function agregarEventListeners(ultimaColumna) {
+        // Obtener el número de filas
+        var numFilas = ultimaColumna.length;
 
-function clicSvg() {
-    // Obtener la última fila de la tabla
-    var ultimaFila = document.querySelector('#miTabla tr:last-child');
+        // Iterar sobre las celdas de la última columna
+        for (var i = 0; i < numFilas; i++) {
+            var celda = ultimaColumna[i];
 
-    // Obtener todas las celdas de la última fila
-    var celdas = ultimaFila.querySelectorAll('td');
+            // Agregar un event listener a cada celda de la última columna
+            celda.addEventListener('click', function() {
+                // Obtener el círculo SVG dentro de la celda clicada
+                var circulo = this.querySelector('svg circle');
+                var texto = this.querySelector('svg text');
 
-    // Obtener el número de celdas en la última fila
-    var numCeldas = celdas.length;
+                // Obtener la opacidad computada del círculo
+                var estilo = window.getComputedStyle(circulo);
+                var opacidadActual = estilo.getPropertyValue('opacity');
 
-    // Iterar sobre las celdas de la última fila
-    for (var i = 0; i < numCeldas; i++) {
-        // Agregar un event listener a cada celda
-        celdas[i].addEventListener('click', function() {
-            // Obtener el círculo SVG dentro de la celda clicada
-            var circulo = this.querySelector('svg circle');
-            var texto = this.querySelector('svg text');
+                // Cambiar la opacidad del círculo
+                if (opacidadActual === '1') {
+                    circulo.style.opacity = '0.3';
+                    texto.style.visibility = 'hidden';
+                } else {
+                    circulo.style.opacity = '1';
+                    texto.style.visibility = 'visible';
+                }
+            });
+        }
+    }
 
-            // Obtener la opacidad computada del círculo
-            var estilo = window.getComputedStyle(circulo);
-            var opacidadActual = estilo.getPropertyValue('opacity');
+    // Si se llama desde agregarColumna, obtener la última columna y agregar event listeners
+    if (agregarDesdeColumna) {
+        var ultimaColumna = document.querySelectorAll('#miTabla tr td:last-child');
+        agregarEventListeners(ultimaColumna);
+    }
+    // Si se llama desde otra parte, agregar event listeners a la última fila como antes
+    else {
+        // Obtener la última fila de la tabla
+        var ultimaFila = document.querySelector('#miTabla tr:last-child');
 
-            // Cambiar la opacidad del círculo
-            if (opacidadActual === '1') {
-                circulo.style.opacity = '0.3';
-                texto.style.visibility = 'hidden';
-            } else {
-                circulo.style.opacity = '1';
-                texto.style.visibility = 'visible';
-            }
-        });
+        // Obtener todas las celdas de la última fila
+        var celdas = ultimaFila.querySelectorAll('td');
+
+        // Obtener el número de celdas en la última fila
+        var numCeldas = celdas.length;
+
+        // Iterar sobre las celdas de la última fila
+        for (var i = 0; i < numCeldas; i++) {
+            // Agregar un event listener a cada celda
+            celdas[i].addEventListener('click', function() {
+                // Obtener el círculo SVG dentro de la celda clicada
+                var circulo = this.querySelector('svg circle');
+                var texto = this.querySelector('svg text');
+
+                // Obtener la opacidad computada del círculo
+                var estilo = window.getComputedStyle(circulo);
+                var opacidadActual = estilo.getPropertyValue('opacity');
+
+                // Cambiar la opacidad del círculo
+                if (opacidadActual === '1') {
+                    circulo.style.opacity = '0.3';
+                    texto.style.visibility = 'hidden';
+                } else {
+                    circulo.style.opacity = '1';
+                    texto.style.visibility = 'visible';
+                }
+            });
+        }
     }
 }
 
 
 // Estado inicial de la tabla al cargar la página ESTO BORRALO TB DE DELETEROW
 let initialState = {};
-
 function guardarEstadoActual() {
     const currentState = {};
 
@@ -632,9 +666,10 @@ function guardarEstadoActual() {
     currentState.circulosEstilos = circulosEstilos;
    
     currentState.numFilasButton = document.getElementById('numFilasButton').innerText;
-   
+
     return currentState;
 }
+
 
 
 
@@ -674,7 +709,7 @@ class AddRowCommand extends Command {
         if (previousState) {
             // Extraer los botones de configuración
             const configButtons = Array.from(this.table.querySelectorAll('.config-button'));
-            
+          
             // Limpiar la tabla actual
             this.table.innerHTML = '';
             
@@ -692,17 +727,20 @@ class AddRowCommand extends Command {
             
             // Obtener el tbody si existe
             const tbody = tempTable.querySelector('tbody');
-    
+                         
             // Si hay un tbody, mover sus hijos (los tr) a la tabla original
             if (tbody) {
                 const tableRows = Array.from(tbody.children);
                 let buttonIndex = 0; // Inicializamos el índice del botón
+                let isFirstRow = true;
+
                 tableRows.forEach(row => {
                     const clonedRow = row.cloneNode(true); // Clonar la fila para evitar la eliminación del original
+                   
                     
                     // Obtener el botón correspondiente del array de botones guardados
                     const button = savedButtons[buttonIndex];
-                    
+
                     // Si hay un botón, agregarlo antes del primer td de la fila clonada
                     if (button) {
                         const firstCell = clonedRow.querySelector('td'); // Obtener la primera celda de la fila
@@ -725,24 +763,21 @@ class AddRowCommand extends Command {
                             clonedRow.insertBefore(clonedButton, firstCell); // Insertar el botón antes de la primera celda
                         }
                     }
-                    
-                    
+                  
                     var nuevaFila = clonedRow;
                     this.table.appendChild(nuevaFila); // Agregar la fila clonada a la tabla original
-       
-
+                           
                     // Incrementar el índice del botón para la siguiente fila
                     buttonIndex++;
 
-                    clicSvg();
-                });
+                    clicSvg();   
+                    modificarEstiloPseudoElementos();  
+                    
+                });  
             }
-
-            
+          
             // Restaurar el número de filas
-            document.getElementById('numFilasButton').innerText = previousState.numFilasButton;
-        
-            
+            document.getElementById('numFilasButton').innerText = previousState.numFilasButton;            
         }
     }
         
@@ -876,3 +911,67 @@ const miTabla = document.getElementById('miTabla');
 // Crear instancias de los comandos
 const addRowCommand = new AddRowCommand(miTabla);
 const deleteRowCommand = new DeleteRowCommand(miTabla);
+
+function modificarEstiloPseudoElementos() {
+    // Obtener el número de filas presentes
+    var numFilas = document.querySelectorAll('#miTabla tr').length;
+
+    // Crea un nuevo elemento style para almacenar los estilos modificados
+    var estiloModificado = document.createElement('style');
+    estiloModificado.type = 'text/css';
+
+    // Define los nuevos estilos para los pseudo elementos basados en el número de filas
+    var estiloTransform = '';
+    if (numFilas >= 1 && numFilas <= 16) {
+        // Para una sola fila
+        if (numFilas === 1) {
+            estiloTransform += `
+                .borde-especial::before {
+                    transform: translateY(-53.8%);
+                }
+                .borde-especial-1::before {
+                    transform: translateY(-22.2%);
+                }
+                .borde-especial-2::after {
+                    transform: translateY(-83%);
+                }
+            `;
+        }
+        // Para dos filas
+        else if (numFilas === 2) {
+            estiloTransform += `
+                .borde-especial::before,
+                .borde-especial-1::before,
+                .borde-especial-2::after {
+                    transform: translateY(0%);
+                }
+            `;
+        }
+        // Para tres o más filas
+        else {
+            var translateY1 = (numFilas - 2) * 53.8;
+            var translateY2 = (numFilas - 2) * 22.2;
+            var translateY3 = (numFilas - 2) * 83;
+
+            estiloTransform += `
+                .borde-especial::before {
+                    transform: translateY(${translateY1}%);
+                }
+                .borde-especial-1::before {
+                    transform: translateY(${translateY2}%);
+                }
+                .borde-especial-2::after {
+                    transform: translateY(${translateY3}%);
+                }
+            `;
+        }
+    }
+
+    // Asigna los nuevos estilos al elemento style
+    estiloModificado.innerHTML = estiloTransform;
+
+    // Agrega los nuevos estilos al documento
+    document.getElementsByTagName('head')[0].appendChild(estiloModificado);
+}
+
+

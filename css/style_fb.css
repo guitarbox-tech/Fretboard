@@ -114,3 +114,40 @@ visibility: hidden;
 .circulo-rojo {
   fill: red;
 }
+
+.borde-especial::before {
+  content: '';
+  position: absolute;
+  top: var(--translateY-porcentaje, 48.6%);
+  left: 16%;
+  width: 40px;
+  height: 97.2%;
+  background-color: #b2beb5;
+  border-radius: 50%;
+  z-index: -1;
+  transform: translateY(var(--translateY-extra, 0));
+}
+.borde-especial-1::before {
+  content: '';
+  position: absolute;
+  top: var(--translateY-porcentaje, 48.6%);
+  left: 16%;
+  width: 40px;
+  height: 97.2%;
+  background-color: #b2beb5;
+  border-radius: 50%;
+  z-index: -1;
+  transform: translateY(var(--translateY-extra-uno, 0));
+}
+.borde-especial-2::after {
+  content: '';
+  position: absolute;
+  top: var(--translateY-porcentaje, 48.6%);
+  left: 16%;
+  width: 40px;
+  height: 97.2%;
+  background-color: #b2beb5;
+  border-radius: 50%;
+  z-index: -1;
+  transform: translateY(var(--translateY-extra-dos, 0));
+}

@@ -19,7 +19,7 @@ var numCeldasAgregar = numCeldasInicial
 if (!primeraVez) {
     var numCeldasFilaAnterior = filas[filas.length - 1].cells.length;
     
-            var numCeldasAgregar = numCeldasFilaAnterior
+    var numCeldasAgregar = numCeldasFilaAnterior
                     
     var primeraCeldaFilaAnterior = filas[filas.length - 1].getElementsByTagName('td')[0];
     
@@ -43,21 +43,22 @@ if (!primeraVez) {
         indexNota = (notas.indexOf(notaFilaAnterior) + 7) % notas.length;
     }
     
-} else {
-    // Si el índice ha cambiado, establece indexNota como indexNotaEliminar
-    indexNota = indexNotaEliminar;
-}
-} else {
-    var indexNota = 0;
-    var numCeldasAgregar;
-
-            if (!unaFila) {
-                numCeldasAgregar = celdasEliminar;
-        indexNota = indexNotaEliminar;
     } else {
+        // Se establece indexNota como indexNotaEliminar
+        indexNota = indexNotaEliminar;
+    }
+    } else {
+        var indexNota = 0;
+        var numCeldasAgregar;
+
+        if (!unaFila) {
+            console.log('una fila')
+            numCeldasAgregar = celdasEliminar;
+            indexNota = indexNotaEliminar;
+        } else {
             numCeldasAgregar = numCeldasInicial;
-            }                
-}
+        }                
+    }
 
 // Llamamos a la función externa para agregar el botón de configuración
 agregarBotonConfiguracion(nuevaFila, filas);
@@ -77,7 +78,6 @@ for (var i = 0; i < numCeldasAgregar; i++) {
 
     crearBordeEspecial(nuevaCelda, i, filaActual, filas);
 
-
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", "56");
     svg.setAttribute("height", "30");
@@ -91,7 +91,7 @@ for (var i = 0; i < numCeldasAgregar; i++) {
     circulo.classList.add('circulo-blanco');
 
     // Si ya se han agregado al menos seis filas, aplicamos el mismo estilo que los círculos de las filas existentes
-    if (filas.length >= 6) {
+    if (filas.length >= 1) {
         circulo.classList.value = estilosCirculos[i % estilosCirculos.length];
     }
 
@@ -223,33 +223,33 @@ function crearBordeEspecial(nuevaCelda, i, filaActual, filas) {
 
 
 function eliminarFila() {
-var tabla = document.getElementById("miTabla");
-var numRows = tabla.rows.length;
-var celdasEliminar = tabla.rows[0].cells.length;
-    
-if (numRows > 2) { // Verifica que haya más de una fila para eliminar
-    var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
-    tabla.deleteRow(-1); // Elimina la última fila
-    tabla.deleteRow(-1); // Elimina la penúltima fila
-    indiceCambiado = true;
-    agregarFila(indexNotaEliminar);
-} else if (numRows === 2) {
-   var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
-    tabla.deleteRow(-1); // Elimina la última fila
-    tabla.deleteRow(-1); // Elimina la penúltima fila
-
-// Agregar una nueva fila si no quedan filas después de eliminar las dos últimas
-if (tabla.rows.length === 0) {
-    primeraVez = true;
-    unaFila = false;
-    // Llamar a agregarFila con el número de celdas de la fila original
-    indiceCambiado = true;
-    agregarFila(indexNotaEliminar, celdasEliminar);
-    actualizarVisibilidadBotones();
-    mostrarNumFilas();
-    estilizarPrimeraFila();
-}
-}
+    var tabla = document.getElementById("miTabla");
+    var numRows = tabla.rows.length;
+    var celdasEliminar = tabla.rows[0].cells.length;
+        
+    if (numRows > 2) { // Verifica que haya más de una fila para eliminar
+        var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
+        tabla.deleteRow(-1); // Elimina la última fila
+        tabla.deleteRow(-1); // Elimina la penúltima fila
+        indiceCambiado = true;
+        agregarFila(indexNotaEliminar);
+    } else if (numRows === 2) {
+        var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
+            tabla.deleteRow(-1); // Elimina la última fila
+            tabla.deleteRow(-1); // Elimina la penúltima fila
+            
+        // Agregar una nueva fila si no quedan filas después de eliminar las dos últimas
+        if (tabla.rows.length === 0) {
+            primeraVez = true;
+            unaFila = false;
+            // Llamar a agregarFila con el número de celdas de la fila original
+            indiceCambiado = true;
+            agregarFila(indexNotaEliminar, celdasEliminar);
+            actualizarVisibilidadBotones();
+            mostrarNumFilas();
+            estilizarPrimeraFila();
+        }
+    }
     ocultarSvg(selectNota.value);
 }
 
@@ -277,6 +277,14 @@ function agregarColumna() {
     var tabla = document.getElementById("miTabla");
     var filas = tabla.getElementsByTagName('tr');
 
+    var estilosCirculos = [];
+    for (var i = 0; i < filas.length; i++) {
+        var circulos = filas[i].querySelectorAll('circle');
+        circulos.forEach(function(circulo) {
+            estilosCirculos.push(circulo.classList.value);
+        });
+    }
+
     // Iterar sobre cada fila
     for (var i = 0; i < filas.length; i++) {
         var celdasFila = filas[i].getElementsByTagName('td'); // Obtener todas las celdas de la fila
@@ -287,8 +295,6 @@ function agregarColumna() {
         var notaUltimaCeldaFila = circuloUltimaCelda.getAttribute('data-note') || textoUltimaCelda.textContent; // Obtener el valor del atributo data-note del círculo o el texto del SVG
 
         var indexNota = (notas.indexOf(notaUltimaCeldaFila) + 1) % notas.length;
-
-
 
         // Crear una nueva celda y asignar la nota correspondiente
         var nuevaCelda = document.createElement("td");
@@ -307,7 +313,9 @@ function agregarColumna() {
         nuevoCirculo.setAttribute("r", "14");
         nuevoCirculo.setAttribute("stroke", "black");
         nuevoCirculo.setAttribute("stroke-width", "1");
-        nuevoCirculo.classList.add('circulo-blanco');
+        
+        nuevoCirculo.classList.value = estilosCirculos[i % estilosCirculos.length];
+
         nuevoCirculo.setAttribute('data-note', notas[indexNota]);
 
         var nuevoTexto = document.createElementNS("http://www.w3.org/2000/svg", "text");

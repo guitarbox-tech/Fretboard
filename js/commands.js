@@ -15,17 +15,18 @@ class AddRowCommand extends Command {
 
     execute() {
         // Ejecutar la función para guardar el estado actual
-        const currentState = guardarEstadoActual(this.table);
-
+        const currentState = guardarEstadoActual();
+    
         // Agregar el estado actual al array de estados anteriores
         this.previousStates.push(currentState);
-
+    
         // Agregar una fila a la tabla
         agregarFila();
-
+    
         // Agregar este comando al historial de comandos
         commandHistory.add(this);
     }
+    
 
     undo() {
         // Obtener el último estado anterior del array
@@ -117,15 +118,20 @@ class DeleteRowCommand extends Command {
     constructor(table) {
         super();
         this.table = table;
+        this.previousStates = [];
     }
 
     execute() {
-        // Guardar el estado actual de la tabla antes de ejecutar el comando
-        guardarEstadoInicial();
-        this.previousState = initialState;
-        // Eliminar una fila de la tabla
-        eliminarFila();
+        // Ejecutar la función para guardar el estado actual
+        const currentState = guardarEstadoActual('delete', this.table);
 
+        // Agregar el estado actual al array de estados anteriores
+        this.previousStates.push(currentState);
+
+        // Agregar una fila a la tabla
+        eliminarFila(currentState.opacities, currentState.visibilities);
+
+        // Agregar este comando al historial de comandos
         commandHistory.add(this);
     }
 

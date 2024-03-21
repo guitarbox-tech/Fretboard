@@ -7,7 +7,7 @@ var indexNota = 0; // Índice para iterar sobre las notas
 
 var numCeldasInicial = 16;
 
-function agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, origen) {
+function agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, origen, opacities, visibilities) {
 var tabla = document.getElementById("miTabla");
 var filas = tabla.getElementsByTagName('tr');
 var nuevaFila = document.createElement("tr");
@@ -15,7 +15,7 @@ var nuevaFila = document.createElement("tr");
 var filaActual = filas.length - 1;
 var numCeldasAgregar = numCeldasInicial
 
-            // Verificar si es la primera vez que se carga la página, si no lo es se ejecutará el siguiente condicional; si es TRUE entonces pasa a ELSE
+// Verificar si es la primera vez que se carga la página, si no lo es se ejecutará el siguiente condicional; si es TRUE entonces pasa a ELSE
 if (!primeraVez) {
     var numCeldasFilaAnterior = filas[filas.length - 1].cells.length;
     
@@ -63,9 +63,6 @@ if (!primeraVez) {
 agregarBotonConfiguracion(nuevaFila, filas);
 
 var estilosCirculos = [];
-
-// Verificar si eliminarFila es el origen de la llamada
-var esDesdeEliminarFila = (typeof origen !== 'undefined' && origen === 'eliminarFila');
 
 // Si es desde eliminarFila, usa estilosCirculosUnaFila
 if (origen === 'eliminarFila') {
@@ -171,7 +168,7 @@ indiceCambiado = false;
 actualizarVisibilidadBotones();
 mostrarNumFilas();
 estilizarPrimeraFila();
-ocultarSvg(selectNota.value, 'agregarFila');
+ocultarSvg(selectNota.value, 'agregarFila', opacities, visibilities);
 clicSvg();
 }
 
@@ -237,8 +234,7 @@ function crearBordeEspecial(nuevaCelda, i, filaActual, filas) {
     }
 }
 
-
-function eliminarFila() {
+function eliminarFila(opacities, visibilities) {
     var tabla = document.getElementById("miTabla");
     var numRows = tabla.rows.length;
     var celdasEliminar = tabla.rows[0].cells.length;
@@ -257,7 +253,8 @@ function eliminarFila() {
         tabla.deleteRow(-1); // Elimina la última fila
         tabla.deleteRow(-1); // Elimina la penúltima fila
         indiceCambiado = true;
-        agregarFila(indexNotaEliminar);
+        
+        agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, 'eliminarFila', opacities, visibilities);
     } else if (numRows === 2) {
         var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
             tabla.deleteRow(-1); // Elimina la última fila
@@ -269,7 +266,7 @@ function eliminarFila() {
             unaFila = false;
             // Llamar a agregarFila con el número de celdas de la fila original
             indiceCambiado = true;
-            agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, 'eliminarFila');
+            agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, 'eliminarFila', opacities, visibilities);
             actualizarVisibilidadBotones();
             mostrarNumFilas();
             estilizarPrimeraFila();
@@ -528,7 +525,7 @@ selectNota.addEventListener('change', function() {
     ocultarSvg(selectNota.value);
 });
 
-function ocultarSvg(nombreNota, origen) {
+function ocultarSvg(nombreNota, origen, opacities, visibilities) {
     // Verificar si es la primera vez que se ejecuta la función
     if (typeof ocultarSvg.contador === 'undefined') {
         ocultarSvg.contador = 0;
@@ -576,8 +573,20 @@ function ocultarSvg(nombreNota, origen) {
         var ultimaFila = document.querySelector('#miTabla tr:last-of-type');
 
         var nuevaFilaCirculos = ultimaFila.querySelectorAll('circle');
-        ocultarCirculosYTextos(nuevaFilaCirculos);
+        
+        // Verificar si hay opacities y visibilites definidos
+        if (opacities && visibilities && opacities.length === visibilities.length) {
+            nuevaFilaCirculos.forEach(function(elemento, index) {
+                elemento.style.opacity = opacities[index];
+                elemento.parentElement.querySelector('text').style.visibility = visibilities[index]; // Aplicar la visibilidad del texto
+            });
+        } else {
+            // Si no hay opacities y visibilites definidos, usar la función original para ocultar círculos y textos
+            ocultarCirculosYTextos(nuevaFilaCirculos);
+        }
     }
+
+
     // Si se llama desde el select, aplicar el comportamiento original
     else {
         // Obtener todos los círculos dentro de elementos SVG
@@ -662,10 +671,7 @@ function clicSvg(agregarDesdeColumna = false) {
     }
 }
 
-
-// Estado inicial de la tabla al cargar la página ESTO BORRALO TB DE DELETEROW
-let initialState = {};
-function guardarEstadoActual() {
+function guardarEstadoActual(tipoComando) {
     const currentState = {};
 
     // Guardar el HTML de la tabla
@@ -674,20 +680,34 @@ function guardarEstadoActual() {
     tablaConTbody.innerHTML = '<tbody>' + tabla.innerHTML + '</tbody>';
     currentState.tablaHTML = tablaConTbody.innerHTML;
 
-    // Guardar la información de la función onclick de cada botón de configuración
+    // BORRAR: Guardar la información de la función onclick de cada botón de configuración
     const configButtons = Array.from(tabla.querySelectorAll('.config-button'));
     const buttonClickHandlers = configButtons.map(button => button.onclick);
     currentState.buttonClickHandlers = buttonClickHandlers;
 
-    // Guardar el estado actual del estilo de los círculos SE PUEDE BORRAR
-    const circulos = document.querySelectorAll('circle');
-    const circulosEstilos = Array.from(circulos).map(circulo => circulo.classList.value);
-    currentState.circulosEstilos = circulosEstilos;
-   
+    if (tipoComando === 'delete') {
+        // Obtener el estilo de cada SVG y su texto asociado en la última fila
+        const ultimaFila = tabla.rows[tabla.rows.length - 2]; // Cambiado a -2 para obtener la penúltima fila
+        const svgs = ultimaFila.querySelectorAll('svg');
+        const opacities = [];
+        const visibilities = [];
+
+        svgs.forEach(svg => {
+            const circle = svg.querySelector('circle');
+            const text = svg.querySelector('text');
+            opacities.push(circle.style.opacity);
+            visibilities.push(text.style.visibility);
+        });
+
+        currentState.opacities = opacities;
+        currentState.visibilities = visibilities;
+    }
+
     currentState.numFilasButton = document.getElementById('numFilasButton').innerText;
 
     return currentState;
 }
+
 
 
 function modificarEstiloPseudoElementos() {

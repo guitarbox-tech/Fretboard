@@ -80,8 +80,6 @@ if (origen === 'eliminarFila') {
     }
 }
 
-console.log(estilosCirculos);
-
 // Se crean los SVG 
 for (var i = 0; i < numCeldasAgregar; i++) {
     var nuevaCelda = document.createElement("td");
@@ -277,7 +275,6 @@ function eliminarFila() {
             estilizarPrimeraFila();
         }
     }
-    ocultarSvg(selectNota.value);
 }
 
 function obtenerIndexNotaFila(fila) {
@@ -337,7 +334,7 @@ function agregarColumna() {
         var nuevoCirculo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         nuevoCirculo.setAttribute("cx", "28");
         nuevoCirculo.setAttribute("cy", "16");
-        nuevoCirculo.setAttribute("r", "14");
+        nuevoCirculo.setAttribute("r", "13.5");
         nuevoCirculo.setAttribute("stroke", "black");
         nuevoCirculo.setAttribute("stroke-width", "1");
         

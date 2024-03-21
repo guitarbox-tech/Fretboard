@@ -7,7 +7,7 @@ var indexNota = 0; // Índice para iterar sobre las notas
 
 var numCeldasInicial = 16;
 
-function agregarFila(indexNotaEliminar, celdasEliminar) {
+function agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, origen) {
 var tabla = document.getElementById("miTabla");
 var filas = tabla.getElementsByTagName('tr');
 var nuevaFila = document.createElement("tr");
@@ -52,7 +52,6 @@ if (!primeraVez) {
         var numCeldasAgregar;
 
         if (!unaFila) {
-            console.log('una fila')
             numCeldasAgregar = celdasEliminar;
             indexNota = indexNotaEliminar;
         } else {
@@ -64,13 +63,25 @@ if (!primeraVez) {
 agregarBotonConfiguracion(nuevaFila, filas);
 
 var estilosCirculos = [];
-for (var i = 0; i < filas.length; i++) {
-    var circulos = filas[i].querySelectorAll('circle');
-    circulos.forEach(function(circulo) {
-        estilosCirculos.push(circulo.classList.value);
-    });
+
+// Verificar si eliminarFila es el origen de la llamada
+var esDesdeEliminarFila = (typeof origen !== 'undefined' && origen === 'eliminarFila');
+
+// Si es desde eliminarFila, usa estilosCirculosUnaFila
+if (origen === 'eliminarFila') {
+    estilosCirculos = estilosCirculosUnaFila;
+} else {
+    // Si no es desde eliminarFila, recorre las filas y obtén los estilos de los círculos
+    for (var i = 0; i < filas.length; i++) {
+        var circulos = filas[i].querySelectorAll('circle');
+        circulos.forEach(function(circulo) {
+            estilosCirculos.push(circulo.classList.value);
+        });
+    }
 }
-    
+
+console.log(estilosCirculos);
+
 // Se crean los SVG 
 for (var i = 0; i < numCeldasAgregar; i++) {
     var nuevaCelda = document.createElement("td");
@@ -88,8 +99,15 @@ for (var i = 0; i < numCeldasAgregar; i++) {
     circulo.setAttribute("r", "13.5");
     circulo.setAttribute("stroke", "black");
     circulo.setAttribute("stroke-width", "0.8");
-    circulo.classList.add('circulo-blanco');
 
+    // Verificar si el origen es 'eliminarFila'
+    if (origen === 'eliminarFila') {
+        // Si es 'eliminarFila', se aplican los estilos de estilosCirculos
+        circulo.classList.value = estilosCirculos[i % estilosCirculos.length];
+    } else {
+        // Si no es 'eliminarFila', se añade la clase 'circulo-blanco' por defecto
+        circulo.classList.add('circulo-blanco');
+    }
     // Si ya se han agregado al menos seis filas, aplicamos el mismo estilo que los círculos de las filas existentes
     if (filas.length >= 1) {
         circulo.classList.value = estilosCirculos[i % estilosCirculos.length];
@@ -226,7 +244,16 @@ function eliminarFila() {
     var tabla = document.getElementById("miTabla");
     var numRows = tabla.rows.length;
     var celdasEliminar = tabla.rows[0].cells.length;
-        
+    var filas = tabla.getElementsByTagName('tr');
+
+    var estilosCirculosUnaFila = [];
+    for (var i = 0; i < filas.length; i++) {
+        var circulos = filas[i].querySelectorAll('circle');
+        circulos.forEach(function(circulo) {
+            estilosCirculosUnaFila.push(circulo.classList.value);
+        });
+    }
+    
     if (numRows > 2) { // Verifica que haya más de una fila para eliminar
         var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
         tabla.deleteRow(-1); // Elimina la última fila
@@ -244,7 +271,7 @@ function eliminarFila() {
             unaFila = false;
             // Llamar a agregarFila con el número de celdas de la fila original
             indiceCambiado = true;
-            agregarFila(indexNotaEliminar, celdasEliminar);
+            agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, 'eliminarFila');
             actualizarVisibilidadBotones();
             mostrarNumFilas();
             estilizarPrimeraFila();

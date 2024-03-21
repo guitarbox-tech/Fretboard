@@ -379,7 +379,7 @@ function agregarColumna() {
     }
     clicSvg(true);
     ocultarSvg(selectNota.value, 'agregarColumna');
-    
+    estilizarPrimeraFila();    
 }
 
 // Función para eliminar la última columna de la tabla

@@ -200,7 +200,7 @@ function crearBordeEspecial(nuevaCelda, i, filaActual, filas) {
                 left: 16%;
                 width: 40px;
                 height: ${porcentajeAltura}%;
-                background-color: #b2beb5;
+                background-color: #060C0C;
                 border-radius: 50%;
                 z-index: -1;
                 transform: translateY(${translateYExtra}%); /* Aplicar translateY */
@@ -212,7 +212,7 @@ function crearBordeEspecial(nuevaCelda, i, filaActual, filas) {
                 left: 16%;
                 width: 40px;
                 height: ${porcentajeAltura}%;
-                background-color: #b2beb5;
+                background-color: #060C0C;
                 border-radius: 50%;
                 z-index: -1;
                 transform: translateY(${translateYExtraUno}%); /* Aplicar translateY */
@@ -224,7 +224,7 @@ function crearBordeEspecial(nuevaCelda, i, filaActual, filas) {
                 left: 16%;
                 width: 40px;
                 height: ${porcentajeAltura}%;
-                background-color: #b2beb5;
+                background-color: #060C0C;
                 border-radius: 50%;
                 z-index: -1;
                 transform: translateY(${translateYExtraDos}%); /* Aplicar translateY */
@@ -498,24 +498,30 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
     }
 
 
-
 function cambiarEstiloCirculos() {
     var circulos = document.querySelectorAll('circle'); // Seleccionar todos los círculos
 
     // Iterar sobre cada círculo y cambiar su estilo
     circulos.forEach(function(circulo) {
+        var texto = circulo.parentElement.querySelector('text'); // Obtener el texto asociado al círculo
+        
         if (circulo.classList.contains('circulo-blanco')) {
             circulo.classList.remove('circulo-blanco');
             circulo.classList.add('circulo-azul');
+            texto.setAttribute('fill', 'white'); // Establecer el color del texto como negro
         } else if (circulo.classList.contains('circulo-azul')) {
             circulo.classList.remove('circulo-azul');
             circulo.classList.add('circulo-rojo');
+            texto.setAttribute('fill', 'white'); // Establecer el color del texto como blanco
         } else if (circulo.classList.contains('circulo-rojo')) {
             circulo.classList.remove('circulo-rojo');
             circulo.classList.add('circulo-blanco');
+            texto.setAttribute('fill', 'black'); // Establecer el color del texto como blanco
         }
     });
 }
+
+
 
 // Obtener referencia al elemento select
 var selectNota = document.getElementById('selectNota');

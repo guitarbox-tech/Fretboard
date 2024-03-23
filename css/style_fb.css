@@ -115,6 +115,11 @@ visibility: hidden;
   fill: red;
 }
 
+.text-blanco {
+  fill: white; /* Color del texto */
+}
+
+
 .borde-especial::before {
   content: '';
   position: absolute;

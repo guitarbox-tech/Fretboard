@@ -7,7 +7,7 @@ var indexNota = 0; // Índice para iterar sobre las notas
 
 var numCeldasInicial = 16;
 
-function agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, origen, opacities, visibilities) {
+function agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, origen, opacities, visibilities, textosCirculosUnaFila) {
 var tabla = document.getElementById("miTabla");
 var filas = tabla.getElementsByTagName('tr');
 var nuevaFila = document.createElement("tr");
@@ -62,20 +62,30 @@ if (!primeraVez) {
 // Llamamos a la función externa para agregar el botón de configuración
 agregarBotonConfiguracion(nuevaFila, filas);
 
-var estilosCirculos = [];
+    var estilosCirculos = [];
+    var textosCirculos = [];
 
-// Si es desde eliminarFila, usa estilosCirculosUnaFila
-if (origen === 'eliminarFila') {
-    estilosCirculos = estilosCirculosUnaFila;
-} else {
-    // Si no es desde eliminarFila, recorre las filas y obtén los estilos de los círculos
-    for (var i = 0; i < filas.length; i++) {
-        var circulos = filas[i].querySelectorAll('circle');
-        circulos.forEach(function(circulo) {
-            estilosCirculos.push(circulo.classList.value);
-        });
+    // Si es desde eliminarFila, usa estilosCirculosUnaFila
+    if (origen === 'eliminarFila') {
+        estilosCirculos = estilosCirculosUnaFila;
+        textosCirculos = textosCirculosUnaFila;
+    } else {
+        // Si no es desde eliminarFila, recorre las filas y obtén los estilos de los círculos
+        for (var i = 0; i < filas.length; i++) {
+            var circulos = filas[i].querySelectorAll('circle');
+            circulos.forEach(function(circulo) {
+                estilosCirculos.push(circulo.classList.value);
+
+                // Obtener el color de texto asociado al círculo
+                var texto = circulo.parentElement.querySelector('text');
+                var colorTexto = texto.getAttribute('fill');
+
+                textosCirculos.push(colorTexto);
+
+            });
+        }
     }
-}
+
 
 // Se crean los SVG 
 for (var i = 0; i < numCeldasAgregar; i++) {
@@ -114,6 +124,12 @@ for (var i = 0; i < numCeldasAgregar; i++) {
     texto.setAttribute("text-anchor", "middle");
     texto.setAttribute("dominant-baseline", "middle");
     texto.setAttribute("font-size", "15");
+
+    // Obtener el color de relleno del texto del array textosCirculos
+    var colorTexto = textosCirculos[i % textosCirculos.length]; // Asegúrate de que el índice sea correcto
+
+    // Establecer el color de relleno del texto
+    texto.setAttribute("fill", colorTexto);
 
     var notaActual = notas[indexNota];
     circulo.setAttribute('data-note', notaActual); 
@@ -170,6 +186,7 @@ mostrarNumFilas();
 estilizarPrimeraFila();
 ocultarSvg(selectNota.value, 'agregarFila', opacities, visibilities);
 clicSvg();
+
 }
 
 function crearBordeEspecial(nuevaCelda, i, filaActual, filas) {
@@ -241,10 +258,18 @@ function eliminarFila(opacities, visibilities) {
     var filas = tabla.getElementsByTagName('tr');
 
     var estilosCirculosUnaFila = [];
+    var textosCirculosUnaFila = [];
+
     for (var i = 0; i < filas.length; i++) {
         var circulos = filas[i].querySelectorAll('circle');
         circulos.forEach(function(circulo) {
             estilosCirculosUnaFila.push(circulo.classList.value);
+
+            // Obtener el color de texto asociado al círculo
+            var texto = circulo.parentElement.querySelector('text');
+            var colorTexto = texto.getAttribute('fill');
+
+            textosCirculosUnaFila.push(colorTexto);
         });
     }
     
@@ -254,7 +279,7 @@ function eliminarFila(opacities, visibilities) {
         tabla.deleteRow(-1); // Elimina la penúltima fila
         indiceCambiado = true;
         
-        agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, 'eliminarFila', opacities, visibilities);
+        agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, 'eliminarFila', opacities, visibilities, textosCirculosUnaFila);
     } else if (numRows === 2) {
         var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
             tabla.deleteRow(-1); // Elimina la última fila
@@ -266,7 +291,7 @@ function eliminarFila(opacities, visibilities) {
             unaFila = false;
             // Llamar a agregarFila con el número de celdas de la fila original
             indiceCambiado = true;
-            agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, 'eliminarFila', opacities, visibilities);
+            agregarFila(indexNotaEliminar, celdasEliminar, estilosCirculosUnaFila, 'eliminarFila', opacities, visibilities, textosCirculosUnaFila);
             actualizarVisibilidadBotones();
             mostrarNumFilas();
             estilizarPrimeraFila();
@@ -299,10 +324,18 @@ function agregarColumna() {
     var filas = tabla.getElementsByTagName('tr');
 
     var estilosCirculos = [];
+    var textosCirculos = [];
+
     for (var i = 0; i < filas.length; i++) {
         var circulos = filas[i].querySelectorAll('circle');
         circulos.forEach(function(circulo) {
             estilosCirculos.push(circulo.classList.value);
+
+            // Obtener el color de texto asociado al círculo
+            var texto = circulo.parentElement.querySelector('text');
+            var colorTexto = texto.getAttribute('fill');
+
+            textosCirculos.push(colorTexto);
         });
     }
 
@@ -345,6 +378,13 @@ function agregarColumna() {
         nuevoTexto.setAttribute("text-anchor", "middle");
         nuevoTexto.setAttribute("dominant-baseline", "middle");
         nuevoTexto.setAttribute("font-size", "15");
+
+         // Obtener el color de relleno del texto del array textosCirculos
+        var colorTexto = textosCirculos[i % textosCirculos.length]; // Asegúrate de que el índice sea correcto
+
+        // Establecer el color de relleno del texto
+        nuevoTexto.setAttribute("fill", colorTexto);
+
         nuevoTexto.textContent = notas[indexNota];
 
         svg.appendChild(nuevoCirculo);
@@ -437,6 +477,7 @@ document.getElementById('numFilasButton').innerText = numRows;
 }
 
 function estilizarPrimeraFila() {
+    console.log('aqui')
 var tabla = document.getElementById("miTabla");
 var primeraFila = tabla.rows[0]; // Obtener la primera fila
 var numRows = tabla.rows.length;
@@ -777,5 +818,3 @@ function modificarEstiloPseudoElementos() {
     // Agrega los nuevos estilos al documento
     document.getElementsByTagName('head')[0].appendChild(estiloModificado);
 }
-
-

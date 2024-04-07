@@ -477,29 +477,28 @@ document.getElementById('numFilasButton').innerText = numRows;
 }
 
 function estilizarPrimeraFila() {
-    console.log('aqui')
-var tabla = document.getElementById("miTabla");
-var primeraFila = tabla.rows[0]; // Obtener la primera fila
-var numRows = tabla.rows.length;
+    var tabla = document.getElementById("miTabla");
+    var primeraFila = tabla.rows[0]; // Obtener la primera fila
+    var numRows = tabla.rows.length;
 
-// Aplicar estilos diferentes dependiendo del número de filas
-if (numRows === 1) {
-    // Estilos para una sola fila
-    for (var j = 0; j < primeraFila.cells.length; j++) {
-        var celda = primeraFila.cells[j];
-        var gradientSize = (j === 0) ? "5px" : "1px"; // Determinar el tamaño del gradiente
-        
-        celda.style.backgroundImage = "linear-gradient(to left, #555 " + gradientSize + ", transparent " + gradientSize + ", transparent 100%)";
-        celda.style.backgroundSize = "100% 100%";
-        celda.style.backgroundRepeat = "no-repeat";
+    // Aplicar estilos diferentes dependiendo del número de filas
+    if (numRows === 1) {
+        // Estilos para una sola fila
+        for (var j = 0; j < primeraFila.cells.length; j++) {
+            var celda = primeraFila.cells[j];
+            var gradientSize = (j === 0) ? "5px" : "1px"; // Determinar el tamaño del gradiente
+            
+            celda.style.backgroundImage = "linear-gradient(to left, #555 " + gradientSize + ", transparent " + gradientSize + ", transparent 100%)";
+            celda.style.backgroundSize = "100% 100%";
+            celda.style.backgroundRepeat = "no-repeat";
+        }
+    } else {
+        // Restaurar estilos por defecto si hay más de una fila
+        for (var i = 0; i < primeraFila.cells.length; i++) {
+            var celdaRestaurar = primeraFila.cells[i];
+            celdaRestaurar.style.backgroundImage = ""; // Restaurar el color a su valor predeterminado
+        }
     }
-} else {
-    // Restaurar estilos por defecto si hay más de una fila
-    for (var i = 0; i < primeraFila.cells.length; i++) {
-        var celdaRestaurar = primeraFila.cells[i];
-        celdaRestaurar.style.backgroundImage = ""; // Restaurar el color a su valor predeterminado
-    }
-}
 }
 
 function agregarBotonConfiguracion(nuevaFila, filas) {
@@ -512,31 +511,100 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
     botonConfiguracion.style.transform = 'translateY(' + translateYIncrement + '%)';
 
     botonConfiguracion.onclick = function() {
+        // Obtener la primera nota de la fila y su índice
+        var primeraNota = nuevaFila.querySelector('td circle').getAttribute('data-note').toUpperCase();
+        var indicePrimeraNota = notas.indexOf(primeraNota);
+    
+        // Obtener la nueva nota
         var nuevaNota = prompt("Afinación de la cuerda:");
-        asignarAfinacion(nuevaFila, nuevaNota);
+    
+        // Obtener estilos de las svgs y sus textos asociados
+        const svgs = nuevaFila.querySelectorAll('svg');
+        const opacidades = [];
+        const visibilidades = []; 
+    
+        svgs.forEach((svg, index) => {
+            const circle = svg.querySelector('circle');
+            const text = svg.querySelector('text');
+        
+            // Guardar los estilos de la nota actual
+            opacidades.push(circle.style.opacity);
+            visibilidades.push(text.style.visibility);
+        });
+    
+        // Llamar a la función asignarAfinacion con la nueva nota y los estilos obtenidos
+        asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota);
     };
+    
+    
 }
 
-    function asignarAfinacion(nuevaFila, nuevaNota) {
-        if (nuevaNota !== null && notas.includes(nuevaNota.toUpperCase())) {
-            
-            var celdas = nuevaFila.getElementsByTagName('td');
-            
-            var indiceNotaIngresada = notas.indexOf(nuevaNota.toUpperCase());
+function asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota) {
+    if (nuevaNota !== null && notas.includes(nuevaNota.toUpperCase())) {
+        var celdas = nuevaFila.getElementsByTagName('td');
+        var indiceNotaIngresada = notas.indexOf(nuevaNota.toUpperCase());
 
-            for (var i = 0; i < celdas.length; i++) {
-                var circulo = celdas[i].querySelector('circle');
-                var texto = celdas[i].querySelector('text');
-                var notaActual = notas[(indiceNotaIngresada + i) % notas.length];
+        // Calcular la posición de la celda que contiene la nota con índicePrimeraNota
+        var indiceCeldaActual = (celdas.length + (notas.length + indiceNotaIngresada - indicePrimeraNota) % notas.length) % celdas.length;
+        console.log("indice de celda escogida:", indiceCeldaActual);
+
+        // Aplicar notaActual en un bucle separado
+        for (var i = 0; i < celdas.length; i++) {
+            var circulo = celdas[i].querySelector('circle');
+            var texto = celdas[i].querySelector('text');
+            var notaActual = notas[(indiceNotaIngresada + i) % notas.length];
+
+            // Actualizar datos de la celda
+            circulo.setAttribute('data-note', notaActual);
+            texto.textContent = notaActual;
+        }
+        
+        // Aplicar estilos en otro bucle separado
+        for (var i = 0; i < celdas.length; i++) {
+            var circulo = celdas[i].querySelector('circle');
+            var texto = celdas[i].querySelector('text');
+            var indiceCelda = indiceCeldaActual + i;
+            var indiceEstilo = indiceCelda < opacidades.length ? indiceCelda : opacidades.length - 1;
+                   
+            // Aplicar estilos basados en el índice de la celda
+            circulo.style.opacity = opacidades[indiceEstilo];
+            texto.style.visibility = visibilidades[indiceEstilo];
+        
+            // Verificar si se han agotado los estilos disponibles
+            if (indiceCelda >= opacidades.length) {
+                var indiceNota = notas.indexOf(selectNota.value);
                 
-                circulo.setAttribute('data-note', notaActual);
-                texto.textContent = notaActual;
+                var indicesOcultar = [
+                    (indiceNota + 1) % 12,
+                    (indiceNota + 3) % 12,
+                    (indiceNota + 6) % 12,
+                    (indiceNota + 8) % 12,
+                    (indiceNota + 10) % 12
+                ];
+        
+                // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
+                var textoCirculo = texto.textContent;
+                if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
+                    circulo.style.opacity = '30%'; // Ocultar el círculo
+                    texto.style.visibility = 'hidden'; // Ocultar el texto
+                } else {
+                    circulo.style.opacity = '100%'; // Mostrar el círculo
+                    texto.style.visibility = 'visible'; // Mostrar el texto
+                }
             }
-        } else {
-            alert("Nota musical no válida o no ingresada.");
-        } 
-        ocultarSvg(selectNota.value);   
-    }
+        }
+        
+    } else {
+        alert("Nota musical no válida o no ingresada.");
+    } 
+}
+
+
+
+
+
+
+
 
 
 function cambiarEstiloCirculos() {

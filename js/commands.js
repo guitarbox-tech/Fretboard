@@ -181,6 +181,29 @@ class DeleteRowCommand extends Command {
     }
 }
 
+class ChangeNoteCommand extends Command {
+    constructor(table, rowIndex, newNote) {
+        super();
+        this.table = table;
+        this.rowIndex = rowIndex;
+        this.newNote = newNote;
+        this.previousNote = null; // Variable para almacenar la nota anterior
+    }
+
+    execute() {
+        // Guardar el estado anterior
+        this.previousNote = this.table[this.rowIndex].note;
+        // Cambiar la nota en la fila especificada
+        asignarAfinacion(row, nuevaNota);
+    }
+
+    undo() {
+        // Revertir el cambio de nota
+        this.table[this.rowIndex].note = this.previousNote;
+    }
+}
+
+
 class CommandHistory {
     constructor() {
         this.undoStack = []; // Pila para los comandos deshechos
@@ -243,3 +266,5 @@ const miTabla = document.getElementById('miTabla');
 // Crear instancias de los comandos
 const addRowCommand = new AddRowCommand(miTabla);
 const deleteRowCommand = new DeleteRowCommand(miTabla);
+const changeNoteCommand = new ChangeNoteCommand(miTabla, 2, "Nueva nota");
+

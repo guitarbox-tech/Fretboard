@@ -545,7 +545,7 @@ function asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indic
         var indiceNotaIngresada = notas.indexOf(nuevaNota.toUpperCase());
 
         // Calcular la posición de la celda que contiene la nota con índicePrimeraNota
-        var indiceCeldaActual = (celdas.length + (notas.length + indiceNotaIngresada - indicePrimeraNota) % notas.length) % celdas.length;
+        var indiceCeldaActual = (notas.length + indiceNotaIngresada - indicePrimeraNota) % notas.length;
         console.log("indice de celda escogida:", indiceCeldaActual);
 
         // Aplicar notaActual en un bucle separado

@@ -559,40 +559,84 @@ function asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indic
             texto.textContent = notaActual;
         }
         
-        // Aplicar estilos en otro bucle separado
-        for (var i = 0; i < celdas.length; i++) {
-            var circulo = celdas[i].querySelector('circle');
-            var texto = celdas[i].querySelector('text');
-            var indiceCelda = indiceCeldaActual + i;
-            var indiceEstilo = indiceCelda < opacidades.length ? indiceCelda : opacidades.length - 1;
-                   
-            // Aplicar estilos basados en el índice de la celda
-            circulo.style.opacity = opacidades[indiceEstilo];
-            texto.style.visibility = visibilidades[indiceEstilo];
+        // Verificar si el índice seleccionado está en el rango de 7 a 11
+        if (indiceCeldaActual >= 7 && indiceCeldaActual <= 11) {
+            // Calcular el número de celdas que recibirán el estilo predeterminado
+            var numCeldasPredeterminadas = 12 - (indiceCeldaActual); // Ajuste para incluir la celda actual
         
-            // Verificar si se han agotado los estilos disponibles
-            if (indiceCelda >= opacidades.length) {
+            // Aplicar el estilo predeterminado a las celdas correspondientes
+            for (var i = 0; i < numCeldasPredeterminadas; i++) {
+                var circulo = celdas[i].querySelector('circle');
+                var texto = celdas[i].querySelector('text');
+
                 var indiceNota = notas.indexOf(selectNota.value);
-                
-                var indicesOcultar = [
-                    (indiceNota + 1) % 12,
-                    (indiceNota + 3) % 12,
-                    (indiceNota + 6) % 12,
-                    (indiceNota + 8) % 12,
-                    (indiceNota + 10) % 12
-                ];
-        
-                // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
-                var textoCirculo = texto.textContent;
-                if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
-                    circulo.style.opacity = '30%'; // Ocultar el círculo
-                    texto.style.visibility = 'hidden'; // Ocultar el texto
-                } else {
-                    circulo.style.opacity = '100%'; // Mostrar el círculo
-                    texto.style.visibility = 'visible'; // Mostrar el texto
+                    
+                    var indicesOcultar = [
+                        (indiceNota + 1) % 12,
+                        (indiceNota + 3) % 12,
+                        (indiceNota + 6) % 12,
+                        (indiceNota + 8) % 12,
+                        (indiceNota + 10) % 12
+                    ];
+            
+                    // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
+                    var textoCirculo = texto.textContent;
+                    if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
+                        circulo.style.opacity = '30%'; // Ocultar el círculo
+                        texto.style.visibility = 'hidden'; // Ocultar el texto
+                    } else {
+                        circulo.style.opacity = '100%'; // Mostrar el círculo
+                        texto.style.visibility = 'visible'; // Mostrar el texto
+                    }
+            }
+  
+
+            // Aplicar los estilos del array a las celdas restantes
+            for (var i = numCeldasPredeterminadas; i < celdas.length; i++) {
+                var circulo = celdas[i].querySelector('circle');
+                var texto = celdas[i].querySelector('text');
+                var indiceEstilo = (i - numCeldasPredeterminadas) < opacidades.length ? (i - numCeldasPredeterminadas) : opacidades.length - 1;
+                circulo.style.opacity = opacidades[indiceEstilo]; // Estilos del array
+                texto.style.visibility = visibilidades[indiceEstilo]; // Estilos del array
+            }
+        } else {
+            // Aplicar estilos en otro bucle separado
+            for (var i = 0; i < celdas.length; i++) {
+                var circulo = celdas[i].querySelector('circle');
+                var texto = celdas[i].querySelector('text');
+                var indiceCelda = indiceCeldaActual + i;
+                var indiceEstilo = indiceCelda < opacidades.length ? indiceCelda : opacidades.length - 1;
+                       
+                // Aplicar estilos basados en el índice de la celda
+                circulo.style.opacity = opacidades[indiceEstilo];
+                texto.style.visibility = visibilidades[indiceEstilo];
+            
+                // Verificar si se han agotado los estilos disponibles
+                if (indiceCelda >= opacidades.length) {
+                    var indiceNota = notas.indexOf(selectNota.value);
+                    
+                    var indicesOcultar = [
+                        (indiceNota + 1) % 12,
+                        (indiceNota + 3) % 12,
+                        (indiceNota + 6) % 12,
+                        (indiceNota + 8) % 12,
+                        (indiceNota + 10) % 12
+                    ];
+            
+                    // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
+                    var textoCirculo = texto.textContent;
+                    if (indicesOcultar.includes(notas.indexOf(textoCirculo))) {
+                        circulo.style.opacity = '30%'; // Ocultar el círculo
+                        texto.style.visibility = 'hidden'; // Ocultar el texto
+                    } else {
+                        circulo.style.opacity = '100%'; // Mostrar el círculo
+                        texto.style.visibility = 'visible'; // Mostrar el texto
+                    }
                 }
             }
         }
+        
+
         
     } else {
         alert("Nota musical no válida o no ingresada.");

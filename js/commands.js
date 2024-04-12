@@ -136,7 +136,9 @@ class DeleteRowCommand extends Command {
         // Restaurar el estado anterior de la tabla
         if (previousState) {
             // Extraer los botones de configuración
-            const configButtons = Array.from(this.table.querySelectorAll('.config-button'));
+            const configButtons = previousState.configButtons;
+            console.log("Botones de configuración:", configButtons);
+
           
             // Limpiar la tabla actual
             this.table.innerHTML = '';

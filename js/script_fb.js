@@ -841,8 +841,8 @@ function guardarEstadoActual(tipoComando) {
 
     // BORRAR: Guardar la información de la función onclick de cada botón de configuración
     const configButtons = Array.from(tabla.querySelectorAll('.config-button'));
-    const buttonClickHandlers = configButtons.map(button => button.onclick);
-    currentState.buttonClickHandlers = buttonClickHandlers;
+    console.log("Botones de configuración:", configButtons);
+    currentState.configButtons = configButtons;
 
     if (tipoComando === 'delete') {
         // Obtener el estilo de cada SVG y su texto asociado en la última fila

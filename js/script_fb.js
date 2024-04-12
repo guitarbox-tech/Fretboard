@@ -839,9 +839,8 @@ function guardarEstadoActual(tipoComando) {
     tablaConTbody.innerHTML = '<tbody>' + tabla.innerHTML + '</tbody>';
     currentState.tablaHTML = tablaConTbody.innerHTML;
 
-    // BORRAR: Guardar la información de la función onclick de cada botón de configuración
+    // Guardar cada botón de configuración
     const configButtons = Array.from(tabla.querySelectorAll('.config-button'));
-    console.log("Botones de configuración:", configButtons);
     currentState.configButtons = configButtons;
 
     if (tipoComando === 'delete') {
@@ -863,6 +862,9 @@ function guardarEstadoActual(tipoComando) {
     }
 
     currentState.numFilasButton = document.getElementById('numFilasButton').innerText;
+    currentState.buttonAgregar = document.querySelector('.button.agregar').style.visibility;
+    currentState.buttonEliminar = document.querySelector('.button.eliminar').style.visibility;
+
 
     return currentState;
 }

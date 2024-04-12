@@ -101,7 +101,9 @@ class AddRowCommand extends Command {
             }
           
             // Restaurar el número de filas
-            document.getElementById('numFilasButton').innerText = previousState.numFilasButton;            
+            document.getElementById('numFilasButton').innerText = previousState.numFilasButton;
+            document.querySelector('.button.agregar').style.visibility = previousState.buttonAgregar;
+            document.querySelector('.button.eliminar').style.visibility = previousState.buttonEliminar;            
         }
     }
         
@@ -137,8 +139,6 @@ class DeleteRowCommand extends Command {
         if (previousState) {
             // Extraer los botones de configuración
             const configButtons = previousState.configButtons;
-            console.log("Botones de configuración:", configButtons);
-
           
             // Limpiar la tabla actual
             this.table.innerHTML = '';
@@ -207,7 +207,9 @@ class DeleteRowCommand extends Command {
             }
           
             // Restaurar el número de filas
-            document.getElementById('numFilasButton').innerText = previousState.numFilasButton;            
+            document.getElementById('numFilasButton').innerText = previousState.numFilasButton;
+            document.querySelector('.button.agregar').style.visibility = previousState.buttonAgregar;
+            document.querySelector('.button.eliminar').style.visibility = previousState.buttonEliminar;
         }
     }
     

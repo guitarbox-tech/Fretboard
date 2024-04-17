@@ -521,6 +521,7 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
 
     botonConfiguracion.onclick = function() {
         // Obtener la primera nota de la fila y su índice
+        var indiceFila = this.closest('tr').rowIndex;
         var primeraNota = nuevaFila.querySelector('td circle').getAttribute('data-note').toUpperCase();
         var indicePrimeraNota = notas.indexOf(primeraNota);
     
@@ -542,7 +543,8 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
         });
     
         // Llamar a la función asignarAfinacion con la nueva nota y los estilos obtenidos
-        asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota);
+        changeNoteCommand.execute(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila, primeraNota);
+        commandHistory.add(changeNoteCommand);
     };
     
     
@@ -839,7 +841,7 @@ function clicSvg(agregarDesdeColumna = false) {
     }
 }
 
-function guardarEstadoActual(tipoComando) {
+function guardarEstadoActual(tipoComando, opacidades, visibilidades, indiceFila) {
     const currentState = {};
 
     // Guardar el HTML de la tabla
@@ -868,15 +870,32 @@ function guardarEstadoActual(tipoComando) {
 
         currentState.opacities = opacities;
         currentState.visibilities = visibilities;
+
+    } else if (tipoComando === 'changenote') {
+        // Obtener los textos de los SVGs en la fila específica
+        const filaEspecifica = tabla.rows[indiceFila];
+        const celdas = filaEspecifica.querySelectorAll('td');
+        const textosSVG = [];
+
+        celdas.forEach(celda => {
+            const svg = celda.querySelector('svg');
+            const texto = svg ? svg.querySelector('text').textContent : ''; // Si no hay SVG, se asigna una cadena vacía
+            textosSVG.push(texto);
+        });
+
+        currentState.textosSVG = textosSVG;
+        currentState.opacidades = opacidades;
+        currentState.visibilidades = visibilidades;
+        currentState.indiceFila = indiceFila;
     }
 
     currentState.numFilasButton = document.getElementById('numFilasButton').innerText;
     currentState.buttonAgregar = document.querySelector('.button.agregar').style.visibility;
     currentState.buttonEliminar = document.querySelector('.button.eliminar').style.visibility;
 
-
     return currentState;
 }
+
 
 
 

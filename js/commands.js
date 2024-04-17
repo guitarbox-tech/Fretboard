@@ -220,22 +220,58 @@ class ChangeNoteCommand extends Command {
     constructor(table, rowIndex, newNote) {
         super();
         this.table = table;
-        this.rowIndex = rowIndex;
-        this.newNote = newNote;
-        this.previousNote = null; // Variable para almacenar la nota anterior
+        this.previousStates = [];
     }
 
-    execute() {
-        // Guardar el estado anterior
-        this.previousNote = this.table[this.rowIndex].note;
+    execute(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila) {
+        // Ejecutar la función para guardar el estado actual
+        const currentState = guardarEstadoActual('changenote', opacidades, visibilidades, indiceFila);
+
+        // Agregar el estado actual al array de estados anteriores
+        this.previousStates.push(currentState);
+    
         // Cambiar la nota en la fila especificada
-        asignarAfinacion(row, nuevaNota);
+        asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota);
     }
+    
 
     undo() {
-        // Revertir el cambio de nota
-        this.table[this.rowIndex].note = this.previousNote;
+        // Obtener el último estado anterior del array
+        const previousState = this.previousStates.pop();
+        
+        // Restaurar el estado anterior de la tabla
+        if (previousState) {
+            // Restaurar opacidades de los círculos
+            previousState.opacidades.forEach((opacity, index) => {
+                const circles = this.table.rows[previousState.indiceFila].querySelectorAll('circle');
+                if (circles && circles[index]) {
+                    circles[index].style.opacity = opacity;
+                }
+            });
+            
+            // Restaurar visibilidades de los textos
+            previousState.visibilidades.forEach((visibility, index) => {
+                const texts = this.table.rows[previousState.indiceFila].querySelectorAll('text');
+                if (texts && texts[index]) {
+                    texts[index].style.visibility = visibility;
+                }
+            });
+    
+            // Restaurar textosSVG
+            const textosSVG = previousState.textosSVG;
+            const celdas = this.table.rows[previousState.indiceFila].querySelectorAll('td');
+            celdas.forEach((celda, index) => {
+                const svg = celda.querySelector('svg');
+                if (svg) {
+                    const text = svg.querySelector('text');
+                    if (text) {
+                        text.textContent = textosSVG[index];
+                    }
+                }
+            });
+        }
     }
+    
 }
 
 

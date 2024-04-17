@@ -486,12 +486,21 @@ function estilizarPrimeraFila() {
         // Estilos para una sola fila
         for (var j = 0; j < primeraFila.cells.length; j++) {
             var celda = primeraFila.cells[j];
-            var gradientSize = (j === 0) ? "5px" : "1px"; // Determinar el tamaño del gradiente
+            var gradientSizeLeft = (j === 1) ? "1px" : "1px"; // Tamaño del gradiente a la izquierda
+            var gradientSizeRight = (j === 1) ? "5px" : "0px"; // Tamaño del gradiente a la derecha
             
-            celda.style.backgroundImage = "linear-gradient(to left, #555 " + gradientSize + ", transparent " + gradientSize + ", transparent 100%)";
+            if (j === 0) {
+                // Para la primera celda (j === 0), no aplicamos ningún gradiente
+                celda.style.backgroundImage = "none";
+            } else {
+                // Para las demás celdas
+                celda.style.backgroundImage = "linear-gradient(to left, #555 " + gradientSizeLeft + ", transparent " + gradientSizeLeft + "), linear-gradient(to right, #555 " + gradientSizeRight + ", transparent " + gradientSizeRight + ")";
+            }
+            
             celda.style.backgroundSize = "100% 100%";
             celda.style.backgroundRepeat = "no-repeat";
         }
+        
     } else {
         // Restaurar estilos por defecto si hay más de una fila
         for (var i = 0; i < primeraFila.cells.length; i++) {

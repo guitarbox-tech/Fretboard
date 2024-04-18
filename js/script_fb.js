@@ -510,10 +510,15 @@ function estilizarPrimeraFila() {
     }
 }
 
+let contadorFilas = 0;
+
 function agregarBotonConfiguracion(nuevaFila, filas) {
     var botonConfiguracion = document.createElement("button");
     botonConfiguracion.innerHTML = '<i class="fas fa-cog"></i>';
-    botonConfiguracion.className = "config-button"; // Usamos una clase en lugar de un id
+    var indiceFila = contadorFilas++;
+    console.log("indice fila:", indiceFila);
+    var botonID = "config-button-" + indiceFila; // ID único basado en el índice de la fila
+    botonConfiguracion.id = botonID;
     nuevaFila.appendChild(botonConfiguracion);
 
     var translateYIncrement = 115 + (filas.length + 1);    
@@ -527,7 +532,7 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
     
         // Obtener la nueva nota
         var nuevaNota = prompt("Afinación de la cuerda:");
-    
+        console.log("estoy aquí");
         // Obtener estilos de las svgs y sus textos asociados
         const svgs = nuevaFila.querySelectorAll('svg');
         const opacidades = [];
@@ -543,11 +548,8 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
         });
     
         // Llamar a la función asignarAfinacion con la nueva nota y los estilos obtenidos
-        changeNoteCommand.execute(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila, primeraNota);
-        commandHistory.add(changeNoteCommand);
+        changeNote(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila);
     };
-    
-    
 }
 
 function asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota) {
@@ -653,13 +655,6 @@ function asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indic
         alert("Nota musical no válida o no ingresada.");
     } 
 }
-
-
-
-
-
-
-
 
 
 function cambiarEstiloCirculos() {
@@ -851,7 +846,7 @@ function guardarEstadoActual(tipoComando, opacidades, visibilidades, indiceFila)
     currentState.tablaHTML = tablaConTbody.innerHTML;
 
     // Guardar cada botón de configuración
-    const configButtons = Array.from(tabla.querySelectorAll('.config-button'));
+    const configButtons = Array.from(tabla.querySelectorAll('[id^="config-button-"]'));
     currentState.configButtons = configButtons;
 
     if (tipoComando === 'delete') {

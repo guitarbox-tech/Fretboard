@@ -78,33 +78,31 @@ class AddRowCommand extends Command {
                                 var indiceFila = this.closest('tr').rowIndex;
                                 var primeraNota = nuevaFila.querySelector('td circle').getAttribute('data-note').toUpperCase();
                                 
-
-                               console.log("primeranota después de undo:", primeraNota);
-                               var indicePrimeraNota = notas.indexOf(primeraNota);
-                       
-                               // Obtener la nueva nota
-                               var nuevaNota = prompt("Afinación de la cuerda:");
+                                var indicePrimeraNota = notas.indexOf(primeraNota);
+                        
+                                // Obtener la nueva nota
+                                var nuevaNota = prompt("Afinación de la cuerda:");
+                            
+                                // Obtener estilos de las svgs y sus textos asociados
+                                const svgs = nuevaFila.querySelectorAll('svg');
+                                const opacidades = [];
+                                const visibilidades = []; 
+                            
+                                svgs.forEach((svg, index) => {
+                                    const circle = svg.querySelector('circle');
+                                    const text = svg.querySelector('text');
+                                
+                                    // Guardar los estilos de la nota actual
+                                    opacidades.push(circle.style.opacity);
+                                    visibilidades.push(text.style.visibility);
+                                });
                            
-                               // Obtener estilos de las svgs y sus textos asociados
-                               const svgs = nuevaFila.querySelectorAll('svg');
-                               const opacidades = [];
-                               const visibilidades = []; 
-                           
-                               svgs.forEach((svg, index) => {
-                                   const circle = svg.querySelector('circle');
-                                   const text = svg.querySelector('text');
-                               
-                                   // Guardar los estilos de la nota actual
-                                   opacidades.push(circle.style.opacity);
-                                   visibilidades.push(text.style.visibility);
-                               });
-                           
-                               // Llamar a la función asignarAfinacion con la nueva nota y los estilos obtenidos
-                               changeNote(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila);
-                           };
-                       
-                           clonedRow.insertBefore(clonedButton, firstCell); // Insertar el botón antes de la primera celda
-                       }
+                                // Llamar a la función asignarAfinacion con la nueva nota y los estilos obtenidos
+                                changeNote(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila);
+                            };
+                        
+                            clonedRow.insertBefore(clonedButton, firstCell); // Insertar el botón antes de la primera celda
+                        }
                     }
                   
                     var nuevaFila = clonedRow;
@@ -127,9 +125,6 @@ class AddRowCommand extends Command {
     }
         
 }
-
-
-
 
 // Comando para eliminar fila
 class DeleteRowCommand extends Command {
@@ -164,7 +159,6 @@ class DeleteRowCommand extends Command {
             
             // Guardar los botones de configuración y sus onclicks para restaurarlos más tarde
             const savedButtons = [];
-            console.log("botones guardados:", savedButtons);
             configButtons.forEach(button => {
                 const clonedButton = button.cloneNode(true); // Clonar el botón
                 clonedButton.setAttribute('translate', button.getAttribute('translate')); // Copiar el atributo 'translate'
@@ -200,12 +194,11 @@ class DeleteRowCommand extends Command {
                     
                             // Crear un nuevo onclick para el botón clonado
                             clonedButton.onclick = function() {
-                                 // Obtener la primera nota de la fila y su índice
-                                 var indiceFila = this.closest('tr').rowIndex;
-                                 var primeraNota = nuevaFila.querySelector('td circle').getAttribute('data-note').toUpperCase();
+                                // Obtener la primera nota de la fila y su índice
+                                var indiceFila = this.closest('tr').rowIndex;
+                                var primeraNota = nuevaFila.querySelector('td circle').getAttribute('data-note').toUpperCase();
                                  
 
-                                console.log("primeranota después de undo:", primeraNota);
                                 var indicePrimeraNota = notas.indexOf(primeraNota);
                         
                                 // Obtener la nueva nota
@@ -227,6 +220,7 @@ class DeleteRowCommand extends Command {
                             
                                 // Llamar a la función asignarAfinacion con la nueva nota y los estilos obtenidos
                                 changeNote(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila);
+                                commandHistory.add(changeNoteCommand);
                             };
                         
                             clonedRow.insertBefore(clonedButton, firstCell); // Insertar el botón antes de la primera celda
@@ -263,42 +257,122 @@ class ChangeNoteCommand extends Command {
     }
 
     execute(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila) {
-        // Ejecutar la función para guardar el estado actual
+       
+        // Verificar si changeNoteCommand.indicePrimeraNota está definido
+        if (changeNoteCommand.indicePrimeraNota !== undefined) {
+            this.indicePrimeraNotaInstancia = changeNoteCommand.indicePrimeraNota;
+            console.log("indicePrimeraNotaInstancia si definido:", this.indicePrimeraNotaInstancia);
+        } else {
+            // Mantener el valor actual de indicePrimeraNota
+            this.indicePrimeraNotaInstancia = indicePrimeraNota;
+            
+            console.log("indicePrimeraNotaInstancia NO definido:", this.indicePrimeraNotaInstancia);    
+        }
 
-        const currentState = guardarEstadoActual('changenote', opacidades, visibilidades, indiceFila);
-                
+
+        // Asignar el valor de indiceFila a indiceFilaInstancia
+        if (indiceFila === undefined) {
+            this.indiceFilaInstancia = changeNoteCommand.indiceFila;
+        } else {
+            this.indiceFilaInstancia = indiceFila;
+        }
+
+        if (changeNoteCommand.opacidades !== undefined) {
+            const tabla = this.table;
+            const filaEspecifica = tabla.rows[this.indiceFilaInstancia];
+            const celdas = filaEspecifica.querySelectorAll('td');
+            const opacidades = [];
+
+            celdas.forEach(celda => {
+                const svg = celda.querySelector('svg');
+                const circle = svg.querySelector('circle');
+                const opacity = circle ? circle.style.opacity : ''; // Si no hay un círculo, se asigna una cadena vacía
+                opacidades.push(opacity);
+            });
+
+            // Asignar las opacidades de la fila específica a this.opacidadesInstancia
+            this.opacidadesInstancia = opacidades;
+        } else {
+            // Mantener el valor actual de opacidades
+            this.opacidadesInstancia = opacidades;
+        }
+
+        if (changeNoteCommand.visibilidades !== undefined) {
+            const tabla = this.table;
+            const filaEspecifica = tabla.rows[this.indiceFilaInstancia];
+            const celdas = filaEspecifica.querySelectorAll('td');
+            const visibilidades = [];
+        
+            celdas.forEach(celda => {
+                const svg = celda.querySelector('svg');
+                const text = svg ? svg.querySelector('text') : null;
+                const visibility = text ? text.style.visibility : ''; // Si no hay un texto, se asigna una cadena vacía
+                visibilidades.push(visibility);
+            });
+        
+            // Asignar las visibilidades de la fila específica a this.visibilidadesInstancia
+            this.visibilidadesInstancia = visibilidades;
+        } else {
+            // Mantener el valor actual de visibilidades
+            this.visibilidadesInstancia = visibilidades;
+        }
+        
+
+        // Asignar el valor de nuevaNota a nuevaNotaInstancia y convertir a mayúsculas si no es null
+        if (nuevaNota === undefined) {
+            this.nuevaNotaInstancia = changeNoteCommand.nuevaNota;
+        } else {
+            this.nuevaNotaInstancia = nuevaNota !== null ? nuevaNota.toUpperCase() : null;
+        }
+
+        // Asignar el valor de nuevaFila a nuevaFilaInstancia
+        if (nuevaFila === undefined) {
+            this.nuevaFilaInstancia = changeNoteCommand.nuevaFila;
+        } else {
+            this.nuevaFilaInstancia = nuevaFila;
+        }
+
+        // Actualizar los valores de la instancia
+        this.nuevaFila = this.nuevaFilaInstancia;
+        this.nuevaNota = this.nuevaNotaInstancia;
+        this.indiceFila = this.indiceFilaInstancia;
+        this.opacidades = this.opacidadesInstancia;
+        this.visibilidades = this.visibilidadesInstancia;
+        this.indicePrimeraNota = this.indicePrimeraNotaInstancia;
+
+        // Ejecutar la función para guardar el estado actual
+        const currentState = guardarEstadoActual('changenote', indiceFila, nuevaNota, this.indiceFilaInstancia, this.nuevaNotaInstancia, this.nuevaFilaInstancia);
+    
+        currentState.nuevaFila = this.nuevaFilaInstancia;
+        
         // Agregar el estado actual al array de estados anteriores
         this.previousStates.push(currentState);
-
-        // Cambiar la nota en la fila especificada
-        asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota);
+        
+        asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, this.indiceFilaInstancia, this.nuevaNotaInstancia, this.nuevaFilaInstancia, this.opacidadesInstancia, this.visibilidadesInstancia, this.indicePrimeraNotaInstancia);
     }
     
-
     undo() {
         // Obtener el último estado anterior del array
         const previousState = this.previousStates.pop();
-        
+    
         // Restaurar el estado anterior de la tabla
         if (previousState) {
-            
             // Restaurar opacidades de los círculos
             previousState.opacidades.forEach((opacity, index) => {
-                const circles = this.table.rows[previousState.indiceFila].querySelectorAll('circle');
-                if (circles && circles[index]) {
-                    circles[index].style.opacity = opacity;
-                }
+                previousState.svgs[index].querySelector('circle').style.opacity = opacity;
             });
             
             // Restaurar visibilidades de los textos
             previousState.visibilidades.forEach((visibility, index) => {
-                const texts = this.table.rows[previousState.indiceFila].querySelectorAll('text');
-                if (texts && texts[index]) {
-                    texts[index].style.visibility = visibility;
-                }
+                previousState.svgs[index].querySelector('text').style.visibility = visibility;
             });
     
-            // Restaurar textosSVG
+            // Restaurar textos de los SVG
+            previousState.textos.forEach((texto, index) => {
+                previousState.svgs[index].querySelector('text').textContent = texto;
+            });
+            
+            // Restaurar array específico "textosSVG" (de la fila específica)
             var textosSVG = previousState.textosSVG;
             const celdas = this.table.rows[previousState.indiceFila].querySelectorAll('td');
             celdas.forEach((celda, index) => {
@@ -310,41 +384,51 @@ class ChangeNoteCommand extends Command {
                     }
                 }
             });
-            
 
+            // Restaurar nuevaNota e indiceFila
+            this.nuevaNota = previousState.nuevaNota;
+            this.indiceFila = previousState.indiceFila;
+            this.opacidades = previousState.opacidades;
+            this.nuevaFila = previousState.nuevaFila;
+            console.log("indiceFila en UNDO:", this.indiceFila);
+            
+            
             // Restaurar el evento onclick del botón de configuración
             const botonConfiguracion = document.getElementById("config-button-" + previousState.indiceFila);
-            console.log("Accediendo al if de botonConfiguracion:", botonConfiguracion);
-
+                        
             if (botonConfiguracion) {
                 botonConfiguracion.onclick = function() {
                     // Obtener la primera nota de la fila y su índice
                     var indiceFila = this.closest('tr').rowIndex;
                     var nuevaFila = this.closest('tr');
 
-                    var primeranotaRestaurada;
+                    var primeranotaRestaurada = nuevaFila.querySelector('td circle').getAttribute('data-note').toUpperCase();
 
                     if (textosSVG.length > 0) {
-                        // Usar la primera nota restaurada del estado anterior
+                        console.log("Usando la primera nota restaurada del estado anterior:", textosSVG[0]);
                         primeranotaRestaurada = textosSVG[0];
                         // Limpiar textosSVG después de usarlo por primera vez
                         textosSVG = [];
                     } else {
-                        // Si textosSVG está vacío, obtener la primera nota de la fila actual
+                        const primeraNotaActual = 
                         primeranotaRestaurada = nuevaFila.querySelector('td circle').getAttribute('data-note').toUpperCase();
+                        console.log("Obteniendo la primera nota de la fila actual:", primeraNotaActual);
+                        
                     }
+                    
 
-                    console.log("primeranota después de undo:", primeranotaRestaurada);
                     var indicePrimeraNota = notas.indexOf(primeranotaRestaurada);
-                
+                    console.log("indicePrimeraNota UNDO:", indicePrimeraNota);
+        
+
                     // Obtener la nueva nota
                     var nuevaNota = prompt("Afinación de la cuerda:");
-                
+
                     // Obtener estilos de las svgs y sus textos asociados
                     const svgs = nuevaFila.querySelectorAll('svg');
                     const opacidades = [];
                     const visibilidades = []; 
-                
+
                     svgs.forEach((svg, index) => {
                         const circle = svg.querySelector('circle');
                         const text = svg.querySelector('text');
@@ -355,7 +439,8 @@ class ChangeNoteCommand extends Command {
                     });
                 
                     // Llamar a la función asignarAfinacion con la nueva nota y los estilos obtenidos
-                    changeNote(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila);
+                    changeNoteCommand.execute(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila); // Ejecutar la acción para agregar una fila
+                    commandHistory.add(changeNoteCommand);
                 };
             }
         }
@@ -382,6 +467,7 @@ class CommandHistory {
     undo() {
         if (this.undoStack.length > 0) {
             const command = this.undoStack.pop();
+            
             command.undo(command);
             this.redoStack.push(command);
             console.log('UNDO Cantidad de comandos en la pila undo:', this.undoStack.length);
@@ -393,12 +479,14 @@ class CommandHistory {
     redo() {
         if (this.redoStack.length > 0) {
             const command = this.redoStack.pop();
+    
             command.execute();
             this.undoStack.push(command);            
             console.log('REDO Cantidad de comandos en la pila undo:', this.undoStack.length);
             console.log('REDO Cantidad de comandos en la pila redo:', this.redoStack.length);
         }
     }
+    
 }
 
 // Crear una instancia de la historia de comandos
@@ -423,7 +511,7 @@ const miTabla = document.getElementById('miTabla');
 // Crear instancias de los comandos
 const addRowCommand = new AddRowCommand(miTabla);
 const deleteRowCommand = new DeleteRowCommand(miTabla);
-const changeNoteCommand = new ChangeNoteCommand(miTabla, 2, "Nueva nota");
+const changeNoteCommand = new ChangeNoteCommand(miTabla);
 
 function addRow() {
     addRowCommand.execute(); // Ejecutar la acción para agregar una fila

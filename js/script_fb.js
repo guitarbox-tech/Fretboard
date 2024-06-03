@@ -516,7 +516,6 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
     var botonConfiguracion = document.createElement("button");
     botonConfiguracion.innerHTML = '<i class="fas fa-cog"></i>';
     var indiceFila = contadorFilas++;
-    console.log("indice fila:", indiceFila);
     var botonID = "config-button-" + indiceFila; // ID único basado en el índice de la fila
     botonConfiguracion.id = botonID;
     nuevaFila.appendChild(botonConfiguracion);
@@ -529,10 +528,11 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
         var indiceFila = this.closest('tr').rowIndex;
         var primeraNota = nuevaFila.querySelector('td circle').getAttribute('data-note').toUpperCase();
         var indicePrimeraNota = notas.indexOf(primeraNota);
-    
+        console.log("indicePrimeraNota:", indicePrimeraNota);
+        
         // Obtener la nueva nota
         var nuevaNota = prompt("Afinación de la cuerda:");
-        console.log("estoy aquí");
+        
         // Obtener estilos de las svgs y sus textos asociados
         const svgs = nuevaFila.querySelectorAll('svg');
         const opacidades = [];
@@ -548,18 +548,44 @@ function agregarBotonConfiguracion(nuevaFila, filas) {
         });
     
         // Llamar a la función asignarAfinacion con la nueva nota y los estilos obtenidos
-        changeNote(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila);
+        changeNoteCommand.execute(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFila); // Ejecutar la acción para agregar una fila
+        commandHistory.add(changeNoteCommand);
     };
 }
 
-function asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota) {
+function asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indicePrimeraNota, indiceFilaInstancia, nuevaNotaInstancia, nuevaFilaInstancia, opacidadesInstancia, visibilidadesInstancia, indicePrimeraNotaInstancia) {
+    
+    if (nuevaNota === undefined) {
+        nuevaNota = nuevaNotaInstancia; // Usa nuevaNotaInstancia si nuevaNota es undefined
+    } else {
+        // Convertir nuevaNota a mayúsculas si no es null
+        nuevaNota = nuevaNota !== null ? nuevaNota.toUpperCase() : null;
+    }
+
+    if (nuevaFila === undefined) {
+        nuevaFila = nuevaFilaInstancia; // Usa nuevaFilaInstancia si nuevaFila es undefined
+    }
+
+    if (opacidades === undefined) {
+        opacidades = opacidadesInstancia; // Usa opacidadesInstancia si nuevaFila es undefined
+    }
+
+    if (visibilidades === undefined) {
+        visibilidades = visibilidadesInstancia; // Usa visibilidadesInstancia si nuevaFila es undefined
+    }
+
+    // Verificar si indicePrimeraNota es undefined
+    if (indicePrimeraNota === undefined) {
+        // Usar el valor de indicePrimeraNotaInstancia si indicePrimeraNota es undefined
+        indicePrimeraNota = indicePrimeraNotaInstancia;
+    }
+
     if (nuevaNota !== null && notas.includes(nuevaNota.toUpperCase())) {
         var celdas = nuevaFila.getElementsByTagName('td');
         var indiceNotaIngresada = notas.indexOf(nuevaNota.toUpperCase());
 
         // Calcular la posición de la celda que contiene la nota con índicePrimeraNota
         var indiceCeldaActual = (notas.length + indiceNotaIngresada - indicePrimeraNota) % notas.length;
-        console.log("indice de celda escogida:", indiceCeldaActual);
 
         // Aplicar notaActual en un bucle separado
         for (var i = 0; i < celdas.length; i++) {
@@ -648,8 +674,6 @@ function asignarAfinacion(nuevaFila, nuevaNota, opacidades, visibilidades, indic
                 }
             }
         }
-        
-
         
     } else {
         alert("Nota musical no válida o no ingresada.");
@@ -836,9 +860,21 @@ function clicSvg(agregarDesdeColumna = false) {
     }
 }
 
-function guardarEstadoActual(tipoComando, opacidades, visibilidades, indiceFila) {
+function guardarEstadoActual(tipoComando, indiceFila, nuevaNota, indiceFilaInstancia, nuevaNotaInstancia, nuevaFilaInstancia) {
     const currentState = {};
 
+    if (indiceFila === undefined) {
+        indiceFila = indiceFilaInstancia;
+        console.log("indiceFila en GUARDAR:", indiceFila);
+    }
+    if (nuevaNota === undefined) {
+        nuevaNota = nuevaNotaInstancia;
+    }
+    if (nuevaFilaInstancia === undefined) {
+        nuevaFilaInstancia = nuevaFilaInstancia;
+    }
+    
+    
     // Guardar el HTML de la tabla
     const tabla = document.getElementById("miTabla");
     const tablaConTbody = document.createElement('table');
@@ -867,21 +903,56 @@ function guardarEstadoActual(tipoComando, opacidades, visibilidades, indiceFila)
         currentState.visibilities = visibilities;
 
     } else if (tipoComando === 'changenote') {
-        // Obtener los textos de los SVGs en la fila específica
-        const filaEspecifica = tabla.rows[indiceFila];
-        const celdas = filaEspecifica.querySelectorAll('td');
-        const textosSVG = [];
 
-        celdas.forEach(celda => {
-            const svg = celda.querySelector('svg');
-            const texto = svg ? svg.querySelector('text').textContent : ''; // Si no hay SVG, se asigna una cadena vacía
-            textosSVG.push(texto);
-        });
+        // Obtener la tabla
+        const tabla = document.getElementById("miTabla");
+        // Obtener todas las filas de la tabla
+        const filas = tabla.rows;
 
-        currentState.textosSVG = textosSVG;
+        const svgs = [];
+        const textos = [];
+        const opacidades = [];
+        const visibilidades = [];
+
+        // Recorrer todas las filas para obtener la información de los SVGs
+        for (let i = 0; i < filas.length; i++) {
+            const fila = filas[i];
+            const svgsFila = fila.querySelectorAll('svg');
+            svgsFila.forEach(svg => {
+                const circle = svg.querySelector('circle');
+                const text = svg.querySelector('text');
+                svgs.push(svg);
+                textos.push(text.textContent);
+                opacidades.push(circle.style.opacity);
+                visibilidades.push(text.style.visibility);
+            });
+        }
+
+         // Obtener los textos de los SVGs en la fila específica
+         if (indiceFila !== undefined) {
+            const filaEspecifica = tabla.rows[indiceFila];
+            const celdas = filaEspecifica.querySelectorAll('td');
+            const textosSVG = [];
+        
+            celdas.forEach(celda => {
+                const svg = celda.querySelector('svg');
+                const texto = svg ? svg.querySelector('text').textContent : ''; // Si no hay SVG, se asigna una cadena vacía
+                textosSVG.push(texto);
+
+                currentState.textosSVG = textosSVG;
+            });
+        
+        } else {
+            // No se realiza ninguna acción especial en el caso en que indiceFila no esté definido
+        }
+
+        currentState.svgs = svgs;
+        currentState.textos = textos;
         currentState.opacidades = opacidades;
         currentState.visibilidades = visibilidades;
-        currentState.indiceFila = indiceFila;
+        currentState.indiceFila = indiceFilaInstancia;
+        currentState.nuevaNota = nuevaNotaInstancia;
+        currentState.nuevaFila = nuevaFilaInstancia;
     }
 
     currentState.numFilasButton = document.getElementById('numFilasButton').innerText;

@@ -197,43 +197,12 @@ tabla.appendChild(nuevaFila);
 primeraVez = false; 
     unaFila = false;
 indiceCambiado = false;
-actualizarVisibilidadBotones();
-mostrarNumFilas();
 estilizarPrimeraFila();
 ocultarSvg(selectNota.value);
 clicSvg();
 }
 
-function eliminarFila() {
-var tabla = document.getElementById("miTabla");
-var numRows = tabla.rows.length;
-var celdasEliminar = tabla.rows[0].cells.length;
-    
-if (numRows > 2) { // Verifica que haya más de una fila para eliminar
-    var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
-    tabla.deleteRow(-1); // Elimina la última fila
-    tabla.deleteRow(-1); // Elimina la penúltima fila
-    indiceCambiado = true;
-    agregarFila(indexNotaEliminar);
-} else if (numRows === 2) {
-   var indexNotaEliminar = obtenerIndexNotaFila(tabla.rows[numRows - 2]);
-    tabla.deleteRow(-1); // Elimina la última fila
-    tabla.deleteRow(-1); // Elimina la penúltima fila
 
-// Agregar una nueva fila si no quedan filas después de eliminar las dos últimas
-if (tabla.rows.length === 0) {
-    primeraVez = true;
-    unaFila = false;
-    // Llamar a agregarFila con el número de celdas de la fila original
-    indiceCambiado = true;
-    agregarFila(indexNotaEliminar, celdasEliminar);
-    actualizarVisibilidadBotones();
-    mostrarNumFilas();
-    estilizarPrimeraFila();
-}
-}
-    ocultarSvg(selectNota.value);
-}
 
 function obtenerIndexNotaFila(fila) {
 var primeraCelda = fila.cells[0];
@@ -578,27 +547,6 @@ function saveMemento() {
     console.log('se ha guardado memento');
 }
 
-
-// Función para deshacer cambios
-function undo() {
-    if (mementos.length > 0) {
-        if (mementos.length === 1) {
-            var singleMemento = mementos[0]; // Obtener el único memento
-            console.log('Índice del único memento:', 0); // Imprimir el índice del único memento
-            applyMemento(singleMemento); // Aplicar el único memento para deshacer los cambios
-            mementos.pop(); // Eliminar el único memento de la lista
-            saveMemento();
-        } else {
-            var penultimateMemento = mementos[mementos.length - 2]; // Obtener el penúltimo memento
-            console.log('Índice del penúltimo memento:', mementos.length - 2); // Imprimir el índice del penúltimo memento
-            applyMemento(penultimateMemento); // Aplicar el memento para deshacer los cambios
-            mementos.pop(); // Eliminar el último memento de la lista
-        }
-        console.log('Se ha deshecho el último cambio.');
-            } else {
-        console.log('No hay cambios anteriores para deshacer.');
-    }
-}
 
 
 

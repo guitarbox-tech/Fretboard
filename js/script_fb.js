@@ -20,7 +20,7 @@ if (!primeraVez) {
     var numCeldasFilaAnterior = filas[filas.length - 1].cells.length;
     
             var numCeldasAgregar = numCeldasFilaAnterior
-                    
+
     var primeraCeldaFilaAnterior = filas[filas.length - 1].getElementsByTagName('td')[0];
     
     // Obtener la nota del SVG existente en la primera celda de la fila anterior
@@ -47,6 +47,7 @@ if (!primeraVez) {
     // Si el índice ha cambiado, establece indexNota como indexNotaEliminar
     indexNota = indexNotaEliminar;
 }
+
 } else {
     var indexNota = 0;
     var numCeldasAgregar;

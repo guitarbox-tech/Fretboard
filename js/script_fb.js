@@ -683,14 +683,6 @@ function actualizarVisibilidadBotones() {
   }
 }
 
-function mostrarNumFilas() {
-  var tabla = document.getElementById("miTabla");
-  var numRows = tabla.rows.length;
-
-  // Actualizamos el contenido del botón con el número de filas
-  document.getElementById("numFilasButton").innerText = numRows;
-}
-
 function estilizarPrimeraFila() {
   var tabla = document.getElementById("miTabla");
   var primeraFila = tabla.rows[0]; // Obtener la primera fila

@@ -43,200 +43,274 @@ const nonDiatonicColors = [
   "#34437D",
 ];
 
-
 var majorDiatonicSofeleige = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
-var majorNonDiatonicSofeleige = ["Re♭","Mi♭","Fa♯","La♭","Si♭"];
+var majorNonDiatonicSofeleige = ["Re♭", "Mi♭", "Fa♯", "La♭", "Si♭"];
 var minorDiatonicSofeleige = ["Do", "Re", "Mi♭", "Fa", "Sol", "La♭", "Si♭"];
-var minorNonDiatonicSofeleige = ["Re♭","Mi","Fa♯","La","Si"];
-var minorKeys = ["A♭m","E♭m","B♭m","Fm","Cm","Gm","Dm","Am","Em","Bm","F♯m","C♯m","G♯m","D♯m","A♯m"]
-var majorDiatonicsDegrees = ["1","2","3","4","5","6","7"]
-var minorDiatonicsDegrees = ["1","2","♭3","4","5","♭6","♭7"]
+var minorNonDiatonicSofeleige = ["Re♭", "Mi", "Fa♯", "La", "Si"];
+var minorKeys = [
+  "A♭m",
+  "E♭m",
+  "B♭m",
+  "Fm",
+  "Cm",
+  "Gm",
+  "Dm",
+  "Am",
+  "Em",
+  "Bm",
+  "F♯m",
+  "C♯m",
+  "G♯m",
+  "D♯m",
+  "A♯m",
+];
+var majorDiatonicsDegrees = ["1", "2", "3", "4", "5", "6", "7"];
+var minorDiatonicsDegrees = ["1", "2", "♭3", "4", "5", "♭6", "♭7"];
 
 var keySignatures = {
-
   // Major keys
   C: {
     diatonic: ["C", "D", "E", "F", "G", "A", "B"],
     nonDiatonic: ["D♭", "E♭", "F♯", "A♭", "B♭"],
     degreeMap: {
-      "D♭":"♭2", "E♭":"♭3", "F♯":"♯4", "A♭":"♭6", "B♭":"♭7"
-    }
+      "D♭": "♭2",
+      "E♭": "♭3",
+      "F♯": "♯4",
+      "A♭": "♭6",
+      "B♭": "♭7",
+    },
   },
   G: {
     diatonic: ["G", "A", "B", "C", "D", "E", "F♯"],
     nonDiatonic: ["A♭", "B♭", "C♯", "E♭", "F"],
     degreeMap: {
-      "A♭":"♭2", "B♭":"♭3", "C♯":"♯4", "E♭":"♭6", "F":"♭7"
-    }
+      "A♭": "♭2",
+      "B♭": "♭3",
+      "C♯": "♯4",
+      "E♭": "♭6",
+      F: "♭7",
+    },
   },
   D: {
     diatonic: ["D", "E", "F♯", "G", "A", "B", "C♯"],
     nonDiatonic: ["E♭", "F", "G♯", "B♭", "C"],
     degreeMap: {
-      "E♭":"♭2", "F":"♭3", "G♯":"♯4", "B♭":"♭6", "C":"♭7"
-    }
+      "E♭": "♭2",
+      F: "♭3",
+      "G♯": "♯4",
+      "B♭": "♭6",
+      C: "♭7",
+    },
   },
   A: {
     diatonic: ["A", "B", "C♯", "D", "E", "F♯", "G♯"],
     nonDiatonic: ["B♭", "C", "D♯", "F", "G"],
     degreeMap: {
-      "B♭":"♭2", "C":"♭3", "D♯":"♯4", "F":"♭6", "G":"♭7"
-    }
+      "B♭": "♭2",
+      C: "♭3",
+      "D♯": "♯4",
+      F: "♭6",
+      G: "♭7",
+    },
   },
   E: {
     diatonic: ["E", "F♯", "G♯", "A", "B", "C♯", "D♯"],
     nonDiatonic: ["F", "G", "A♯", "C", "D"],
     degreeMap: {
-      "F":"♭2", "G":"♭3", "A♯":"♯4", "C":"♭6", "D":"♭7"
-    }
+      F: "♭2",
+      G: "♭3",
+      "A♯": "♯4",
+      C: "♭6",
+      D: "♭7",
+    },
   },
   B: {
     diatonic: ["B", "C♯", "D♯", "E", "F♯", "G♯", "A♯"],
     nonDiatonic: ["C", "D", "F", "G", "A"],
     degreeMap: {
-      "C":"♭2", "D":"♭3", "F":"♭5", "G":"♭6", "A":"♭7"
-    }
+      C: "♭2",
+      D: "♭3",
+      F: "♭5",
+      G: "♭6",
+      A: "♭7",
+    },
   },
   "F♯": {
     diatonic: ["F♯", "G♯", "A♯", "B", "C♯", "D♯", "E♯"],
     nonDiatonic: ["G", "A", "C", "D", "E"],
     degreeMap: {
-      "G":"♭2", "A":"♭3", "C":"♭5", "D":"♭6", "E":"♭7"
-    }
+      G: "♭2",
+      A: "♭3",
+      C: "♭5",
+      D: "♭6",
+      E: "♭7",
+    },
   },
   "C♯": {
     diatonic: ["C♯", "D♯", "E♯", "F♯", "G♯", "A♯", "B♯"],
     nonDiatonic: ["D", "E", "G", "A", "B"],
     degreeMap: {
-      "D":"♭2", "E":"♭3", "G":"♭5", "A":"♭6", "B":"♭7"
-    }
+      D: "♭2",
+      E: "♭3",
+      G: "♭5",
+      A: "♭6",
+      B: "♭7",
+    },
   },
   F: {
     diatonic: ["F", "G", "A", "B♭", "C", "D", "E"],
     nonDiatonic: ["G♭", "A♭", "B", "D♭", "E♭"],
     degreeMap: {
-      "G♭":"♭2", "A♭":"♭3", "B":"♯4", "D♭":"♭6", "E♭":"♭7"
-    }
+      "G♭": "♭2",
+      "A♭": "♭3",
+      B: "♯4",
+      "D♭": "♭6",
+      "E♭": "♭7",
+    },
   },
   "B♭": {
     diatonic: ["B♭", "C", "D", "E♭", "F", "G", "A"],
     nonDiatonic: ["B", "D♭", "E", "G♭", "A♭"],
     degreeMap: {
-      "B":"♭2", "D♭":"♭3", "E":"♯4", "G♭":"♭6", "A♭":"♭7"
-    }
+      B: "♭2",
+      "D♭": "♭3",
+      E: "♯4",
+      "G♭": "♭6",
+      "A♭": "♭7",
+    },
   },
   "E♭": {
     diatonic: ["E♭", "F", "G", "A♭", "B♭", "C", "D"],
     nonDiatonic: ["F♭", "G♭", "A", "B", "D♭"],
     degreeMap: {
-      "F♭":"♭2", "G♭":"♭3", "A":"♯4", "B":"♭6", "D♭":"♭7"
-    }
+      "F♭": "♭2",
+      "G♭": "♭3",
+      A: "♯4",
+      B: "♭6",
+      "D♭": "♭7",
+    },
   },
   "A♭": {
     diatonic: ["A♭", "B♭", "C", "D♭", "E♭", "F", "G"],
     nonDiatonic: ["A", "B", "D", "E", "G♭"],
     degreeMap: {
-      "A":"♭2", "B":"♭3", "D":"♯4", "E":"♭6", "G♭":"♭7"
-    }
+      A: "♭2",
+      B: "♭3",
+      D: "♯4",
+      E: "♭6",
+      "G♭": "♭7",
+    },
   },
   "D♭": {
     diatonic: ["D♭", "E♭", "F", "G♭", "A♭", "B♭", "C"],
     nonDiatonic: ["D", "E", "G", "A", "B"],
     degreeMap: {
-      "D":"♭2", "E":"♭3", "G":"♯4", "A":"♭6", "B":"♭7"
-    }
+      D: "♭2",
+      E: "♭3",
+      G: "♯4",
+      A: "♭6",
+      B: "♭7",
+    },
   },
   "G♭": {
     diatonic: ["G♭", "A♭", "B♭", "C♭", "D♭", "E♭", "F"],
     nonDiatonic: ["G", "A", "C", "D", "E"],
     degreeMap: {
-      "G":"♭2", "A":"♭3", "C":"♯4", "D":"♭6", "E":"♭7"
-    }
+      G: "♭2",
+      A: "♭3",
+      C: "♯4",
+      D: "♭6",
+      E: "♭7",
+    },
   },
   "C♭": {
     diatonic: ["C♭", "D♭", "E♭", "F♭", "G♭", "A♭", "B♭"],
     nonDiatonic: ["C", "D", "E", "F", "G"],
     degreeMap: {
-      "C":"♭2", "D":"♭3", "E":"♯4", "F":"♭6", "G":"♭7"
-    }
+      C: "♭2",
+      D: "♭3",
+      E: "♯4",
+      F: "♭6",
+      G: "♭7",
+    },
   },
 
   // Minor keys with degreeMap
   "A♭m": {
     diatonic: ["A♭", "B♭", "C♭", "D♭", "E♭", "F♭", "G♭"],
     nonDiatonic: ["A", "C", "D", "F", "G"],
-    degreeMap: { "A":"♭2", "C":"3", "D":"♯4", "F":"6", "G":"7" }
+    degreeMap: { A: "♭2", C: "3", D: "♯4", F: "6", G: "7" },
   },
   "E♭m": {
     diatonic: ["E♭", "F", "G♭", "A♭", "B♭", "C♭", "D♭"],
     nonDiatonic: ["E", "G", "A", "C", "D"],
-    degreeMap: { "E":"♭2", "G":"3", "A":"♯4", "C":"6", "D":"7" }
+    degreeMap: { E: "♭2", G: "3", A: "♯4", C: "6", D: "7" },
   },
   "B♭m": {
     diatonic: ["B♭", "C", "D♭", "E♭", "F", "G♭", "A♭"],
     nonDiatonic: ["B", "D", "E", "G", "A"],
-    degreeMap: { "B":"♭2", "D":"3", "E":"♯4", "G":"6", "A":"7" }
+    degreeMap: { B: "♭2", D: "3", E: "♯4", G: "6", A: "7" },
   },
-  "Fm": {
+  Fm: {
     diatonic: ["F", "G", "A♭", "B♭", "C", "D♭", "E♭"],
     nonDiatonic: ["G♭", "A", "B", "D", "E"],
-    degreeMap: { "G♭":"♭2", "A":"3", "B":"♯4", "D":"6", "E":"7" }
+    degreeMap: { "G♭": "♭2", A: "3", B: "♯4", D: "6", E: "7" },
   },
-  "Cm": {
+  Cm: {
     diatonic: ["C", "D", "E♭", "F", "G", "A♭", "B♭"],
     nonDiatonic: ["D♭", "E", "F♯", "A", "B"],
-    degreeMap: { "D♭":"♭2", "E":"3", "F♯":"♯4", "A":"6", "B":"7" }
+    degreeMap: { "D♭": "♭2", E: "3", "F♯": "♯4", A: "6", B: "7" },
   },
-  "Gm": {
+  Gm: {
     diatonic: ["G", "A", "B♭", "C", "D", "E♭", "F"],
     nonDiatonic: ["A♭", "B", "C♯", "E", "F♯"],
-    degreeMap: { "A♭":"♭2", "B":"3", "C♯":"♯4", "E":"6", "F♯":"7" }
+    degreeMap: { "A♭": "♭2", B: "3", "C♯": "♯4", E: "6", "F♯": "7" },
   },
-  "Dm": {
+  Dm: {
     diatonic: ["D", "E", "F", "G", "A", "B♭", "C"],
     nonDiatonic: ["E♭", "F♯", "G♯", "B", "C♯"],
-    degreeMap: { "E♭":"♭2", "F♯":"3", "G♯":"♯4", "B":"6", "C♯":"7" }
+    degreeMap: { "E♭": "♭2", "F♯": "3", "G♯": "♯4", B: "6", "C♯": "7" },
   },
-  "Am": {
+  Am: {
     diatonic: ["A", "B", "C", "D", "E", "F", "G"],
     nonDiatonic: ["B♭", "C♯", "D♯", "F♯", "G♯"],
-    degreeMap: { "B♭":"♭2", "C♯":"3", "D♯":"♯4", "F♯":"6", "G♯":"7" }
+    degreeMap: { "B♭": "♭2", "C♯": "3", "D♯": "♯4", "F♯": "6", "G♯": "7" },
   },
-  "Em": {
+  Em: {
     diatonic: ["E", "F♯", "G", "A", "B", "C", "D"],
     nonDiatonic: ["F", "G♯", "A♯", "C♯", "D♯"],
-    degreeMap: { "F":"♭2", "G♯":"3", "A♯":"♯4", "C♯":"6", "D♯":"7" }
+    degreeMap: { F: "♭2", "G♯": "3", "A♯": "♯4", "C♯": "6", "D♯": "7" },
   },
-  "Bm": {
+  Bm: {
     diatonic: ["B", "C♯", "D", "E", "F♯", "G", "A"],
     nonDiatonic: ["C", "D♯", "F", "G♯", "A♯"],
-    degreeMap: { "C":"♭2", "D♯":"3", "F":"♯4", "G♯":"6", "A♯":"7" }
+    degreeMap: { C: "♭2", "D♯": "3", F: "♯4", "G♯": "6", "A♯": "7" },
   },
   "F♯m": {
     diatonic: ["F♯", "G♯", "A", "B", "C♯", "D", "E"],
     nonDiatonic: ["G", "A♯", "C", "D♯", "E♯"],
-    degreeMap: { "G":"♭2", "A♯":"3", "C":"♯4", "D♯":"6", "E♯":"7" }
+    degreeMap: { G: "♭2", "A♯": "3", C: "♯4", "D♯": "6", "E♯": "7" },
   },
   "C♯m": {
     diatonic: ["C♯", "D♯", "E", "F♯", "G♯", "A", "B"],
     nonDiatonic: ["D", "F", "G", "B♭", "C"],
-    degreeMap: { "D":"♭2", "F":"3", "G":"♯4", "B♭":"6", "C":"7" }
+    degreeMap: { D: "♭2", F: "3", G: "♯4", "B♭": "6", C: "7" },
   },
   "G♯m": {
     diatonic: ["G♯", "A♯", "B", "C♯", "D♯", "E", "F♯"],
     nonDiatonic: ["A", "C", "D", "F", "G"],
-    degreeMap: { "A":"♭2", "C":"3", "D":"♯4", "F":"6", "G":"7" }
+    degreeMap: { A: "♭2", C: "3", D: "♯4", F: "6", G: "7" },
   },
   "D♯m": {
     diatonic: ["D♯", "E♯", "F♯", "G♯", "A♯", "B", "C♯"],
     nonDiatonic: ["E", "G", "A", "C", "D"],
-    degreeMap: { "E":"♭2", "G":"3", "A":"♯4", "C":"6", "D":"7" }
+    degreeMap: { E: "♭2", G: "3", A: "♯4", C: "6", D: "7" },
   },
   "A♯m": {
     diatonic: ["A♯", "B♯", "C♯", "D♯", "E♯", "F♯", "G♯"],
     nonDiatonic: ["B", "D", "E", "G", "A"],
-    degreeMap: { "B":"♭2", "D":"3", "E":"♯4", "G":"6", "A":"7" }
-  }
+    degreeMap: { B: "♭2", D: "3", E: "♯4", G: "6", A: "7" },
+  },
 };
 
 var notas;
@@ -259,36 +333,40 @@ function generateNoteStyles(key) {
   //console.log("names",names)
 
   const latin = names.map((note) => {
-    
-    if(diatonicNotes.includes(note)) {
-        if(minorKeys.includes(key))
-          return minorDiatonicSofeleige[diatonicNotes.indexOf(note)];
-        else return majorDiatonicSofeleige[diatonicNotes.indexOf(note)];
-    }
-    else if(nonDiatonicNotes.includes(note)) {
-      if(minorKeys.includes(key))
-              return minorNonDiatonicSofeleige[nonDiatonicNotes.indexOf(note)];
-            else return majorNonDiatonicSofeleige[nonDiatonicNotes.indexOf(note)];
-        }
-    else return "";
+    if (diatonicNotes.includes(note)) {
+      if (minorKeys.includes(key))
+        return minorDiatonicSofeleige[diatonicNotes.indexOf(note)];
+      else return majorDiatonicSofeleige[diatonicNotes.indexOf(note)];
+    } else if (nonDiatonicNotes.includes(note)) {
+      if (minorKeys.includes(key))
+        return minorNonDiatonicSofeleige[nonDiatonicNotes.indexOf(note)];
+      else return majorNonDiatonicSofeleige[nonDiatonicNotes.indexOf(note)];
+    } else return "";
   });
 
-  const degrees = names.map((note) => {;
-    
-    if(diatonicNotes.includes(note))
-        return minorKeys.includes(key)? minorDiatonicsDegrees[diatonicNotes.indexOf(note)] :  majorDiatonicsDegrees[diatonicNotes.indexOf(note)]
-    else
-    return keySignatures[key]["degreeMap"][note] ;
-  
+  const degrees = names.map((note) => {
+    if (diatonicNotes.includes(note))
+      return minorKeys.includes(key)
+        ? minorDiatonicsDegrees[diatonicNotes.indexOf(note)]
+        : majorDiatonicsDegrees[diatonicNotes.indexOf(note)];
+    else return keySignatures[key]["degreeMap"][note];
   });
 
   // Get diatonic notes (without accidentals)
-  let diatonics ;
+  let diatonics;
 
-  if(minorKeys.includes(key))
-      diatonics = [...diatonicNotes,...minorDiatonicsDegrees, ...minorDiatonicSofeleige];
-    else
-      diatonics = [...diatonicNotes,...majorDiatonicsDegrees, ...majorDiatonicSofeleige];
+  if (minorKeys.includes(key))
+    diatonics = [
+      ...diatonicNotes,
+      ...minorDiatonicsDegrees,
+      ...minorDiatonicSofeleige,
+    ];
+  else
+    diatonics = [
+      ...diatonicNotes,
+      ...majorDiatonicsDegrees,
+      ...majorDiatonicSofeleige,
+    ];
 
   return {
     names,
@@ -305,12 +383,14 @@ for (const key in keySignatures) {
 
 var indexNota = 0; // Índice para iterar sobre las notas
 
-var numCeldasInicial = 16;
+var numCeldasInicial = 22;
 
 function agregarFila(indexNotaEliminar, celdasEliminar) {
-
-  const currentNoteStyle = localStorage.getItem("noteType")
-  notas = getNotas(selectNota.value, currentNoteStyle ==="hide" ? "names" : currentNoteStyle);
+  const currentNoteStyle = localStorage.getItem("noteType");
+  notas = getNotas(
+    selectNota.value,
+    currentNoteStyle === "hide" ? "names" : currentNoteStyle
+  );
 
   var tabla = document.getElementById("miTabla");
   var filas = tabla.getElementsByTagName("tr");
@@ -335,7 +415,6 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
     // Obtener la nota del SVG existente en la primera celda de la fila anterior
     var svgEnPrimeraCelda = primeraCeldaFilaAnterior.querySelector("svg");
     var notaFilaAnterior = svgEnPrimeraCelda.querySelector("text").textContent;
-  
 
     if (!indiceCambiado) {
       // Si no ha cambiado el índice, calcula indexNota normalmente
@@ -348,7 +427,10 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
         do {
           indexNotaAnterior =
             (indexNotaAnterior - 1 + notas.length) % notas.length;
-        } while (notas[indexNotaAnterior].includes("♯") || notas[indexNotaAnterior].includes("♭"));
+        } while (
+          notas[indexNotaAnterior].includes("♯") ||
+          notas[indexNotaAnterior].includes("♭")
+        );
         indexNota = indexNotaAnterior;
       } else {
         indexNota = (notas.indexOf(notaFilaAnterior) + 7) % notas.length;
@@ -358,7 +440,6 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
       indexNota = indexNotaEliminar;
     }
   } else {
-
     var indexNota = 0;
     var numCeldasAgregar;
 
@@ -368,9 +449,7 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
     } else {
       numCeldasAgregar = numCeldasInicial;
     }
-
   }
-  
 
   // Se crean los SVG
   for (var i = 0; i < numCeldasAgregar; i++) {
@@ -460,6 +539,7 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
     circulo.setAttribute("stroke", "black");
     circulo.setAttribute("stroke-width", "0.8");
     circulo.classList.add("circulo-blanco");
+    circulo.setAttribute("playmode", false);
 
     var texto = document.createElementNS("http://www.w3.org/2000/svg", "text");
     texto.setAttribute("x", "28");
@@ -540,7 +620,7 @@ window.onload = function () {
   if (primeraCarga) {
     setupFretBoard(true);
     handleChangeDisplayStyle();
-   // saveMemento();
+    // saveMemento();
     //console.log("Contenido de mementos:", mementos);
     primeraCarga = false;
   }
@@ -563,9 +643,8 @@ function setupFretBoard(hideAllNotes) {
   var tabla = document.getElementById("miTabla");
   tabla.innerHTML = "";
   if (hideAllNotes) {
-     iconText.textContent = "";
+    iconText.textContent = "";
   }
-
 
   initFretBoard();
 }
@@ -777,36 +856,34 @@ function cambiarEstiloCirculos() {
 // Obtener referencia al elemento select
 var selectNota = document.getElementById("selectNota");
 
-
 // Agregar evento change al select para llamar a ocultarSvg cuando cambie la nota seleccionada
 selectNota.addEventListener("change", function () {
-  setupFretBoard(localStorage.getItem("hideAllNotes") === "true"? true:false);
+  setupFretBoard(
+    localStorage.getItem("hideAllNotes") === "true" ? true : false
+  );
 });
 
 function ocultarSvg(nombreNota) {
-
   const noteScaleName = nombreNota;
-  const currentNoteStyle = localStorage.getItem("noteType")
-  const notType = currentNoteStyle  === "hide" ? "names" : localStorage.getItem("noteType") 
-  
+  const currentNoteStyle = localStorage.getItem("noteType");
+  const notType =
+    currentNoteStyle === "hide" ? "names" : localStorage.getItem("noteType");
+
   notas = getNotas(nombreNota, notType);
-  
 
   // Verificar si es la primera vez que se ejecuta la función
   if (typeof ocultarSvg.contador === "undefined") {
     ocultarSvg.contador = 0;
   }
 
-   nombreNota =  nombreNota.replace(/m/g, "")
+  nombreNota = nombreNota.replace(/m/g, "");
 
   if (["latin", "degrees"].includes(notType)) {
-    nombreNota = notas[noteStyles[noteScaleName]["names"].indexOf(nombreNota)] 
+    nombreNota = notas[noteStyles[noteScaleName]["names"].indexOf(nombreNota)];
   }
 
   // Verificar si la nota ingresada por el usuario es válida
   if (notas.includes(nombreNota)) {
-    
-
     // Obtener todos los círculos dentro de elementos SVG
     var circulos = document.querySelectorAll("circle");
 
@@ -816,27 +893,24 @@ function ocultarSvg(nombreNota) {
       if (!circulo.hasAttribute("button-icon")) {
         //console.log(circulo)
         // Obtener el valor del texto dentro del círculo SVG
-        var text =
-          circulo.parentElement.querySelector("text");
-        
+        var text = circulo.parentElement.querySelector("text");
 
         // Verificar si el texto del círculo corresponde a uno de los índices a ocultar
-        if (!noteStyles[noteScaleName]["diatonics"].includes(text.textContent) ) {
-         // console.log(text.textContent)
+        if (
+          !noteStyles[noteScaleName]["diatonics"].includes(text.textContent)
+        ) {
+          // console.log(text.textContent)
           circulo.style.opacity = "30%"; // Ocultar el círculo
-          text.style.visibility =
-            "hidden"; // Ocultar el texto
+          text.style.visibility = "hidden"; // Ocultar el texto
         } else {
-  
           circulo.style.opacity = "100%"; // Mostrar el círculo
           text.style.visibility =
             localStorage.getItem("hideAllNotes") === "true"
               ? "hidden"
-             : "visible"; // Mostrar el texto
+              : "visible"; // Mostrar el texto
         }
       }
     });
-
   } else {
     console.log("nota not found ", nombreNota);
   }
@@ -865,13 +939,11 @@ function clicSvg() {
       var circulo = this.querySelector("svg circle");
       var texto = this.querySelector("svg text");
 
-      
       const mode = localStorage.getItem("settings_mode");
 
       if (mode === "1") {
-
         let noteText = texto.textContent;
-         const noteType = localStorage.getItem("noteType");
+        const noteType = localStorage.getItem("noteType");
         if (["latin", "degrees"].includes(noteType)) {
           const noteIndex =
             noteStyles[selectNota.value][noteType].indexOf(noteText);
@@ -891,11 +963,26 @@ function clicSvg() {
           index = nonDiatonic.indexOf(noteText);
         }
 
-        if (isDiatonic) {
-          circulo.style.fill = diatonicColors[index];
-        } else {
-          circulo.style.fill = nonDiatonicColors[index];
+        var isInPlaymode = circulo.getAttribute("playmode") ===  "true"
+        let fill;
+        if (isInPlaymode) {
+          fill = "#FFF"
+          texto.classList.remove("playmode")
+         circulo.style.opacity = isDiatonic ? "1" : "0.3";
+        }else{
+          fill =  isDiatonic
+            ? diatonicColors[index]
+            : nonDiatonicColors[index];
+            texto.classList.add("playmode")
+            circulo.style.opacity = isDiatonic ? "1" : "0.7";
         }
+
+
+
+        
+  
+        circulo.style.fill = fill
+        circulo.setAttribute("playmode",!isInPlaymode)
 
       } else {
         // Obtener la opacidad computada del círculo
@@ -913,12 +1000,14 @@ function clicSvg() {
           }
         } else {
           circulo.style.opacity = "1";
-          console.log( localStorage.getItem("hideAllNotes") )
-          texto.style.visibility = localStorage.getItem("hideAllNotes") === "true" ? "hidden" : "visible";
+          texto.style.visibility =
+            localStorage.getItem("hideAllNotes") === "true"
+              ? "hidden"
+              : "visible";
         }
       }
 
-     // saveMemento();
+      // saveMemento();
       // console.log("Contenido de mementos:", mementos);
     });
   }
@@ -946,7 +1035,7 @@ function saveMemento() {
 
   memento.push({ selectNota: selectNotaValue }); // Agregar el valor de selectNota al memento
   mementos.push(memento);
- // console.log("se ha guardado memento");
+  // console.log("se ha guardado memento");
 }
 
 // Función para aplicar un memento y deshacer los cambios
@@ -983,7 +1072,7 @@ function handleChangeDisplayStyle() {
       currentStateIndex = (currentStateIndex + 1) % displayStates.length;
       const currentState = displayStates[currentStateIndex];
       iconText.textContent = currentState.text;
-      console.log(currentStateIndex)
+      //console.log(currentStateIndex);
 
       toggleNotesDisplay(currentState.style);
     });
@@ -1006,30 +1095,31 @@ function toggleSvgText(nombreNota, newStyle, oldStyle) {
   var circulos = document.querySelectorAll("circle");
 
   let nombreNotaStyles = noteStyles[nombreNota];
-  
 
   // Iterar sobre todos los círculos y aplicar la propiedad visibility según corresponda
   circulos.forEach(function (circulo) {
     var svgTextElement = circulo.parentElement.querySelector("text");
 
-    
     if (!circulo.hasAttribute("button-icon")) {
       // Obtener el valor del texto dentro del círculo SVG
-      if (newStyle === "hide" || localStorage.getItem("hideAllNotes") === "true") {
+      if (
+        newStyle === "hide" ||
+        localStorage.getItem("hideAllNotes") === "true"
+      ) {
         svgTextElement.style.visibility = "hidden";
       } else {
         var estilo = window.getComputedStyle(circulo);
         var opacidadActual = estilo.getPropertyValue("opacity");
         if (opacidadActual == "1") svgTextElement.style.visibility = "visible";
-        else svgTextElement.style.visibility = "hidden"
+        else svgTextElement.style.visibility = "hidden";
 
-         svgTextElement.textContent = nombreNotaStyles[newStyle][
+        svgTextElement.textContent =
+          nombreNotaStyles[newStyle][
             nombreNotaStyles[oldStyle].indexOf(svgTextElement.textContent)
           ];
-       }
+      }
 
-       // console.log(svgTextElement.textContent,  newStyle,oldStyle)
-
+      // console.log(svgTextElement.textContent,  newStyle,oldStyle)
     }
   });
 

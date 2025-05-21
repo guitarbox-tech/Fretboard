@@ -163,3 +163,8 @@ button:disabled {
     opacity: 0.65;
     cursor: not-allowed;
 }
+
+.playmode{
+  fill: #fff;
+  font-weight: 600;
+}

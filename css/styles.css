@@ -1,0 +1,7 @@
+.circle-transition {
+    transition: fill 1s ease-out;
+}
+
+.playmode {
+    font-weight: bold;
+}

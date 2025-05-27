@@ -631,6 +631,8 @@ window.onload = function () {
     var newMode = mode == "1" ? 2 : 1;
     toggleMode(newMode);
   });
+
+  new MIDIHandler();
 };
 
 function setupFretBoard(hideAllNotes) {

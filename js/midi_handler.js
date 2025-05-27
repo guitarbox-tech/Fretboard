@@ -25,7 +25,7 @@ class MIDIHandler {
     }
 
     handleMIDIMessage(message) {
-        console.log(message)
+       // console.log(message)
         const [status, note, velocity] = message.data;
         const noteOn = status === 144 && velocity > 0;
         const noteOff = status === 128 || (status === 144 && velocity === 0);

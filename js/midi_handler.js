@@ -7,7 +7,7 @@ class MIDIHandler {
 
     async init() {
         try {
-            this.midiAccess = await navigator.requestMIDIAccess();
+            this.midiAccess = await navigator.requestMIDIAccess({sysex:true});
             this.setupMIDIListeners();
         } catch (error) {
             console.error("MIDI access denied:", error);

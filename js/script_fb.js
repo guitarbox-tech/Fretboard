@@ -386,10 +386,11 @@ var indexNota = 0; // Índice para iterar sobre las notas
 var numCeldasInicial = 22;
 
 function agregarFila(indexNotaEliminar, celdasEliminar) {
-  const currentNoteStyle = localStorage.getItem("noteType");
+  const currentNoteStyle = localStorage.getItem("noteType")
+ 
   notas = getNotas(
     selectNota.value,
-    currentNoteStyle === "hide" ? "names" : currentNoteStyle
+    currentNoteStyle === "hide" || currentNoteStyle == "null" ? "names" : currentNoteStyle
   );
 
   var tabla = document.getElementById("miTabla");
@@ -639,7 +640,7 @@ function setupFretBoard(hideAllNotes) {
   localStorage.setItem("firstTime", true);
   localStorage.setItem("unaFila", true);
   localStorage.setItem("indiceCambiado", false);
-  //localStorage.setItem("noteType", "names");
+  localStorage.setItem("noteType", "names");
   localStorage.setItem("hideAllNotes", hideAllNotes);
 
   var tabla = document.getElementById("miTabla");

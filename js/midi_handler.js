@@ -1,7 +1,17 @@
 class MIDIHandler {
-    constructor() {
+     constructor() {
         this.midiAccess = null;
-        this.activeNotes = new Map(); // Store active notes and their timeout IDs
+       
+        this.activeNotes = new Map();
+       
+        this.channelToString = {
+            0: 0, // Channel 1 = String 1 (high E)
+            1: 1, // Channel 2 = String 2 (B)
+            2: 2, // Channel 3 = String 3 (G)
+            3: 3, // Channel 4 = String 4 (D)
+            4: 4, // Channel 5 = String 5 (A)
+            5: 5  // Channel 6 = String 6 (low E)
+        };
         this.init();
     }
 
@@ -25,57 +35,59 @@ class MIDIHandler {
     }
 
     handleMIDIMessage(message) {
-       // console.log(message)
-        const [status, note, velocity] = message.data;
-        const noteOn = status === 144 && velocity > 0;
-        const noteOff = status === 128 || (status === 144 && velocity === 0);
+       
+        const [statusByte, note, velocity] = message.data;
+      
+        
+        const channel = statusByte & 0x0F; // Get channel (0-15)
+        const command = statusByte & 0xF0; // Get command type
+
+        if (channel > 5) return;
+
+        const noteOn = command === 0x90 && velocity > 0;
+        const noteOff = command === 0x80 || (command === 0x90 && velocity === 0);
+
+        const stringNumber = this.channelToString[channel];
 
         if (noteOn) {
-            this.handleNoteOn(note);
+            this.handleNoteOn(note,stringNumber);
         } else if (noteOff) {
-            this.handleNoteOff(note);
+            this.handleNoteOff(note,stringNumber);
         }
     }
 
-    handleNoteOn(midiNote) {
-        const fretboardPosition = this.getMIDIFretboardPosition(midiNote);
-        if (fretboardPosition) {
-            const { string, fret } = fretboardPosition;
-            this.highlightNote(string, fret);
+    
+    handleNoteOn(midiNote, stringNumber) {
+        const fret = this.getFretFromMidiNote(midiNote, stringNumber);
+        if (fret >= 0 && fret <= 24) {
+            this.highlightNote(stringNumber, fret);
             
-            // Clear any existing timeout for this note
-            if (this.activeNotes.has(midiNote)) {
-                clearTimeout(this.activeNotes.get(midiNote));
+            const noteId = `${stringNumber}-${fret}`;
+            if (this.activeNotes.has(noteId)) {
+                clearTimeout(this.activeNotes.get(noteId));
             }
         }
     }
 
-    handleNoteOff(midiNote) {
-        const fretboardPosition = this.getMIDIFretboardPosition(midiNote);
-        if (fretboardPosition) {
-            const { string, fret } = fretboardPosition;
-            
-            // Add fade-out animation
+
+    handleNoteOff(midiNote, stringNumber) {
+        const fret = this.getFretFromMidiNote(midiNote, stringNumber);
+        if (fret >= 0 && fret <= 24) {
+            const noteId = `${stringNumber}-${fret}`;
+
             const timeoutId = setTimeout(() => {
-                this.fadeOutNote(string, fret);
-                this.activeNotes.delete(midiNote);
+                this.fadeOutNote(stringNumber, fret);
+                this.activeNotes.delete(noteId);
             }, 1000);
 
-            this.activeNotes.set(midiNote, timeoutId);
+            this.activeNotes.set(noteId, timeoutId);
         }
     }
 
-    getMIDIFretboardPosition(midiNote) {
-        // Convert MIDI note to string and fret position
-        const standardTuning = [64, 59, 55, 50, 45, 40]; // E4, B3, G3, D3, A2, E2
-        
-        for (let string = 0; string < standardTuning.length; string++) {
-            const openNote = standardTuning[string];
-            const fret = midiNote - openNote;
-            
-            if (fret >= 0 && fret <= 24) {
-                return { string, fret };
-            }
+    getMIDIFretboardPosition(midiNote, stringNumber) {
+        const fret = this.getFretFromMidiNote(midiNote, stringNumber);
+        if (fret >= 0 && fret <= 24) {
+            return { string: stringNumber, fret };
         }
         return null;
     }
@@ -91,6 +103,7 @@ class MIDIHandler {
             const isDiatonic = diatonic.includes(noteText);
             const index = isDiatonic ? diatonic.indexOf(noteText) : 0;
 
+            noteElement.style.transition = "fill 0s";
             noteElement.style.fill = isDiatonic ? diatonicColors[index] : nonDiatonicColors[index];
             noteElement.style.opacity = isDiatonic ? "1" : "0.7";
             textElement.classList.add("playmode");
@@ -103,7 +116,7 @@ class MIDIHandler {
         const textElement = table.rows[string].cells[fret].querySelector('text');
 
         if (noteElement) {
-            noteElement.style.transition = "fill 1s";
+            noteElement.style.transition = "fill 0.5s";
             noteElement.style.fill = "#FFF";
             textElement.classList.remove("playmode");
             
@@ -113,5 +126,12 @@ class MIDIHandler {
             
             noteElement.style.opacity = isDiatonic ? "1" : "0.3";
         }
+    }
+
+     getFretFromMidiNote(midiNote, stringNumber) {
+        // Standard tuning MIDI notes for open strings
+        const standardTuning = [64, 59, 55, 50, 45, 40]; // E4, B3, G3, D3, A2, E2
+        const openStringNote = standardTuning[stringNumber];
+        return midiNote - openStringNote;
     }
 }

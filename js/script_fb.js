@@ -43,6 +43,9 @@ const nonDiatonicColors = [
   "#34437D",
 ];
 
+var latinScale = {
+  C:"Do",D:"Re",E:"Mi",F:"Fa",G:"Sol",A:"La",B:"Si",
+}
 var majorDiatonicSofeleige = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
 var majorNonDiatonicSofeleige = ["Re♭", "Mi♭", "Fa♯", "La♭", "Si♭"];
 var minorDiatonicSofeleige = ["Do", "Re", "Mi♭", "Fa", "Sol", "La♭", "Si♭"];
@@ -323,6 +326,12 @@ function createNoteSequence(scale) {
   });
 }
 
+ function convertToLatin(note) {
+    let baseName = note.replace("♯", "").replace("♭", "");
+    let accidental = note.includes("♯") ? "♯" : note.includes("♭") ? "♭" : "";
+    return latinScale[baseName] + accidental;
+  }
+
 function generateNoteStyles(key) {
   let diatonicNotes = keySignatures[key].diatonic;
   let nonDiatonicNotes = keySignatures[key].nonDiatonic;
@@ -332,6 +341,9 @@ function generateNoteStyles(key) {
   const names = createNoteSequence(keyScale);
   //console.log("names",names)
 
+  const latin = names.map(convertToLatin)
+
+  /*
   const latin = names.map((note) => {
     if (diatonicNotes.includes(note)) {
       if (minorKeys.includes(key))
@@ -343,6 +355,7 @@ function generateNoteStyles(key) {
       else return majorNonDiatonicSofeleige[nonDiatonicNotes.indexOf(note)];
     } else return "";
   });
+  */
 
   const degrees = names.map((note) => {
     if (diatonicNotes.includes(note))
@@ -354,18 +367,22 @@ function generateNoteStyles(key) {
 
   // Get diatonic notes (without accidentals)
   let diatonics;
+ 
+
+  let diatonicSolfeige = diatonicNotes.map(convertToLatin);
+
 
   if (minorKeys.includes(key))
     diatonics = [
       ...diatonicNotes,
       ...minorDiatonicsDegrees,
-      ...minorDiatonicSofeleige,
+      ...diatonicSolfeige,
     ];
   else
     diatonics = [
       ...diatonicNotes,
       ...majorDiatonicsDegrees,
-      ...majorDiatonicSofeleige,
+      ...diatonicSolfeige,
     ];
 
   return {
@@ -380,6 +397,10 @@ const noteStyles = {};
 for (const key in keySignatures) {
   noteStyles[key] = generateNoteStyles(key);
 }
+
+//console.log("noteStyles", noteStyles);
+
+var selectNota = document.getElementById("selectNota");
 
 var indexNota = 0; // Índice para iterar sobre las notas
 
@@ -398,7 +419,7 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
   var nuevaFila = document.createElement("tr");
 
   var filaActual = filas.length - 1;
-  var numCeldasAgregar = numCeldasInicial;
+  var numCeldasAgregar = numCeldasInicial + 1;
 
   primeraVez = localStorage.getItem("firstTime") === "true";
   unaFila = localStorage.getItem("unaFila") === "true";
@@ -448,7 +469,7 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
       numCeldasAgregar = celdasEliminar;
       indexNota = indexNotaEliminar;
     } else {
-      numCeldasAgregar = numCeldasInicial;
+      numCeldasAgregar = numCeldasInicial + 1;
     }
   }
 
@@ -640,7 +661,11 @@ function setupFretBoard(hideAllNotes) {
   localStorage.setItem("firstTime", true);
   localStorage.setItem("unaFila", true);
   localStorage.setItem("indiceCambiado", false);
-  localStorage.setItem("noteType", "names");
+
+  if(!localStorage.getItem("noteType")){
+    localStorage.setItem("noteType", "names");
+  }
+
   localStorage.setItem("hideAllNotes", hideAllNotes);
 
   var tabla = document.getElementById("miTabla");
@@ -980,10 +1005,6 @@ function clicSvg() {
             circulo.style.opacity = isDiatonic ? "1" : "0.7";
         }
 
-
-
-        
-  
         circulo.style.fill = fill
         circulo.setAttribute("playmode",!isInPlaymode)
 

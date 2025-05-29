@@ -98,7 +98,7 @@ class MIDIHandler {
 
     if (noteElement) {
       const { diatonic, nonDiatonic } = keySignatures[selectNota.value];
-      const noteText = textElement.textContent;
+      let noteText = textElement.textContent;
 
       const noteType = localStorage.getItem("noteType");
       if (["latin", "degrees"].includes(noteType)) {

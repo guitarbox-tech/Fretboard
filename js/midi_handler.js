@@ -61,11 +61,6 @@ class MIDIHandler {
     const fret = this.getFretFromMidiNote(midiNote, stringNumber);
     if (fret >= 0 && fret <= 24) {
       this.highlightNote(stringNumber, fret);
-
-      const noteId = `${stringNumber}-${fret}`;
-      if (this.activeNotes.has(noteId)) {
-        clearTimeout(this.activeNotes.get(noteId));
-      }
     }
   }
 
@@ -73,13 +68,9 @@ class MIDIHandler {
     const fret = this.getFretFromMidiNote(midiNote, stringNumber);
     if (fret >= 0 && fret <= 24) {
       const noteId = `${stringNumber}-${fret}`;
-
-      const timeoutId = setTimeout(() => {
         this.fadeOutNote(stringNumber, fret);
         this.activeNotes.delete(noteId);
-      }, 1000);
-
-      this.activeNotes.set(noteId, timeoutId);
+        this.activeNotes.set(noteId, timeoutId);
     }
   }
 
@@ -116,7 +107,6 @@ class MIDIHandler {
       noteElement.style.fill = isDiatonic
         ? diatonicColors[index]
         : nonDiatonicColors[index];
-      noteElement.style.opacity = isDiatonic ? "1" : "0.7";
       textElement.classList.add("playmode");
     }
   }
@@ -127,15 +117,9 @@ class MIDIHandler {
     const textElement = table.rows[string].cells[fret].querySelector("text");
 
     if (noteElement) {
-      noteElement.style.transition = "fill 0.5s";
+      noteElement.style.transition = "fill 1s";
       noteElement.style.fill = "#FFF";
       textElement.classList.remove("playmode");
-
-      const { diatonic } = keySignatures[selectNota.value];
-      const noteText = textElement.textContent;
-      const isDiatonic = diatonic.includes(noteText);
-
-      noteElement.style.opacity = isDiatonic ? "1" : "0.3";
     }
   }
 

@@ -44,8 +44,14 @@ const nonDiatonicColors = [
 ];
 
 var latinScale = {
-  C:"Do",D:"Re",E:"Mi",F:"Fa",G:"Sol",A:"La",B:"Si",
-}
+  C: "Do",
+  D: "Re",
+  E: "Mi",
+  F: "Fa",
+  G: "Sol",
+  A: "La",
+  B: "Si",
+};
 var majorDiatonicSofeleige = ["Do", "Re", "Mi", "Fa", "Sol", "La", "Si"];
 var majorNonDiatonicSofeleige = ["Re♭", "Mi♭", "Fa♯", "La♭", "Si♭"];
 var minorDiatonicSofeleige = ["Do", "Re", "Mi♭", "Fa", "Sol", "La♭", "Si♭"];
@@ -326,11 +332,11 @@ function createNoteSequence(scale) {
   });
 }
 
- function convertToLatin(note) {
-    let baseName = note.replace("♯", "").replace("♭", "");
-    let accidental = note.includes("♯") ? "♯" : note.includes("♭") ? "♭" : "";
-    return latinScale[baseName] + accidental;
-  }
+function convertToLatin(note) {
+  let baseName = note.replace("♯", "").replace("♭", "");
+  let accidental = note.includes("♯") ? "♯" : note.includes("♭") ? "♭" : "";
+  return latinScale[baseName] + accidental;
+}
 
 function generateNoteStyles(key) {
   let diatonicNotes = keySignatures[key].diatonic;
@@ -341,7 +347,7 @@ function generateNoteStyles(key) {
   const names = createNoteSequence(keyScale);
   //console.log("names",names)
 
-  const latin = names.map(convertToLatin)
+  const latin = names.map(convertToLatin);
 
   /*
   const latin = names.map((note) => {
@@ -367,10 +373,8 @@ function generateNoteStyles(key) {
 
   // Get diatonic notes (without accidentals)
   let diatonics;
- 
 
   let diatonicSolfeige = diatonicNotes.map(convertToLatin);
-
 
   if (minorKeys.includes(key))
     diatonics = [
@@ -407,11 +411,13 @@ var indexNota = 0; // Índice para iterar sobre las notas
 var numCeldasInicial = 22;
 
 function agregarFila(indexNotaEliminar, celdasEliminar) {
-  const currentNoteStyle = localStorage.getItem("noteType")
- 
+  const currentNoteStyle = localStorage.getItem("noteType");
+
   notas = getNotas(
     selectNota.value,
-    currentNoteStyle === "hide" || currentNoteStyle == "null" ? "names" : currentNoteStyle
+    currentNoteStyle === "hide" || currentNoteStyle == "null"
+      ? "names"
+      : currentNoteStyle
   );
 
   var tabla = document.getElementById("miTabla");
@@ -647,22 +653,30 @@ window.onload = function () {
     primeraCarga = false;
   }
 
-  toggleMode(2);
-  document.getElementById("guitarButton").addEventListener("click", () => {
-    const mode = localStorage.getItem("settings_mode");
-    var newMode = mode == "1" ? 2 : 1;
-    toggleMode(newMode);
-  });
+  toggleMode(3);
+  document.getElementById("guitarButton").addEventListener("click", handleModeSwitch);
 
+  document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+      event.preventDefault();
+      handleModeSwitch()
+    }
+  });
   new MIDIHandler();
 };
+
+function handleModeSwitch() {
+  const currentMode = parseInt(localStorage.getItem("settings_mode") || "2");
+  const newMode = (currentMode % 3) + 1;
+  toggleMode(newMode);
+}
 
 function setupFretBoard(hideAllNotes) {
   localStorage.setItem("firstTime", true);
   localStorage.setItem("unaFila", true);
   localStorage.setItem("indiceCambiado", false);
 
-  if(!localStorage.getItem("noteType")){
+  if (!localStorage.getItem("noteType")) {
     localStorage.setItem("noteType", "names");
   }
 
@@ -969,7 +983,7 @@ function clicSvg() {
 
       const mode = localStorage.getItem("settings_mode");
 
-      if (mode === "1") {
+      if (mode === "1" || mode == "2" ) {
         let noteText = texto.textContent;
         const noteType = localStorage.getItem("noteType");
         if (["latin", "degrees"].includes(noteType)) {
@@ -991,23 +1005,21 @@ function clicSvg() {
           index = nonDiatonic.indexOf(noteText);
         }
 
-        var isInPlaymode = circulo.getAttribute("playmode") ===  "true"
+        var isInPlaymode = circulo.getAttribute("playmode") === "true";
         let fill;
         if (isInPlaymode) {
-          fill = "#FFF"
-          texto.classList.remove("playmode")
-         circulo.style.opacity = isDiatonic ? "1" : "0.3";
-        }else{
-          fill =  isDiatonic
-            ? diatonicColors[index]
-            : nonDiatonicColors[index];
-            texto.classList.add("playmode")
-            circulo.style.opacity = isDiatonic ? "1" : "0.7";
+          fill = "#FFF";
+          texto.classList.remove("playmode");
+          circulo.style.opacity = isDiatonic ? "1" : "0.3";
+        } else {
+          fill = mode === "1" ? "#b2beb5" : isDiatonic ? diatonicColors[index] : nonDiatonicColors[index];
+          texto.classList.add("playmode");
+          circulo.style.opacity = isDiatonic ? "1" : "0.7";
         }
 
-        circulo.style.fill = fill
-        circulo.setAttribute("playmode",!isInPlaymode)
-
+        circulo.style.transition = "fill 0s";
+        circulo.style.fill = fill;
+        circulo.setAttribute("playmode", !isInPlaymode);
       } else {
         // Obtener la opacidad computada del círculo
         var estilo = window.getComputedStyle(circulo);
@@ -1155,29 +1167,36 @@ function toggleSvgText(nombreNota, newStyle, oldStyle) {
 }
 
 function toggleMode(mode) {
+  mode = parseInt(mode);
+  const icon = document.getElementById("playicon")
   const elements = {
     numeroColumnas: document.getElementById("numeroColumnas"),
     displayToggle: document.getElementById("displayToggle"),
     selectNota: document.getElementById("selectNota"),
     guitarButton: document.getElementById("guitarButton"),
   };
+  console.log("toggleMode", mode);
 
-  if (mode === 1) {
-    // Disable elements
-    elements.numeroColumnas.disabled = true;
-    elements.displayToggle.disabled = true;
-    elements.selectNota.disabled = true;
-
-    // Add active style to guitar button
-    elements.guitarButton.classList.add("active");
-  } else {
-    // Enable elements
-    elements.numeroColumnas.disabled = false;
-    elements.displayToggle.disabled = false;
-    elements.selectNota.disabled = false;
-
-    // Remove active style from guitar button
-    elements.guitarButton.classList.remove("active");
+  switch (mode) {
+    case 1:
+    case 2:
+      // Disable elements
+      elements.numeroColumnas.disabled = true;
+      elements.displayToggle.disabled = true;
+      elements.selectNota.disabled = true;
+      // Add active style to guitar button
+      elements.guitarButton.classList.add("active");
+      break;
+    case 3:
+      // Enable elements
+      elements.numeroColumnas.disabled = false;
+      elements.displayToggle.disabled = false;
+      elements.selectNota.disabled = false;
+      // Remove active style from guitar button
+      elements.guitarButton.classList.remove("active");
+      break;
   }
+
+  icon.style.color = mode == 1 ? "#b2beb5" : mode == 2 ? "brown" : "black"
   localStorage.setItem("settings_mode", mode);
 }

@@ -1,9 +1,11 @@
 class MIDIHandler {
   constructor() {
     this.midiAccess = null;
-
+    this.isFreezeActive = false;
+    this.frozenNotes = new Set();
     this.activeNotes = new Map();
-
+    this.FOOTSWITCH_NOTE = 66;
+    this.CONTROL_CHANGE = 176; // Control Change messages for channels 1-6
     this.channelToString = {
       0: 0, // Channel 1 = String 1 (high E)
       1: 1, // Channel 2 = String 2 (B)
@@ -35,13 +37,21 @@ class MIDIHandler {
   }
 
   handleMIDIMessage(message) {
-    //console.log(localStorage.getItem("settings_mode"));
-    if (localStorage.getItem("settings_mode") === "2") return;
+    if (localStorage.getItem("settings_mode") === "3") return;
 
     const [statusByte, note, velocity] = message.data;
 
     const channel = statusByte & 0x0f; // Get channel (0-15)
     const command = statusByte & 0xf0; // Get command type
+
+   // console.log(note, channel, command, velocity);
+
+    // Check if it's a footswitch message
+    if (command === this.CONTROL_CHANGE && note === this.FOOTSWITCH_NOTE) {
+      this.isFreezeActive = velocity > 0;
+      this.onFootswitchRelease();
+      return;
+    }
 
     if (channel > 5) return;
 
@@ -51,9 +61,25 @@ class MIDIHandler {
     const stringNumber = this.channelToString[channel];
 
     if (noteOn) {
+      if (this.isFreezeActive) {
+        const noteId = `${stringNumber}-${note}`;
+        for (const frozenNote of this.frozenNotes) {
+          const [string, note] = frozenNote.split("-").map(Number);
+          if (string === stringNumber) {
+            this.frozenNotes.delete(frozenNote);
+            const fret = this.getFretFromMidiNote(note, string);
+            this.fadeOutNote(string, fret);
+            this.activeNotes.delete(`${stringNumber}-${fret}`);
+          }
+        }
+        // Add and handle new note
+        this.frozenNotes.add(noteId);
+      }
       this.handleNoteOn(note, stringNumber);
-    } else if (noteOff) {
-      this.handleNoteOff(note, stringNumber);
+    } else if (noteOff && !this.isFreezeActive) {
+      if (!this.frozenNotes.has(`${stringNumber}-${note}`)) {
+        this.handleNoteOff(note, stringNumber);
+      }
     }
   }
 
@@ -61,16 +87,15 @@ class MIDIHandler {
     const fret = this.getFretFromMidiNote(midiNote, stringNumber);
     if (fret >= 0 && fret <= 24) {
       this.highlightNote(stringNumber, fret);
+      this.activeNotes.set(`${stringNumber}-${fret}`, true);
     }
   }
 
   handleNoteOff(midiNote, stringNumber) {
     const fret = this.getFretFromMidiNote(midiNote, stringNumber);
     if (fret >= 0 && fret <= 24) {
-      const noteId = `${stringNumber}-${fret}`;
-        this.fadeOutNote(stringNumber, fret);
-        this.activeNotes.delete(noteId);
-        this.activeNotes.set(noteId, timeoutId);
+      this.fadeOutNote(stringNumber, fret);
+      this.activeNotes.delete(`${stringNumber}-${fret}`);
     }
   }
 
@@ -83,11 +108,13 @@ class MIDIHandler {
   }
 
   highlightNote(string, fret) {
+    const mode = localStorage.getItem("settings_mode");
     const table = document.getElementById("miTabla");
-    const noteElement = table.rows[string].cells[fret].querySelector("circle");
-    const textElement = table.rows[string].cells[fret].querySelector("text");
+    const noteElement =
+      table.rows[string].cells[fret]?.querySelector("circle") || null;
 
     if (noteElement) {
+      const textElement = table.rows[string].cells[fret].querySelector("text");
       const { diatonic, nonDiatonic } = keySignatures[selectNota.value];
       let noteText = textElement.textContent;
 
@@ -104,21 +131,30 @@ class MIDIHandler {
         : nonDiatonic.indexOf(noteText);
 
       noteElement.style.transition = "fill 0s";
-      noteElement.style.fill = isDiatonic
-        ? diatonicColors[index]
-        : nonDiatonicColors[index];
+      noteElement.style.fill =
+        mode === "1"
+          ? "#b2beb5"
+          : isDiatonic
+          ? diatonicColors[index]
+          : nonDiatonicColors[index];
       textElement.classList.add("playmode");
+      noteElement.style.opacity = isDiatonic ? "1" : "0.7";
     }
   }
 
   fadeOutNote(string, fret) {
     const table = document.getElementById("miTabla");
-    const noteElement = table.rows[string].cells[fret].querySelector("circle");
-    const textElement = table.rows[string].cells[fret].querySelector("text");
+    const noteElement =
+      table.rows[string].cells[fret]?.querySelector("circle") || null;
 
     if (noteElement) {
+      const textElement = table.rows[string].cells[fret].querySelector("text");
+      const { diatonic, nonDiatonic } = keySignatures[selectNota.value];
+      const isDiatonic = diatonic.includes(textElement.textContent);
+
       noteElement.style.transition = "fill 1s";
       noteElement.style.fill = "#FFF";
+      noteElement.style.opacity = isDiatonic ? "1" : "0.3";
       textElement.classList.remove("playmode");
     }
   }
@@ -128,5 +164,20 @@ class MIDIHandler {
     const standardTuning = [64, 59, 55, 50, 45, 40]; // E4, B3, G3, D3, A2, E2
     const openStringNote = standardTuning[stringNumber];
     return midiNote - openStringNote;
+  }
+
+  onFootswitchRelease() {
+    if (!this.isFreezeActive) {
+      this.clearFrozenNotes();
+    }
+  }
+
+  clearFrozenNotes() {
+    for (const frozenNote of this.frozenNotes) {
+      const [string, note] = frozenNote.split("-").map(Number);
+      const fret = this.getFretFromMidiNote(note, string);
+      this.fadeOutNote(string, fret);
+    }
+    this.frozenNotes.clear();
   }
 }

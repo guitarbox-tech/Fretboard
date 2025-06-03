@@ -982,6 +982,7 @@ function clicSvg() {
       var texto = this.querySelector("svg text");
 
       const mode = localStorage.getItem("settings_mode");
+      var isInPlaymode = circulo.getAttribute("playmode") === "true";
 
       if (mode === "1" || mode == "2" ) {
         let noteText = texto.textContent;
@@ -1005,14 +1006,14 @@ function clicSvg() {
           index = nonDiatonic.indexOf(noteText);
         }
 
-        var isInPlaymode = circulo.getAttribute("playmode") === "true";
+       
         let fill;
         if (isInPlaymode) {
           fill = "#FFF";
           texto.classList.remove("playmode");
           circulo.style.opacity = isDiatonic ? "1" : "0.3";
         } else {
-          fill = mode === "1" ? "#b2beb5" : isDiatonic ? diatonicColors[index] : nonDiatonicColors[index];
+          fill = mode === "1" ? "rgb(230, 231, 232)" : isDiatonic ? diatonicColors[index] : nonDiatonicColors[index];
           texto.classList.add("playmode");
           circulo.style.opacity = isDiatonic ? "1" : "0.7";
         }
@@ -1027,11 +1028,12 @@ function clicSvg() {
 
         // Cambiar la opacidad del círculo
         if (opacidadActual === "1") {
+          const opacity = isInPlaymode ? "0.7": "0.3"
           var textoVisible = texto.style.visibility;
           if (textoVisible === "hidden") {
-            circulo.style.opacity = "0.3";
+            circulo.style.opacity = opacity
           } else {
-            circulo.style.opacity = "0.3";
+            circulo.style.opacity = opacity;
             texto.style.visibility = "hidden";
           }
         } else {

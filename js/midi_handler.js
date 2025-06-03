@@ -24,6 +24,18 @@ class MIDIHandler {
     } catch (error) {
       console.error("MIDI access denied:", error);
     }
+    this.setupFreezeButton();
+  }
+
+  setupFreezeButton() {
+    const freezeButton = document.getElementById("freezeToggle");
+    freezeButton.addEventListener("click", () => {
+      this.isFreezeActive = !this.isFreezeActive;
+      freezeButton.classList.toggle("active", this.isFreezeActive);
+      if (!this.isFreezeActive) {
+        this.clearFrozenNotes();
+      }
+    });
   }
 
   setupMIDIListeners() {
@@ -44,14 +56,16 @@ class MIDIHandler {
     const channel = statusByte & 0x0f; // Get channel (0-15)
     const command = statusByte & 0xf0; // Get command type
 
-   // console.log(note, channel, command, velocity);
-
+    // console.log(note, channel, command, velocity);
+    
+    /*
     // Check if it's a footswitch message
     if (command === this.CONTROL_CHANGE && note === this.FOOTSWITCH_NOTE) {
       this.isFreezeActive = velocity > 0;
       this.onFootswitchRelease();
       return;
     }
+    */
 
     if (channel > 5) return;
 
@@ -133,12 +147,12 @@ class MIDIHandler {
       noteElement.style.transition = "fill 0s";
       noteElement.style.fill =
         mode === "1"
-          ? "#b2beb5"
+          ? "rgb(230, 231, 232)"
           : isDiatonic
           ? diatonicColors[index]
           : nonDiatonicColors[index];
       textElement.classList.add("playmode");
-      noteElement.style.opacity = isDiatonic ? "1" : "0.7";
+      //noteElement.style.opacity = isDiatonic ? "1" : "0.7";
     }
   }
 
@@ -154,7 +168,7 @@ class MIDIHandler {
 
       noteElement.style.transition = "fill 1s";
       noteElement.style.fill = "#FFF";
-      noteElement.style.opacity = isDiatonic ? "1" : "0.3";
+      //noteElement.style.opacity = isDiatonic ? "1" : "0.3";
       textElement.classList.remove("playmode");
     }
   }

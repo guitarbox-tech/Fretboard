@@ -126,8 +126,10 @@ class MIDIHandler {
     const table = document.getElementById("miTabla");
     const noteElement =
       table.rows[string].cells[fret]?.querySelector("circle") || null;
+    
 
     if (noteElement) {
+      const actualOpacity = noteElement.style.opacity
       const textElement = table.rows[string].cells[fret].querySelector("text");
       const { diatonic, nonDiatonic } = keySignatures[selectNota.value];
       let noteText = textElement.textContent;
@@ -152,24 +154,27 @@ class MIDIHandler {
           ? diatonicColors[index]
           : nonDiatonicColors[index];
       textElement.classList.add("playmode");
-      //noteElement.style.opacity = isDiatonic ? "1" : "0.7";
+      noteElement.style.opacity = actualOpacity == "1" ? "1" : "0.7";
+      noteElement.setAttribute("actualOpacity",actualOpacity)
     }
   }
 
   fadeOutNote(string, fret) {
+
     const table = document.getElementById("miTabla");
     const noteElement =
       table.rows[string].cells[fret]?.querySelector("circle") || null;
-
+      
     if (noteElement) {
+      const actualOpacity = noteElement.getAttribute("actualOpacity")
       const textElement = table.rows[string].cells[fret].querySelector("text");
       const { diatonic, nonDiatonic } = keySignatures[selectNota.value];
       const isDiatonic = diatonic.includes(textElement.textContent);
 
       noteElement.style.transition = "fill 1s";
       noteElement.style.fill = "#FFF";
-      //noteElement.style.opacity = isDiatonic ? "1" : "0.3";
       textElement.classList.remove("playmode");
+      noteElement.style.opacity = actualOpacity
     }
   }
 

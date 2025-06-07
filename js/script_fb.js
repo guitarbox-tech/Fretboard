@@ -654,12 +654,14 @@ window.onload = function () {
   }
 
   toggleMode(3);
-  document.getElementById("guitarButton").addEventListener("click", handleModeSwitch);
+  document
+    .getElementById("guitarButton")
+    .addEventListener("click", handleModeSwitch);
 
-  document.addEventListener('keydown', function(event) {
-    if (event.code === 'Space') {
+  document.addEventListener("keydown", function (event) {
+    if (event.code === "Space") {
       event.preventDefault();
-      handleModeSwitch()
+      handleModeSwitch();
     }
   });
   new MIDIHandler();
@@ -982,67 +984,11 @@ function clicSvg() {
       var texto = this.querySelector("svg text");
 
       const mode = localStorage.getItem("settings_mode");
-      var isInPlaymode = circulo.getAttribute("playmode") === "true";
 
-      if (mode === "1" || mode == "2" ) {
-        let noteText = texto.textContent;
-        const noteType = localStorage.getItem("noteType");
-        if (["latin", "degrees"].includes(noteType)) {
-          const noteIndex =
-            noteStyles[selectNota.value][noteType].indexOf(noteText);
-          noteText = noteStyles[selectNota.value]["names"][noteIndex];
-        }
-
-        const keySignature = selectNota.value;
-        const { diatonic, nonDiatonic } = keySignatures[keySignature];
-
-        let index;
-        let isDiatonic = false;
-
-        if (diatonic.includes(noteText)) {
-          index = diatonic.indexOf(noteText);
-          isDiatonic = true;
-        } else if (nonDiatonic.includes(noteText)) {
-          index = nonDiatonic.indexOf(noteText);
-        }
-
-       
-        let fill;
-        if (isInPlaymode) {
-          fill = "#FFF";
-          texto.classList.remove("playmode");
-          circulo.style.opacity = isDiatonic ? "1" : "0.3";
-        } else {
-          fill = mode === "1" ? "rgb(230, 231, 232)" : isDiatonic ? diatonicColors[index] : nonDiatonicColors[index];
-          texto.classList.add("playmode");
-          circulo.style.opacity = isDiatonic ? "1" : "0.7";
-        }
-
-        circulo.style.transition = "fill 0s";
-        circulo.style.fill = fill;
-        circulo.setAttribute("playmode", !isInPlaymode);
+      if (mode === "1" || mode == "2") {
+        toggleNoteColorState(texto, circulo);
       } else {
-        // Obtener la opacidad computada del círculo
-        var estilo = window.getComputedStyle(circulo);
-        var opacidadActual = estilo.getPropertyValue("opacity");
-
-        // Cambiar la opacidad del círculo
-        if (opacidadActual === "1") {
-          const opacity = isInPlaymode ? "0.7": "0.3"
-          var textoVisible = texto.style.visibility;
-          if (textoVisible === "hidden") {
-            circulo.style.opacity = opacity
-          } else {
-            circulo.style.opacity = opacity;
-            texto.style.visibility = "hidden";
-          }
-        } else {
-          circulo.style.opacity = "1";
-          texto.style.visibility =
-            localStorage.getItem("hideAllNotes") === "true"
-              ? "hidden"
-              : "visible";
-        }
+        switchNoteSelectionState(texto, circulo);
       }
 
       // saveMemento();
@@ -1093,6 +1039,72 @@ function applyMemento(memento) {
   document.getElementById("selectNota").value = selectNotaValue; // Restaurar el valor de selectNota
 }
 
+function toggleNoteColorState(texto, circulo) {
+  var isInPlaymode = circulo.getAttribute("playmode") === "true";
+  const mode = localStorage.getItem("settings_mode");
+  let noteText = texto.textContent;
+  const noteType = localStorage.getItem("noteType");
+  if (["latin", "degrees"].includes(noteType)) {
+    const noteIndex = noteStyles[selectNota.value][noteType].indexOf(noteText);
+    noteText = noteStyles[selectNota.value]["names"][noteIndex];
+  }
+
+  const keySignature = selectNota.value;
+  const { diatonic, nonDiatonic } = keySignatures[keySignature];
+
+  let index;
+  let isDiatonic = false;
+
+  if (diatonic.includes(noteText)) {
+    index = diatonic.indexOf(noteText);
+    isDiatonic = true;
+  } else if (nonDiatonic.includes(noteText)) {
+    index = nonDiatonic.indexOf(noteText);
+  }
+
+  let fill;
+  if (isInPlaymode) {
+    fill = "#FFF";
+    texto.classList.remove("playmode");
+    circulo.style.opacity = isDiatonic ? "1" : "0.3";
+  } else {
+    fill =
+      mode === "1"
+        ? "rgb(230, 231, 232)"
+        : isDiatonic
+        ? diatonicColors[index]
+        : nonDiatonicColors[index];
+    texto.classList.add("playmode");
+    circulo.style.opacity = isDiatonic ? "1" : "0.7";
+  }
+
+  circulo.style.transition = "fill 0s";
+  circulo.style.fill = fill;
+  circulo.setAttribute("playmode", !isInPlaymode);
+}
+
+function switchNoteSelectionState(texto, circulo) {
+  var isInPlaymode = circulo.getAttribute("playmode") === "true";
+  // Obtener la opacidad computada del círculo
+  var estilo = window.getComputedStyle(circulo);
+  var opacidadActual = estilo.getPropertyValue("opacity");
+
+  // Cambiar la opacidad del círculo
+  if (opacidadActual === "1") {
+    const opacity = isInPlaymode ? "0.7" : "0.3";
+    var textoVisible = texto.style.visibility;
+    if (textoVisible === "hidden") {
+      circulo.style.opacity = opacity;
+    } else {
+      circulo.style.opacity = opacity;
+      texto.style.visibility = "hidden";
+    }
+  } else {
+    circulo.style.opacity = "1";
+    texto.style.visibility =
+      localStorage.getItem("hideAllNotes") === "true" ? "hidden" : "visible";
+  }
+}
 // change notes display style
 function handleChangeDisplayStyle() {
   const displayStates = [
@@ -1170,7 +1182,7 @@ function toggleSvgText(nombreNota, newStyle, oldStyle) {
 
 function toggleMode(mode) {
   mode = parseInt(mode);
-  const icon = document.getElementById("playicon")
+  const icon = document.getElementById("playicon");
   const elements = {
     numeroColumnas: document.getElementById("numeroColumnas"),
     displayToggle: document.getElementById("displayToggle"),
@@ -1199,6 +1211,6 @@ function toggleMode(mode) {
       break;
   }
 
-  icon.style.color = mode == 1 ? "#b2beb5" : mode == 2 ? "brown" : "black"
+  icon.style.color = mode == 1 ? "#b2beb5" : mode == 2 ? "brown" : "black";
   localStorage.setItem("settings_mode", mode);
 }

@@ -82,7 +82,7 @@ class MIDIHandler {
       return
     }
 
-    if( !this.isArrowDownHeld &&  settingsMode === "3") 
+    if( !this.isArrowDownHeld &&  settingsMode === "3")
       return
 
     // console.log(note, channel, command, velocity);

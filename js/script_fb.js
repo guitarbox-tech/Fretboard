@@ -1062,11 +1062,15 @@ function toggleNoteColorState(texto, circulo) {
     index = nonDiatonic.indexOf(noteText);
   }
 
+  var estilo = window.getComputedStyle(circulo);
+  var opacidadActual = estilo.getPropertyValue("opacity");
+ 
+
   let fill;
   if (isInPlaymode) {
     fill = "#FFF";
     texto.classList.remove("playmode");
-    circulo.style.opacity = isDiatonic ? "1" : "0.3";
+    circulo.style.opacity = opacidadActual == "1" ? "1"  : "0.3";
   } else {
     fill =
       mode === "1"
@@ -1075,7 +1079,7 @@ function toggleNoteColorState(texto, circulo) {
         ? diatonicColors[index]
         : nonDiatonicColors[index];
     texto.classList.add("playmode");
-    circulo.style.opacity = isDiatonic ? "1" : "0.7";
+    circulo.style.opacity = opacidadActual == "1" ? "1"  : "0.7";
   }
 
   circulo.style.transition = "fill 0s";

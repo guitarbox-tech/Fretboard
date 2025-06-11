@@ -232,9 +232,11 @@ class MIDIHandler {
       console.log(this.isArrowDownHeld);
 
       if (!this.isArrowDownHeld) {
-        noteElement.style.transition = noteElement.style.opacity = "1" ? "fill 1s" : "fill 7s";
+        noteElement.style.transition = "fill 1s, opacity 1s";
         noteElement.style.fill = actualFill;
-        noteElement.style.opacity = actualOpacity;
+        setTimeout(() => {
+          noteElement.style.opacity = actualOpacity;
+        }, 50);
         if (noteElement.getAttribute("playmode") === "false") {
           textElement.classList.remove("playmode");
         }

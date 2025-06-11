@@ -74,13 +74,15 @@ class MIDIHandler {
     const stringNumber = this.channelToString[channel];
 
     const settingsMode = localStorage.getItem("settings_mode");
-    if (this.isArrowDownHeld && noteOn) {
+    if (this.isArrowDownHeld && noteOn ) {
       if (settingsMode === "3") this.toggleNoteSelection(note, stringNumber);
       else this.toggleNoteColor(note, stringNumber);
       return;
+    }else if(this.isArrowDownHeld && noteOff ){
+      return
     }
 
-    if( !this.isArrowDownHeld && noteOn && settingsMode === "3") 
+    if( !this.isArrowDownHeld &&  settingsMode === "3") 
       return
 
     // console.log(note, channel, command, velocity);
@@ -230,7 +232,7 @@ class MIDIHandler {
       console.log(this.isArrowDownHeld);
 
       if (!this.isArrowDownHeld) {
-        noteElement.style.transition = "fill 1s";
+        noteElement.style.transition = noteElement.style.opacity = "1" ? "fill 1s" : "fill 7s";
         noteElement.style.fill = actualFill;
         noteElement.style.opacity = actualOpacity;
         if (noteElement.getAttribute("playmode") === "false") {

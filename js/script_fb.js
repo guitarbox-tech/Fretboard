@@ -739,9 +739,9 @@ function agregarColumna() {
     );
     nuevoCirculo.setAttribute("cx", "28");
     nuevoCirculo.setAttribute("cy", "16");
-    nuevoCirculo.setAttribute("r", "14");
+    nuevoCirculo.setAttribute("r", "13.5");
     nuevoCirculo.setAttribute("stroke", "black");
-    nuevoCirculo.setAttribute("stroke-width", "1");
+    nuevoCirculo.setAttribute("stroke-width", "0.8");
     nuevoCirculo.classList.add("circulo-blanco");
     nuevoCirculo.setAttribute("data-note", notas[indexNota]);
 

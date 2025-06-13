@@ -1,7 +1,7 @@
 var primeraVez; // Para que la primera fila creada tome E como primera nota, después se vuelve false y se sigue la lógica de cada cuerda
 var unaFila;
 var indiceCambiado = false; // Si el usuario cambió la afinación de alguna cuerda y luego eliminó filas, esa cuerda debe conservar la selección del usuario
-
+localStorage.setItem("numCeldasInicial", 22);
 const standardScale = [
   "E",
   "E♯",
@@ -408,9 +408,10 @@ var selectNota = document.getElementById("selectNota");
 
 var indexNota = 0; // Índice para iterar sobre las notas
 
-var numCeldasInicial = 22;
+
 
 function agregarFila(indexNotaEliminar, celdasEliminar) {
+  var numCeldasInicial = parseInt(localStorage.getItem("numCeldasInicial"));
   const currentNoteStyle = localStorage.getItem("noteType");
 
   notas = getNotas(
@@ -821,10 +822,16 @@ selectNumeroColumnas.addEventListener("change", function () {
 
   // Comparar el número seleccionado con el número actual y llamar a la función correspondiente
   if (numColumnasSeleccionado > numColumnasActual) {
-    var numColumnasAgregar = numColumnasSeleccionado - numColumnasActual;
+    /*var numColumnasAgregar = numColumnasSeleccionado - numColumnasActual;
     for (var i = 0; i < numColumnasAgregar; i++) {
       agregarColumna();
-    }
+    }*/
+
+    localStorage.setItem("numCeldasInicial",numColumnasSeleccionado - 1)
+     setupFretBoard(
+    localStorage.getItem("hideAllNotes") === "true" ? true : false
+  );
+
   } else if (numColumnasSeleccionado < numColumnasActual) {
     var numColumnasEliminar = numColumnasActual - numColumnasSeleccionado;
     for (var i = 0; i < numColumnasEliminar; i++) {
@@ -896,9 +903,6 @@ function cambiarEstiloCirculos() {
     }
   });
 }
-
-// Obtener referencia al elemento select
-var selectNota = document.getElementById("selectNota");
 
 // Agregar evento change al select para llamar a ocultarSvg cuando cambie la nota seleccionada
 selectNota.addEventListener("change", function () {

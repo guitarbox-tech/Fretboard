@@ -234,13 +234,13 @@ var keySignatures = {
   },
   "C♭": {
     diatonic: ["C♭", "D♭", "E♭", "F♭", "G♭", "A♭", "B♭"],
-    nonDiatonic: ["C", "D", "E", "F", "G"],
+    nonDiatonic: ["C", "D", "F", "G", "A"],
     degreeMap: {
       C: "♭2",
       D: "♭3",
-      E: "♯4",
-      F: "♭6",
-      G: "♭7",
+      F: "♯4",
+      G: "♭6",
+      A: "♭7",
     },
   },
 

@@ -834,6 +834,7 @@ selectNumeroColumnas.addEventListener("change", function () {
 
   } else if (numColumnasSeleccionado < numColumnasActual) {
     var numColumnasEliminar = numColumnasActual - numColumnasSeleccionado;
+    localStorage.setItem("numCeldasInicial",parseInt(localStorage.getItem("numCeldasInicial") - numColumnasEliminar))
     for (var i = 0; i < numColumnasEliminar; i++) {
       eliminarColumna();
     }

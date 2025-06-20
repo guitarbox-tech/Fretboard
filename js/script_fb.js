@@ -29,7 +29,7 @@ const standardScale = [
 const diatonicColors = [
   "#C9322C",
   "#ECAB26",
-  "#f3e03d",
+  "#9E6634",
   "#BFC940",
   "#449721",
   "#3F9793",
@@ -37,7 +37,7 @@ const diatonicColors = [
 ];
 const nonDiatonicColors = [
   "#ECAB26",
-  "#f3e03d",
+  "#9E6634",
   "#BFC940",
   "#3F9793",
   "#34437D",
@@ -1079,7 +1079,7 @@ function toggleNoteColorState(texto, circulo) {
   } else {
     fill =
       mode === "1"
-        ? "rgb(230, 231, 232)"
+        ? "#141414"
         : isDiatonic
         ? diatonicColors[index]
         : nonDiatonicColors[index];

@@ -87,31 +87,10 @@ class MIDIHandler {
 
     // console.log(note, channel, command, velocity);
 
-    /*
-    // Check if it's a footswitch message
-    if (command === this.CONTROL_CHANGE && note === this.FOOTSWITCH_NOTE) {
-      this.isFreezeActive = velocity > 0;
-      this.onFootswitchRelease();
-      return;
-    }
-    */
+
 
     if (noteOn) {
       if (this.freezeMode === 1) {
-        /*
-      
-        for (const frozenNote of this.frozenNotes) {
-          const [string, note] = frozenNote.split("-").map(Number);
-          if (string === stringNumber) {
-            this.frozenNotes.delete(frozenNote);
-            const fret = this.getFretFromMidiNote(note, string);
-            this.fadeOutNote(string, fret);
-            this.activeNotes.delete(`${stringNumber}-${fret}`);
-          }
-        }
-        // Add and handle new note
-       
-         */
         const noteId = `${stringNumber}-${note}`;
         this.frozenNotes.add(noteId);
       }
@@ -204,7 +183,7 @@ class MIDIHandler {
       noteElement.style.transition = "fill 0s";
       let fill =
         mode === "1"
-          ? "rgb(230, 231, 232)"
+          ? "#141414"
           : isDiatonic
           ? diatonicColors[index]
           : nonDiatonicColors[index];

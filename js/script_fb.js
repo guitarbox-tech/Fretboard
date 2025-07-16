@@ -408,8 +408,6 @@ var selectNota = document.getElementById("selectNota");
 
 var indexNota = 0; // Índice para iterar sobre las notas
 
-
-
 function agregarFila(indexNotaEliminar, celdasEliminar) {
   var numCeldasInicial = parseInt(localStorage.getItem("numCeldasInicial"));
   const currentNoteStyle = localStorage.getItem("noteType");
@@ -665,6 +663,15 @@ window.onload = function () {
       handleModeSwitch();
     }
   });
+
+  // Add key event listener for the "c" key
+  document.addEventListener("keydown", function (event) {
+    if (event.key.toLowerCase() === "c") {
+      event.preventDefault();
+      toggleAllCirclesState();
+    }
+  });
+
   new MIDIHandler();
 };
 
@@ -684,6 +691,8 @@ function setupFretBoard(hideAllNotes) {
   }
 
   localStorage.setItem("hideAllNotes", hideAllNotes);
+
+  localStorage.setItem("circleToggleState", "0");
 
   var tabla = document.getElementById("miTabla");
   tabla.innerHTML = "";
@@ -827,14 +836,16 @@ selectNumeroColumnas.addEventListener("change", function () {
       agregarColumna();
     }*/
 
-    localStorage.setItem("numCeldasInicial",numColumnasSeleccionado - 1)
-     setupFretBoard(
-    localStorage.getItem("hideAllNotes") === "true" ? true : false
-  );
-
+    localStorage.setItem("numCeldasInicial", numColumnasSeleccionado - 1);
+    setupFretBoard(
+      localStorage.getItem("hideAllNotes") === "true" ? true : false
+    );
   } else if (numColumnasSeleccionado < numColumnasActual) {
     var numColumnasEliminar = numColumnasActual - numColumnasSeleccionado;
-    localStorage.setItem("numCeldasInicial",parseInt(localStorage.getItem("numCeldasInicial") - numColumnasEliminar))
+    localStorage.setItem(
+      "numCeldasInicial",
+      parseInt(localStorage.getItem("numCeldasInicial") - numColumnasEliminar)
+    );
     for (var i = 0; i < numColumnasEliminar; i++) {
       eliminarColumna();
     }
@@ -1069,13 +1080,12 @@ function toggleNoteColorState(texto, circulo) {
 
   var estilo = window.getComputedStyle(circulo);
   var opacidadActual = estilo.getPropertyValue("opacity");
- 
 
   let fill;
   if (isInPlaymode) {
     fill = "#FFF";
     texto.classList.remove("playmode");
-    circulo.style.opacity = opacidadActual == "1" ? "1"  : "0.3";
+    circulo.style.opacity = opacidadActual == "1" ? "1" : "0.3";
   } else {
     fill =
       mode === "1"
@@ -1084,7 +1094,7 @@ function toggleNoteColorState(texto, circulo) {
         ? diatonicColors[index]
         : nonDiatonicColors[index];
     texto.classList.add("playmode");
-    circulo.style.opacity = opacidadActual == "1" ? "1"  : "0.7";
+    circulo.style.opacity = opacidadActual == "1" ? "1" : "0.7";
   }
 
   circulo.style.transition = "fill 0s";
@@ -1100,6 +1110,25 @@ function switchNoteSelectionState(texto, circulo) {
 
   // Cambiar la opacidad del círculo
   if (opacidadActual === "1") {
+    const opacity = isInPlaymode ? "0.7" : "0.3";
+    var textoVisible = texto.style.visibility;
+    if (textoVisible === "hidden") {
+      circulo.style.opacity = opacity;
+    } else {
+      circulo.style.opacity = opacity;
+      texto.style.visibility = "hidden";
+    }
+  } else {
+    circulo.style.opacity = "1";
+    texto.style.visibility =
+      localStorage.getItem("hideAllNotes") === "true" ? "hidden" : "visible";
+  }
+}
+
+function restoreNoteSelectionState(texto, circulo,opacidadActual) {
+  var isInPlaymode = circulo.getAttribute("playmode") === "true";
+  // Cambiar la opacidad del círculo
+  if (opacidadActual === "0.7" || opacidadActual === "0.3") {
     const opacity = isInPlaymode ? "0.7" : "0.3";
     var textoVisible = texto.style.visibility;
     if (textoVisible === "hidden") {
@@ -1138,7 +1167,7 @@ function handleChangeDisplayStyle() {
     });
 
   // Add keyboard event listener for arrow up key
-  document.addEventListener("keydown", function(event) {
+  document.addEventListener("keydown", function (event) {
     if (event.key === "ArrowUp") {
       event.preventDefault();
       currentStateIndex = (currentStateIndex + 1) % displayStates.length;
@@ -1235,4 +1264,44 @@ function toggleMode(mode) {
 
   icon.style.color = mode == 1 ? "#b2beb5" : mode == 2 ? "brown" : "black";
   localStorage.setItem("settings_mode", mode);
+}
+
+// Add this function to handle the circle toggle state
+function toggleAllCirclesState() {
+  // States: 0 = default (key signature), 1 = all selected, 2 = none selected
+  const currentState = parseInt(
+    localStorage.getItem("circleToggleState") || "0"
+  );
+
+  const newState = currentState % 3;
+  localStorage.setItem("circleToggleState", newState + 1);
+
+  // Get current key signature
+  const keySignature = document.getElementById("selectNota").value;
+  
+  if (newState === 2) {
+    ocultarSvg(keySignature)
+    return;
+  }
+
+  // Get all circles
+  const circulos = document.querySelectorAll("circle");
+
+  circulos.forEach(function (circulo) {
+    if (!circulo.hasAttribute("button-icon")) {
+      const text = circulo.parentElement.querySelector("text");
+      switch (newState) {
+        case 0: // All unselected
+          circulo.style.opacity = "1";
+          switchNoteSelectionState(text, circulo);
+          break;
+        case 1: // All selected
+          circulo.style.opacity = "0.7";
+          switchNoteSelectionState(text, circulo);
+          break;
+      }
+      console.log("New circle toggle state:", newState);
+    }
+  });
+
 }

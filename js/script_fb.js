@@ -1114,6 +1114,7 @@ function switchNoteSelectionState(texto, circulo) {
       localStorage.getItem("hideAllNotes") === "true" ? "hidden" : "visible";
   }
 }
+
 // change notes display style
 function handleChangeDisplayStyle() {
   const displayStates = [
@@ -1135,6 +1136,18 @@ function handleChangeDisplayStyle() {
 
       toggleNotesDisplay(currentState.style);
     });
+
+  // Add keyboard event listener for arrow up key
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      currentStateIndex = (currentStateIndex + 1) % displayStates.length;
+      const currentState = displayStates[currentStateIndex];
+      iconText.textContent = currentState.text;
+
+      toggleNotesDisplay(currentState.style);
+    }
+  });
 }
 
 function toggleNotesDisplay(newStyle) {

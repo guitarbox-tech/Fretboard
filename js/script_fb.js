@@ -1,3 +1,4 @@
+
 var primeraVez; // Para que la primera fila creada tome E como primera nota, después se vuelve false y se sigue la lógica de cada cuerda
 var unaFila;
 var indiceCambiado = false; // Si el usuario cambió la afinación de alguna cuerda y luego eliminó filas, esa cuerda debe conservar la selección del usuario
@@ -672,6 +673,9 @@ window.onload = function () {
     }
   });
 
+    // Initialize fretboard position
+   updateFretboardPosition();
+
   new MIDIHandler();
 };
 
@@ -701,6 +705,9 @@ function setupFretBoard(hideAllNotes) {
   }
 
   initFretBoard();
+
+  // Apply text editing to all circles
+  setTimeout(setupCircleTextEditing, 100);
 }
 
 function initFretBoard() {
@@ -850,6 +857,10 @@ selectNumeroColumnas.addEventListener("change", function () {
       eliminarColumna();
     }
   }
+
+  // Update position after column changes
+  updateFretboardPosition();
+
 });
 
 function actualizarVisibilidadBotones() {
@@ -1061,13 +1072,13 @@ function toggleNoteColorState(texto, circulo) {
   const isInPlaymode = circulo.getAttribute("playmode") === "true";
   const currentColorMode = circulo.getAttribute("colorMode");
   const opacidadActual = window.getComputedStyle(circulo).opacity;
+  let dataNote = circulo.getAttribute("data-note");
   
   // Get the note text in standard notation regardless of current display style
-  let noteText = texto.textContent;
   const noteType = localStorage.getItem("noteType");
   if (["latin", "degrees"].includes(noteType)) {
-    const noteIndex = noteStyles[selectNota.value][noteType].indexOf(noteText);
-    noteText = noteStyles[selectNota.value]["names"][noteIndex];
+    const noteIndex = noteStyles[selectNota.value][noteType].indexOf(dataNote);
+    dataNote = noteStyles[selectNota.value]["names"][noteIndex];
   }
 
   // Get note information from key signature
@@ -1075,10 +1086,10 @@ function toggleNoteColorState(texto, circulo) {
   const { diatonic, nonDiatonic } = keySignatures[keySignature];
   
   // Determine if note is diatonic and its index
-  const isDiatonic = diatonic.includes(noteText);
-  const index = isDiatonic 
-    ? diatonic.indexOf(noteText) 
-    : nonDiatonic.indexOf(noteText);
+  const isDiatonic = diatonic.includes(dataNote);
+  const index = isDiatonic
+    ? diatonic.indexOf(dataNote)
+    : nonDiatonic.indexOf(dataNote);
 
   // Toggle state based on current playmode and color mode
   let fill, newPlaymode;
@@ -1315,4 +1326,102 @@ function toggleAllCirclesState() {
     }
   });
 
+}
+
+
+function updateFretboardPosition() {
+  const fretboardContainer = document.getElementById('fretboardContainer');
+  const table = document.getElementById('miTabla');
+  const numColumns = parseInt(document.getElementById('numeroColumnas').value);
+
+  // If 24 frets are selected, center the fretboard
+  if (numColumns === 24) {
+    fretboardContainer.classList.add('centered');
+    table.classList.add('centered');
+  } else {
+    fretboardContainer.classList.remove('centered');
+    table.classList.remove('centered');
+  }
+}
+
+function setupCircleTextEditing() {
+  // Get all circles in the fretboard
+  const circles = document.querySelectorAll("circle");
+  
+  circles.forEach(circle => {
+    if (!circle.hasAttribute("button-icon")) {
+      const text = circle.parentElement.querySelector("text");
+
+      // Add context menu event listener
+      circle.parentElement.addEventListener("contextmenu", function(event) {
+        event.preventDefault(); // Prevent default context menu
+
+        // Create an input element positioned over the circle
+        const svgRect = this.getBoundingClientRect();
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = text.textContent;
+        input.style.position = "absolute";
+        input.style.left = (svgRect.left + window.scrollX) + 12 + "px";
+        input.style.top = (svgRect.top + window.scrollY) + "px";
+        input.style.width = "30px";
+        input.style.height = "30px";
+        input.style.fontSize = text.getAttribute("font-size") + "px";
+        input.style.textAlign = "center";
+        input.style.padding = "0";
+        input.style.border = "1px solid #333";
+        input.style.borderRadius = "100%";
+        input.style.backgroundColor = circle.style.fill || "#fff";
+        input.style.color = window.getComputedStyle(text).color;
+        input.style.fontWeight = text.classList.contains("playmode") ? "bold" : "normal";
+        input.style.zIndex = "1000";
+        
+        document.body.appendChild(input);
+        input.focus();
+        input.select();
+        
+        // Handle input blur to apply changes
+        input.addEventListener("blur", function() {
+          text.textContent = this.value;
+          document.body.removeChild(this);
+        });
+        
+        // Handle Enter key press
+        input.addEventListener("keydown", function(e) {
+          if (e.key === "Enter") {
+            text.textContent = this.value;
+            document.body.removeChild(this);
+          }
+          if (e.key === "Escape") {
+            document.body.removeChild(this);
+          }
+          e.stopPropagation(); // Prevent key events from bubbling
+        });
+      });
+      
+      // For mobile devices - handle long press
+      let timer;
+      circle.parentElement.addEventListener("touchstart", function(event) {
+        timer = setTimeout(() => {
+          event.preventDefault();
+          const touchEvent = new MouseEvent("contextmenu", {
+            bubbles: true,
+            cancelable: true,
+            view: window,
+            clientX: event.touches[0].clientX,
+            clientY: event.touches[0].clientY
+          });
+          circle.parentElement.dispatchEvent(touchEvent);
+        }, 800); // 800ms long press
+      });
+
+      circle.parentElement.addEventListener("touchend", function() {
+        clearTimeout(timer);
+      });
+      
+      circle.parentElement.addEventListener("touchmove", function() {
+        clearTimeout(timer);
+      });
+    }
+  });
 }

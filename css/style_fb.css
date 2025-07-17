@@ -190,3 +190,20 @@ button:disabled {
     transition: transform 0.2s;
 }
 
+/* Container for the fretboard */
+#fretboardContainer {
+  position: relative;
+  display: block;
+  transition: margin-left 0.3s ease;
+}
+
+/* Center the fretboard when 24 frets are selected */
+#fretboardContainer.centered {
+  margin-left: calc(50% - 50vw + 200px); /* Adjust as needed */
+  width: 100%;
+}
+
+/* Add spacing between buttons and fretboard */
+#miTabla.centered {
+  margin-top: 100px;
+}

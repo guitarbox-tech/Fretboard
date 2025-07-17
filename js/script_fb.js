@@ -1,4 +1,3 @@
-
 var primeraVez; // Para que la primera fila creada tome E como primera nota, después se vuelve false y se sigue la lógica de cada cuerda
 var unaFila;
 var indiceCambiado = false; // Si el usuario cambió la afinación de alguna cuerda y luego eliminó filas, esa cuerda debe conservar la selección del usuario
@@ -673,8 +672,8 @@ window.onload = function () {
     }
   });
 
-    // Initialize fretboard position
-   updateFretboardPosition();
+  // Initialize fretboard position
+  updateFretboardPosition();
 
   new MIDIHandler();
 };
@@ -719,6 +718,7 @@ function initFretBoard() {
 function getNotas(note, displayType) {
   return noteStyles[note][displayType];
 }
+
 // Función para agregar una nueva columna a la tabla
 function agregarColumna() {
   var tabla = document.getElementById("miTabla");
@@ -860,7 +860,6 @@ selectNumeroColumnas.addEventListener("change", function () {
 
   // Update position after column changes
   updateFretboardPosition();
-
 });
 
 function actualizarVisibilidadBotones() {
@@ -1073,7 +1072,7 @@ function toggleNoteColorState(texto, circulo) {
   const currentColorMode = circulo.getAttribute("colorMode");
   const opacidadActual = window.getComputedStyle(circulo).opacity;
   let dataNote = circulo.getAttribute("data-note");
-  
+
   // Get the note text in standard notation regardless of current display style
   const noteType = localStorage.getItem("noteType");
   if (["latin", "degrees"].includes(noteType)) {
@@ -1084,7 +1083,7 @@ function toggleNoteColorState(texto, circulo) {
   // Get note information from key signature
   const keySignature = selectNota.value;
   const { diatonic, nonDiatonic } = keySignatures[keySignature];
-  
+
   // Determine if note is diatonic and its index
   const isDiatonic = diatonic.includes(dataNote);
   const index = isDiatonic
@@ -1093,7 +1092,7 @@ function toggleNoteColorState(texto, circulo) {
 
   // Toggle state based on current playmode and color mode
   let fill, newPlaymode;
-  
+
   if (isInPlaymode && currentColorMode === mode) {
     // Turn off playmode
     fill = "#FFF";
@@ -1115,14 +1114,13 @@ function toggleNoteColorState(texto, circulo) {
   circulo.setAttribute("colorMode", mode);
 }
 
-  // Determine color based on mode
-  const getColorForMode = (mode,isDiatonic,index) => {
-    if (mode === "1") return "#141414";
-    if (mode === "2") return isDiatonic 
-      ? diatonicColors[index] 
-      : nonDiatonicColors[index];
-    return "#FFF"; // Default
-  };
+// Determine color based on mode
+const getColorForMode = (mode, isDiatonic, index) => {
+  if (mode === "1") return "#141414";
+  if (mode === "2")
+    return isDiatonic ? diatonicColors[index] : nonDiatonicColors[index];
+  return "#FFF"; // Default
+};
 
 function switchNoteSelectionState(texto, circulo) {
   var isInPlaymode = circulo.getAttribute("playmode") === "true";
@@ -1147,7 +1145,7 @@ function switchNoteSelectionState(texto, circulo) {
   }
 }
 
-function restoreNoteSelectionState(texto, circulo,opacidadActual) {
+function restoreNoteSelectionState(texto, circulo, opacidadActual) {
   var isInPlaymode = circulo.getAttribute("playmode") === "true";
   // Cambiar la opacidad del círculo
   if (opacidadActual === "0.7" || opacidadActual === "0.3") {
@@ -1300,9 +1298,9 @@ function toggleAllCirclesState() {
 
   // Get current key signature
   const keySignature = document.getElementById("selectNota").value;
-  
+
   if (newState === 2) {
-    ocultarSvg(keySignature)
+    ocultarSvg(keySignature);
     return;
   }
 
@@ -1325,35 +1323,33 @@ function toggleAllCirclesState() {
       console.log("New circle toggle state:", newState);
     }
   });
-
 }
 
-
 function updateFretboardPosition() {
-  const fretboardContainer = document.getElementById('fretboardContainer');
-  const table = document.getElementById('miTabla');
-  const numColumns = parseInt(document.getElementById('numeroColumnas').value);
+  const fretboardContainer = document.getElementById("fretboardContainer");
+  const table = document.getElementById("miTabla");
+  const numColumns = parseInt(document.getElementById("numeroColumnas").value);
 
   // If 24 frets are selected, center the fretboard
   if (numColumns === 24) {
-    fretboardContainer.classList.add('centered');
-    table.classList.add('centered');
+    fretboardContainer.classList.add("centered");
+    table.classList.add("centered");
   } else {
-    fretboardContainer.classList.remove('centered');
-    table.classList.remove('centered');
+    fretboardContainer.classList.remove("centered");
+    table.classList.remove("centered");
   }
 }
 
 function setupCircleTextEditing() {
   // Get all circles in the fretboard
   const circles = document.querySelectorAll("circle");
-  
-  circles.forEach(circle => {
+
+  circles.forEach((circle) => {
     if (!circle.hasAttribute("button-icon")) {
       const text = circle.parentElement.querySelector("text");
 
       // Add context menu event listener
-      circle.parentElement.addEventListener("contextmenu", function(event) {
+      circle.parentElement.addEventListener("contextmenu", function (event) {
         event.preventDefault(); // Prevent default context menu
 
         // Create an input element positioned over the circle
@@ -1362,8 +1358,8 @@ function setupCircleTextEditing() {
         input.type = "text";
         input.value = text.textContent;
         input.style.position = "absolute";
-        input.style.left = (svgRect.left + window.scrollX) + 12 + "px";
-        input.style.top = (svgRect.top + window.scrollY) + "px";
+        input.style.left = svgRect.left + window.scrollX + 12 + "px";
+        input.style.top = svgRect.top + window.scrollY + "px";
         input.style.width = "30px";
         input.style.height = "30px";
         input.style.fontSize = text.getAttribute("font-size") + "px";
@@ -1373,21 +1369,23 @@ function setupCircleTextEditing() {
         input.style.borderRadius = "100%";
         input.style.backgroundColor = circle.style.fill || "#fff";
         input.style.color = window.getComputedStyle(text).color;
-        input.style.fontWeight = text.classList.contains("playmode") ? "bold" : "normal";
+        input.style.fontWeight = text.classList.contains("playmode")
+          ? "bold"
+          : "normal";
         input.style.zIndex = "1000";
-        
+
         document.body.appendChild(input);
         input.focus();
         input.select();
-        
+
         // Handle input blur to apply changes
-        input.addEventListener("blur", function() {
+        input.addEventListener("blur", function () {
           text.textContent = this.value;
           document.body.removeChild(this);
         });
-        
+
         // Handle Enter key press
-        input.addEventListener("keydown", function(e) {
+        input.addEventListener("keydown", function (e) {
           if (e.key === "Enter") {
             text.textContent = this.value;
             document.body.removeChild(this);
@@ -1398,10 +1396,10 @@ function setupCircleTextEditing() {
           e.stopPropagation(); // Prevent key events from bubbling
         });
       });
-      
+
       // For mobile devices - handle long press
       let timer;
-      circle.parentElement.addEventListener("touchstart", function(event) {
+      circle.parentElement.addEventListener("touchstart", function (event) {
         timer = setTimeout(() => {
           event.preventDefault();
           const touchEvent = new MouseEvent("contextmenu", {
@@ -1409,17 +1407,17 @@ function setupCircleTextEditing() {
             cancelable: true,
             view: window,
             clientX: event.touches[0].clientX,
-            clientY: event.touches[0].clientY
+            clientY: event.touches[0].clientY,
           });
           circle.parentElement.dispatchEvent(touchEvent);
         }, 800); // 800ms long press
       });
 
-      circle.parentElement.addEventListener("touchend", function() {
+      circle.parentElement.addEventListener("touchend", function () {
         clearTimeout(timer);
       });
-      
-      circle.parentElement.addEventListener("touchmove", function() {
+
+      circle.parentElement.addEventListener("touchmove", function () {
         clearTimeout(timer);
       });
     }

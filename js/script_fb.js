@@ -1080,12 +1080,33 @@ function toggleNoteColorState(texto, circulo) {
 
   var estilo = window.getComputedStyle(circulo);
   var opacidadActual = estilo.getPropertyValue("opacity");
+  const colorMode = circulo.getAttribute("colorMode")
+  console.log(colorMode,mode)
 
   let fill;
   if (isInPlaymode) {
-    fill = "#FFF";
-    texto.classList.remove("playmode");
-    circulo.style.opacity = opacidadActual == "1" ? "1" : "0.3";
+
+    if(colorMode === mode){
+      console.log("here")
+      fill = "#FFF";
+       texto.classList.remove("playmode");
+      circulo.style.opacity = opacidadActual == "1" ? "1" : "0.3";
+        circulo.setAttribute("playmode", false);
+    }
+    else{
+
+          if (mode === "1") {
+       fill = "#141414";
+    }else if(mode === "2") {
+        fill = isDiatonic ? diatonicColors[index] : nonDiatonicColors[index];
+    }
+      circulo.setAttribute("playmode", true);
+  
+    }
+     
+      circulo.style.transition = "fill 0s";
+  circulo.style.fill = fill;
+  circulo.setAttribute("colorMode",mode)
   } else {
     fill =
       mode === "1"
@@ -1095,11 +1116,15 @@ function toggleNoteColorState(texto, circulo) {
         : nonDiatonicColors[index];
     texto.classList.add("playmode");
     circulo.style.opacity = opacidadActual == "1" ? "1" : "0.7";
-  }
 
+    
   circulo.style.transition = "fill 0s";
   circulo.style.fill = fill;
-  circulo.setAttribute("playmode", !isInPlaymode);
+  circulo.setAttribute("playmode", true);
+  circulo.setAttribute("colorMode",mode)
+  }
+
+
 }
 
 function switchNoteSelectionState(texto, circulo) {

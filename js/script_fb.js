@@ -577,7 +577,7 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
 
     var notaActual = notas[indexNota];
 
-    circulo.setAttribute("data-note", notaActual);
+    circulo.setAttribute("data-note",getActualNote(currentNoteStyle,notaActual) );
     texto.textContent = notaActual;
 
     //console.log(texto.textContent)
@@ -638,6 +638,14 @@ function obtenerIndexNotaFila(fila) {
   var svgEnPrimeraCelda = primeraCelda.querySelector("svg");
   var textoNota = svgEnPrimeraCelda.querySelector("text").textContent;
   return notas.indexOf(textoNota);
+}
+
+function getActualNote(noteType,noteText){
+  if (["latin", "degrees"].includes(noteType)) {
+    const noteIndex = noteStyles[selectNota.value][noteType].indexOf(noteText);
+    noteText = noteStyles[selectNota.value]["names"][noteIndex];
+  }
+  return noteText
 }
 
 // Agregar seis filas con las notas del ciclo al cargar la página
@@ -1083,14 +1091,12 @@ function toggleNoteColorState(texto, circulo) {
   if (!standardScale.includes(noteText)) {
     try {
       const noteIndex =
-        noteStyles[selectNota.value][noteType].indexOf(dataNote);
+        noteStyles[selectNota.value]["names"].indexOf(dataNote);
       noteText = noteStyles[selectNota.value]["names"][noteIndex];
     } catch (error) {
       noteText = dataNote;
     }
   }
-
-  console.log("toggleNoteColorState", noteText, mode, isInPlaymode);
 
   // Get note information from key signature
   const keySignature = selectNota.value;

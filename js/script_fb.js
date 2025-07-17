@@ -1056,8 +1056,13 @@ function applyMemento(memento) {
 }
 
 function toggleNoteColorState(texto, circulo) {
-  var isInPlaymode = circulo.getAttribute("playmode") === "true";
+  // Get current state and settings
   const mode = localStorage.getItem("settings_mode");
+  const isInPlaymode = circulo.getAttribute("playmode") === "true";
+  const currentColorMode = circulo.getAttribute("colorMode");
+  const opacidadActual = window.getComputedStyle(circulo).opacity;
+  
+  // Get the note text in standard notation regardless of current display style
   let noteText = texto.textContent;
   const noteType = localStorage.getItem("noteType");
   if (["latin", "degrees"].includes(noteType)) {
@@ -1065,67 +1070,48 @@ function toggleNoteColorState(texto, circulo) {
     noteText = noteStyles[selectNota.value]["names"][noteIndex];
   }
 
+  // Get note information from key signature
   const keySignature = selectNota.value;
   const { diatonic, nonDiatonic } = keySignatures[keySignature];
+  
+  // Determine if note is diatonic and its index
+  const isDiatonic = diatonic.includes(noteText);
+  const index = isDiatonic 
+    ? diatonic.indexOf(noteText) 
+    : nonDiatonic.indexOf(noteText);
 
-  let index;
-  let isDiatonic = false;
-
-  if (diatonic.includes(noteText)) {
-    index = diatonic.indexOf(noteText);
-    isDiatonic = true;
-  } else if (nonDiatonic.includes(noteText)) {
-    index = nonDiatonic.indexOf(noteText);
+  // Toggle state based on current playmode and color mode
+  let fill, newPlaymode;
+  
+  if (isInPlaymode && currentColorMode === mode) {
+    // Turn off playmode
+    fill = "#FFF";
+    newPlaymode = false;
+    texto.classList.remove("playmode");
+    circulo.style.opacity = opacidadActual == "1" ? "1" : "0.3";
+  } else {
+    // Turn on or change playmode
+    fill = getColorForMode(mode, isDiatonic, index);
+    newPlaymode = true;
+    texto.classList[newPlaymode ? "add" : "remove"]("playmode");
+    circulo.style.opacity = opacidadActual == "1" ? "1" : "0.7";
   }
 
-  var estilo = window.getComputedStyle(circulo);
-  var opacidadActual = estilo.getPropertyValue("opacity");
-  const colorMode = circulo.getAttribute("colorMode")
-  console.log(colorMode,mode)
-
-  let fill;
-  if (isInPlaymode) {
-
-    if(colorMode === mode){
-      console.log("here")
-      fill = "#FFF";
-       texto.classList.remove("playmode");
-      circulo.style.opacity = opacidadActual == "1" ? "1" : "0.3";
-        circulo.setAttribute("playmode", false);
-    }
-    else{
-
-          if (mode === "1") {
-       fill = "#141414";
-    }else if(mode === "2") {
-        fill = isDiatonic ? diatonicColors[index] : nonDiatonicColors[index];
-    }
-      circulo.setAttribute("playmode", true);
-  
-    }
-     
-      circulo.style.transition = "fill 0s";
-  circulo.style.fill = fill;
-  circulo.setAttribute("colorMode",mode)
-  } else {
-    fill =
-      mode === "1"
-        ? "#141414"
-        : isDiatonic
-        ? diatonicColors[index]
-        : nonDiatonicColors[index];
-    texto.classList.add("playmode");
-    circulo.style.opacity = opacidadActual == "1" ? "1" : "0.7";
-
-    
+  // Apply changes
   circulo.style.transition = "fill 0s";
   circulo.style.fill = fill;
-  circulo.setAttribute("playmode", true);
-  circulo.setAttribute("colorMode",mode)
-  }
-
-
+  circulo.setAttribute("playmode", newPlaymode);
+  circulo.setAttribute("colorMode", mode);
 }
+
+  // Determine color based on mode
+  const getColorForMode = (mode,isDiatonic,index) => {
+    if (mode === "1") return "#141414";
+    if (mode === "2") return isDiatonic 
+      ? diatonicColors[index] 
+      : nonDiatonicColors[index];
+    return "#FFF"; // Default
+  };
 
 function switchNoteSelectionState(texto, circulo) {
   var isInPlaymode = circulo.getAttribute("playmode") === "true";

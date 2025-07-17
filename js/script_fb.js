@@ -1090,6 +1090,8 @@ function toggleNoteColorState(texto, circulo) {
     }
   }
 
+  console.log("toggleNoteColorState", noteText, mode, isInPlaymode);
+
   // Get note information from key signature
   const keySignature = selectNota.value;
   const { diatonic, nonDiatonic } = keySignatures[keySignature];

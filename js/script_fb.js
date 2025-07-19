@@ -1142,20 +1142,13 @@ const getColorForMode = (mode, isDiatonic, index) => {
 
 function switchNoteSelectionState(texto, circulo) {
   var isInPlaymode = circulo.getAttribute("playmode") === "true";
-  // Obtener la opacidad computada del círculo
-  var estilo = window.getComputedStyle(circulo);
-  var opacidadActual = estilo.getPropertyValue("opacity");
+  var opacidadActual = circulo.style.opacity;
 
   // Cambiar la opacidad del círculo
   if (opacidadActual === "1") {
-    const opacity = isInPlaymode ? "0.7" : "0.3";
-    var textoVisible = texto.style.visibility;
-    if (textoVisible === "hidden") {
-      circulo.style.opacity = opacity;
-    } else {
+      const opacity = isInPlaymode ? "0.7" : "0.3";
       circulo.style.opacity = opacity;
       texto.style.visibility = "hidden";
-    }
   } else {
     circulo.style.opacity = "1";
     texto.style.visibility =

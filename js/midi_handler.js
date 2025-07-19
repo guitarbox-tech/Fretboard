@@ -205,8 +205,7 @@ class MIDIHandler {
       const actualOpacity = noteElement.getAttribute("actualOpacity");
       const actualFill = noteElement.getAttribute("prevFill");
       const textElement = table.rows[string].cells[fret].querySelector("text");
-      const { diatonic, nonDiatonic } = keySignatures[selectNota.value];
-      const isDiatonic = diatonic.includes(textElement.textContent);
+  
 
       console.log(this.isArrowDownHeld);
 

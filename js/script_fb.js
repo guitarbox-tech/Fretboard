@@ -577,7 +577,10 @@ function agregarFila(indexNotaEliminar, celdasEliminar) {
 
     var notaActual = notas[indexNota];
 
-    circulo.setAttribute("data-note",getActualNote(currentNoteStyle,notaActual) );
+    circulo.setAttribute(
+      "data-note",
+      getActualNote(currentNoteStyle, notaActual)
+    );
     texto.textContent = notaActual;
 
     //console.log(texto.textContent)
@@ -640,12 +643,12 @@ function obtenerIndexNotaFila(fila) {
   return notas.indexOf(textoNota);
 }
 
-function getActualNote(noteType,noteText){
+function getActualNote(noteType, noteText) {
   if (["latin", "degrees"].includes(noteType)) {
     const noteIndex = noteStyles[selectNota.value][noteType].indexOf(noteText);
     noteText = noteStyles[selectNota.value]["names"][noteIndex];
   }
-  return noteText
+  return noteText;
 }
 
 // Agregar seis filas con las notas del ciclo al cargar la página
@@ -680,8 +683,10 @@ window.onload = function () {
     }
   });
 
+  //window.addEventListener("resize", updateFretboardPosition);
+
   // Initialize fretboard position
-  updateFretboardPosition();
+  //updateFretboardPosition();
 
   new MIDIHandler();
 };
@@ -866,7 +871,7 @@ selectNumeroColumnas.addEventListener("change", function () {
   }
 
   // Update position after column changes
-  updateFretboardPosition();
+  // updateFretboardPosition();
 });
 
 function actualizarVisibilidadBotones() {
@@ -968,7 +973,7 @@ function ocultarSvg(nombreNota) {
 
     circulos.forEach(function (circulo) {
       if (!circulo.hasAttribute("button-icon")) {
-        //console.log(circulo)
+        var isInPlaymode = circulo.getAttribute("playmode") === "true";
         // Obtener el valor del texto dentro del círculo SVG
         var text = circulo.parentElement.querySelector("text");
 
@@ -977,7 +982,7 @@ function ocultarSvg(nombreNota) {
           !noteStyles[noteScaleName]["diatonics"].includes(text.textContent)
         ) {
           // console.log(text.textContent)
-          circulo.style.opacity = "30%"; // Ocultar el círculo
+          circulo.style.opacity = isInPlaymode ? "70%" : "30%"; // Ocultar el círculo
           text.style.visibility = "hidden"; // Ocultar el texto
         } else {
           circulo.style.opacity = "100%"; // Mostrar el círculo
@@ -1088,10 +1093,9 @@ function toggleNoteColorState(texto, circulo) {
     noteText = noteStyles[selectNota.value]["names"][noteIndex];
   }
 
-  if (!standardScale.includes(noteText)) {
+  if (!standardScale.includes(noteText) || noteText === undefined) {
     try {
-      const noteIndex =
-        noteStyles[selectNota.value]["names"].indexOf(dataNote);
+      const noteIndex = noteStyles[selectNota.value]["names"].indexOf(dataNote);
       noteText = noteStyles[selectNota.value]["names"][noteIndex];
     } catch (error) {
       noteText = dataNote;
@@ -1146,9 +1150,9 @@ function switchNoteSelectionState(texto, circulo) {
 
   // Cambiar la opacidad del círculo
   if (opacidadActual === "1") {
-      const opacity = isInPlaymode ? "0.7" : "0.3";
-      circulo.style.opacity = opacity;
-      texto.style.visibility = "hidden";
+    const opacity = isInPlaymode ? "0.7" : "0.3";
+    circulo.style.opacity = opacity;
+    texto.style.visibility = "hidden";
   } else {
     circulo.style.opacity = "1";
     texto.style.visibility =
@@ -1351,6 +1355,7 @@ function updateFretboardPosition() {
   }
 }
 
+/*
 function setupCircleTextEditing() {
   // Get all circles in the fretboard
   const circles = document.querySelectorAll("circle");
@@ -1432,5 +1437,145 @@ function setupCircleTextEditing() {
         clearTimeout(timer);
       });
     }
+  });
+}
+*/
+
+function setupCircleTextEditing() {
+  // Get all circles in the fretboard
+  const circles = document.querySelectorAll("circle");
+
+  circles.forEach((circle) => {
+    if (!circle.hasAttribute("button-icon")) {
+      const text = circle.parentElement.querySelector("text");
+      const svgParent = circle.parentElement;
+
+      // Add context menu event listener for right click on desktop
+      svgParent.addEventListener("contextmenu", function (event) {
+        event.preventDefault(); // Prevent default context menu
+        createEditableInput(this, text, circle);
+      });
+
+      // Variables for tracking double tap
+      let lastTap = 0;
+      let tapTimeout;
+
+      // For mobile devices - handle double tap
+      svgParent.addEventListener("touchstart", function (event) {
+        // Clear any existing timeout to prevent multiple inputs
+        clearTimeout(tapTimeout);
+
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+
+        // Define double tap (between 130ms and 500ms between taps)
+        if (tapLength < 500 && tapLength > 130) {
+          event.preventDefault();
+          // Cancel any ongoing text selection
+          if (window.getSelection) {
+            window.getSelection().removeAllRanges();
+          }
+          createEditableInput(this, text, circle);
+          lastTap = 0; // Reset to prevent triple-tap issues
+        } else {
+          // This is a first tap or it's too slow to be a double tap
+          lastTap = currentTime;
+
+          // Clear any existing text selection after a short delay
+          tapTimeout = setTimeout(() => {
+            if (window.getSelection) {
+              window.getSelection().removeAllRanges();
+            }
+          }, 150);
+        }
+      });
+
+      // Prevent default touch behavior when interacting with the SVG
+      svgParent.addEventListener(
+        "touchmove",
+        function (event) {
+          // Only prevent default if we're in the middle of a potential double-tap
+          if (lastTap > 0) {
+            event.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+    }
+  });
+}
+
+// Extract the input creation logic to a separate function
+function createEditableInput(element, text, circle) {
+  const svgRect = element.getBoundingClientRect();
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = text.textContent;
+  input.style.position = "absolute";
+  input.style.left = svgRect.left + window.scrollX + 12 + "px";
+  input.style.top = svgRect.top + window.scrollY + "px";
+  input.style.width = "30px";
+  input.style.height = "30px";
+  input.style.fontSize = text.getAttribute("font-size") + "px";
+  input.style.textAlign = "center";
+  input.style.padding = "0";
+  input.style.border = "1px solid #333";
+  input.style.borderRadius = "100%";
+  input.style.backgroundColor = circle.style.fill || "#fff";
+
+  // Fix text color in input
+  const textColor = window.getComputedStyle(text).color;
+  input.style.color = textColor;
+
+  // Create a style element for this specific input to override focus styles
+  const styleEl = document.createElement("style");
+  const randomId = "input-" + Math.random().toString(36).substr(2, 9);
+  input.id = randomId;
+
+  styleEl.innerHTML = `
+      #${randomId}:focus {
+        color: ${textColor} !important;
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
+      }
+      #${randomId}::selection {
+        background-color: rgba(0,0,0,0.1);
+        color: ${textColor};
+      }
+    `;
+  document.head.appendChild(styleEl);
+
+  input.style.fontWeight = text.classList.contains("playmode")
+    ? "bold"
+    : "normal";
+  input.style.zIndex = "1000";
+
+  document.body.appendChild(input);
+
+  // Use a timeout to ensure the input is rendered before focusing
+  setTimeout(() => {
+    input.focus();
+    input.select();
+  }, 50);
+
+  // Handle input blur to apply changes
+  input.addEventListener("blur", function () {
+    text.textContent = this.value;
+    document.body.removeChild(this);
+    document.head.removeChild(styleEl);
+  });
+
+  // Handle Enter key press
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      text.textContent = this.value;
+      document.body.removeChild(this);
+      document.head.removeChild(styleEl);
+    }
+    if (e.key === "Escape") {
+      document.body.removeChild(this);
+      document.head.removeChild(styleEl);
+    }
+    e.stopPropagation(); // Prevent key events from bubbling
   });
 }

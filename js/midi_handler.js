@@ -32,7 +32,7 @@ class MIDIHandler {
     document.addEventListener("keydown", (event) => {
       if (event.code === "ArrowDown") {
         event.preventDefault();
-          this.isArrowDownHeld = true;
+        this.isArrowDownHeld = true;
       }
     });
 
@@ -74,20 +74,17 @@ class MIDIHandler {
     const stringNumber = this.channelToString[channel];
 
     const settingsMode = localStorage.getItem("settings_mode");
-    if (this.isArrowDownHeld && noteOn ) {
+    if (this.isArrowDownHeld && noteOn) {
       if (settingsMode === "3") this.toggleNoteSelection(note, stringNumber);
       else this.toggleNoteColor(note, stringNumber);
       return;
-    }else if(this.isArrowDownHeld && noteOff ){
-      return
+    } else if (this.isArrowDownHeld && noteOff) {
+      return;
     }
 
-    if( !this.isArrowDownHeld &&  settingsMode === "3")
-      return
+    if (!this.isArrowDownHeld && settingsMode === "3") return;
 
     // console.log(note, channel, command, velocity);
-
-
 
     if (noteOn) {
       if (this.freezeMode === 1) {
@@ -134,7 +131,7 @@ class MIDIHandler {
         table.rows[string].cells[fret]?.querySelector("circle") || null;
       if (circulo) {
         const texto = table.rows[string].cells[fret].querySelector("text");
-        toggleNoteColorState(texto,circulo);
+        toggleNoteColorState(texto, circulo);
       }
     }
   }
@@ -160,6 +157,7 @@ class MIDIHandler {
     const table = document.getElementById("miTabla");
     const noteElement =
       table.rows[string].cells[fret]?.querySelector("circle") || null;
+    const dataNote = noteElement.getAttribute("data-note");
 
     if (noteElement) {
       const actualOpacity = noteElement.style.opacity;
@@ -173,6 +171,16 @@ class MIDIHandler {
         const noteIndex =
           noteStyles[selectNota.value][noteType].indexOf(noteText);
         noteText = noteStyles[selectNota.value]["names"][noteIndex];
+      }
+
+      if (!standardScale.includes(noteText) || noteText === undefined) {
+        try {
+          const noteIndex =
+            noteStyles[selectNota.value]["names"].indexOf(dataNote);
+          noteText = noteStyles[selectNota.value]["names"][noteIndex];
+        } catch (error) {
+          noteText = dataNote;
+        }
       }
 
       const isDiatonic = diatonic.includes(noteText);
@@ -205,9 +213,6 @@ class MIDIHandler {
       const actualOpacity = noteElement.getAttribute("actualOpacity");
       const actualFill = noteElement.getAttribute("prevFill");
       const textElement = table.rows[string].cells[fret].querySelector("text");
-  
-
-      console.log(this.isArrowDownHeld);
 
       if (!this.isArrowDownHeld) {
         noteElement.style.transition = "fill 1s, opacity 1s";

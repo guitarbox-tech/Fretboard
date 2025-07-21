@@ -972,6 +972,7 @@ function ocultarSvg(nombreNota) {
     // Iterar sobre todos los círculos y aplicar la propiedad visibility según corresponda
 
     circulos.forEach(function (circulo) {
+      circulo.style.transition = "";
       if (!circulo.hasAttribute("button-icon")) {
         var isInPlaymode = circulo.getAttribute("playmode") === "true";
         // Obtener el valor del texto dentro del círculo SVG
@@ -1325,6 +1326,7 @@ function toggleAllCirclesState() {
   circulos.forEach(function (circulo) {
     if (!circulo.hasAttribute("button-icon")) {
       const text = circulo.parentElement.querySelector("text");
+      circulo.style.transition = "";
       switch (newState) {
         case 0: // All unselected
           circulo.style.opacity = "1";
@@ -1512,11 +1514,11 @@ function createEditableInput(element, text, circle) {
   input.type = "text";
   input.value = text.textContent;
   input.style.position = "absolute";
-  input.style.left = svgRect.left + window.scrollX + 12 + "px";
-  input.style.top = svgRect.top + window.scrollY + "px";
-  input.style.width = "30px";
-  input.style.height = "30px";
-  input.style.fontSize = text.getAttribute("font-size") + "px";
+  input.style.left = svgRect.left + window.scrollX + 6 + "px";
+  input.style.top = svgRect.top + window.scrollY + "px" ;
+  input.style.width = "18px";
+  input.style.height = "18px";
+  input.style.fontSize = text.getAttribute("font-size") - 5 + "px" ;
   input.style.textAlign = "center";
   input.style.padding = "0";
   input.style.border = "1px solid #333";

@@ -157,7 +157,8 @@ class MIDIHandler {
     const table = document.getElementById("miTabla");
     const noteElement =
       table.rows[string].cells[fret]?.querySelector("circle") || null;
-    const dataNote = noteElement.getAttribute("data-note");
+
+      console.log("Highlighting note:", string, fret, noteElement);
 
     if (noteElement) {
       const actualOpacity = noteElement.style.opacity;
@@ -165,6 +166,8 @@ class MIDIHandler {
       const textElement = table.rows[string].cells[fret].querySelector("text");
       const { diatonic, nonDiatonic } = keySignatures[selectNota.value];
       let noteText = textElement.textContent;
+
+      const dataNote = noteElement.getAttribute("data-note");
 
       const noteType = localStorage.getItem("noteType");
       if (["latin", "degrees"].includes(noteType)) {

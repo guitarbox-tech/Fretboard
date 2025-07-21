@@ -1525,11 +1525,9 @@ function createEditableInput(element, text, circle) {
   input.style.borderRadius = "100%";
   input.style.backgroundColor = circle.style.fill || "#fff";
 
-  // Fix text color in input
   const textColor = window.getComputedStyle(text).color;
   input.style.color = textColor;
 
-  // Create a style element for this specific input to override focus styles
   const styleEl = document.createElement("style");
   const randomId = "input-" + Math.random().toString(36).substr(2, 9);
   input.id = randomId;
@@ -1578,6 +1576,6 @@ function createEditableInput(element, text, circle) {
       document.body.removeChild(this);
       document.head.removeChild(styleEl);
     }
-    e.stopPropagation(); // Prevent key events from bubbling
+    e.stopPropagation();
   });
 }
